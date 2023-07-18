@@ -15,7 +15,7 @@ export default class Pet {
         // default
         framesCurrent = 0,
         framesElapsed = 0,
-        framesHold = 5,
+        framesHold = 10,
     }) {
         this.position = position;
         this.width = width;
