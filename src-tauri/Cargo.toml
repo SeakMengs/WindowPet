@@ -2,9 +2,9 @@
 name = "window_pet"
 version = "0.0.0"
 description = "Window pet"
-authors = ["you"]
+authors = ["SeakMengs"]
 license = ""
-repository = ""
+repository = "https://github.com/SeakMengs/WindowPet"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -21,3 +21,10 @@ serde_json = "1.0"
 # this feature is used for production builds or when `devPath` points to the filesystem
 # DO NOT REMOVE!!
 custom-protocol = ["tauri/custom-protocol"]
+
+[dependencies.windows]
+version = "0.48"
+features = [
+    "Win32_Foundation",
+    "Win32_UI_WindowsAndMessaging",
+]

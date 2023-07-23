@@ -1,31 +1,34 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::{Manager, Position};
-use tauri::{Size, PhysicalSize};
+mod app;
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-#[tauri::command]
-fn change_current_app_position(app: tauri::AppHandle, x: f32, y: f32) {
-    if let Some(_window) = app.get_window("main") {
-        let pos = Position::Physical((x, y).into());
-        _window.set_position(pos).unwrap();
-    } else {
-        println!("window not found");
-    }
-}
-
-#[tauri::command]
-fn change_current_app_size(app: tauri::AppHandle, w: u32, h: u32) {
-    if let Some(_window) = app.get_window("main") {
-        _window.set_size(Size::Physical(PhysicalSize { width: w, height: h })).unwrap();
-    } else {
-        println!("window not found");
-    }
-}
+use app::cmd::{change_current_app_position, change_current_app_size};
 
 fn main() {
+    // click through window
+    // credit: https://github.com/4t145/tauri-windows-clickthrough-example
     tauri::Builder::default()
+        .setup(move |app| {
+            use tauri::Manager;
+            let window = app.get_window("main").unwrap();
+            let hwnd = window.hwnd().unwrap().0;
+            let _pre_val;
+            let hwnd = windows::Win32::Foundation::HWND(hwnd);
+            unsafe {
+                use windows::Win32::UI::WindowsAndMessaging::*;
+                let nindex = GWL_EXSTYLE;
+                let style = WS_EX_APPWINDOW
+                    | WS_EX_COMPOSITED
+                    | WS_EX_LAYERED
+                    | WS_EX_TRANSPARENT
+                    | WS_EX_TOPMOST;
+                _pre_val = SetWindowLongA(hwnd, nindex, style.0 as i32);
+                //   if we want to remove the click through, we can use this
+                //   _pre_val = SetWindowLongA(hwnd, nindex, !style.0 as i32);
+            };
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             change_current_app_position,
             change_current_app_size

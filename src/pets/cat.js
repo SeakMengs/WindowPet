@@ -14,6 +14,8 @@ export default class Cat extends Pet {
         framesHold = 10,
         velocity,
         states,
+        walkSpeed = 0.1,
+        runSpeed = 0.5,
     }) {
         // generate number from 0 to current screen width
         do {
@@ -33,6 +35,8 @@ export default class Cat extends Pet {
             states,
         });
 
+        this.walkSpeed = walkSpeed;
+        this.runSpeed = runSpeed;
         this.stateNumber = Math.floor(Math.random() * 6000);
 
         // generate the images for each state
@@ -85,10 +89,10 @@ export default class Cat extends Pet {
             this.switchState('stretching');
         } else if (this.stateNumber <= 7000) {
             this.switchState('walk');
-            this.velocity.x += 0.1;
+            this.velocity.x += this.walkSpeed;
         } else if (this.stateNumber <= 9000) {
             this.switchState('run');
-            this.velocity.x += 0.5;
+            this.velocity.x += this.runSpeed;
         } else {
             this.stateNumber = 0;
         }

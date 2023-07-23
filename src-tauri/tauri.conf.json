@@ -41,7 +41,8 @@
         "width": 64,
         "height": 64,
         "transparent": true,
-        "decorations": false
+        "decorations": false,
+        "alwaysOnTop": true
       }
     ]
   }

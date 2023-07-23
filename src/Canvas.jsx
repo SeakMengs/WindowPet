@@ -12,25 +12,28 @@ function Canvas() {
     const positionOfTaskbar = currentScreenHeight - (48 + 64);
 
     // set app window position to bottom above taskbar
-    invoke("change_current_app_position", { x: 0, y: positionOfTaskbar});
+    invoke("change_current_app_position", { x: 0, y: positionOfTaskbar });
 
     // set app window size to full screen width and 64px height
-    invoke("change_current_app_size", { w: currentScreenWidth, h: 64});
+    invoke("change_current_app_size", { w: currentScreenWidth, h: 64 });
 
     const canvasRef = useRef(null);
 
+    // disable right click (context menu) for build version only. uncomment for development
+    // credit: https://github.com/tauri-apps/wry/issues/30
+    document.addEventListener('contextmenu', event => event.preventDefault());
+
     let pets = [];
-
-    // register cat object
-    if (petConfig.length > 0) {
-        for (let i = 0; i < petConfig.length; i++) {
-            pets[i] = new Cat(petConfig[i]);
-        }
-    }
-
 
     //* credit: https://medium.com/@pdx.lucasm/canvas-with-react-js-32e133c05258
     useEffect(() => {
+
+        // register cat object
+        if (petConfig.length > 0) {
+            for (let i = 0; i < petConfig.length; i++) {
+                pets[i] = new Cat(petConfig[i]);
+            }
+        }
 
         // const handleDrag = document.getElementById('allowCanvasDrag');
         // handleDrag.addEventListener('mousedown', function (event) {
@@ -40,12 +43,14 @@ function Canvas() {
 
         const canvas = canvasRef.current;
         const context = canvas.getContext("2d");
-
         canvas.width = currentScreenWidth
         canvas.height = 64;
 
         function animate() {
-            // This code runs the animation loop for the game.
+            // disable image smoothing, so the pixel art stays crisp
+            context.imageSmoothingEnabled = false;
+
+            // This code runs the animation loop for the canvas
             window.requestAnimationFrame(animate)
 
             //* credit: https://stackoverflow.com/questions/4815166/how-do-i-make-a-transparent-canvas-in-html5
