@@ -6,20 +6,20 @@ export default class Pet {
     constructor({
         position,
         imageSrc,
+        name,
+        velocity,
         scale = 1,
         // framesMax is the frames of the image
         framesMax = 1,
-        // optional
-        width = 50,
-        height = 150,
         // default
         framesCurrent = 0,
         framesElapsed = 0,
         framesHold = 10,
+        states,
     }) {
+        this.name = name;
+        this.velocity = velocity;
         this.position = position;
-        this.width = width;
-        this.height = height;
         this.image = new Image();
         this.image.src = imageSrc;
         this.scale = scale;
@@ -27,9 +27,11 @@ export default class Pet {
         this.framesCurrent = framesCurrent;
         this.framesElapsed = framesElapsed;
         this.framesHold = framesHold;
+        this.movingDirection = Math.random() < 0.5 ? 'left' : 'right';
+        this.states = states;
     }
 
-    draw(context) {
+    draw(context, flipImage = false) {
         /* 
          * context.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
          * image: Image object
@@ -42,20 +44,48 @@ export default class Pet {
          * dWidth: Destination width. It's the width of the image that u want to draw
          * dHeight: Destination height. It's the height of the image that u want to draw
          */
+        if (flipImage) {
+            this.flipImage(context)
+        } else {
+            context.drawImage(
+                this.image,
+                (this.framesCurrent * (this.image.width / this.framesMax)),
+                0,
+                this.image.width / this.framesMax,
+                this.image.height,
+                this.position.x,
+                this.position.y,
+                (this.image.width / this.framesMax) * this.scale,
+                this.image.height * this.scale
+            )
+        }
+    }
+
+    //Credit: https://stackoverflow.com/questions/35973441/how-to-horizontally-flip-an-image
+    flipImage(context) {
+        // Calculate the center of the image
+        const centerX = this.position.x + (this.image.width / this.framesMax) * this.scale / 2;
+        const centerY = this.position.y + this.image.height * this.scale / 2;
+
+        context.translate(centerX, centerY);
+        context.scale(-1, 1);
+
         context.drawImage(
             this.image,
-            this.framesCurrent * (this.image.width / this.framesMax),
+            (this.framesCurrent * (this.image.width / this.framesMax)),
             0,
             this.image.width / this.framesMax,
             this.image.height,
-            // this.position.x - this.offset.x,
-            // this.position.y - this.offset.y,
-            this.position.x,
-            this.position.y,
+            -(this.image.width / this.framesMax) * this.scale / 2,
+            -this.image.height * this.scale / 2,
             (this.image.width / this.framesMax) * this.scale,
             this.image.height * this.scale
-        )
+        );
+
+        // 4. Reset the context back to its original state
+        context.setTransform(1, 0, 0, 1, 0, 0);
     }
+
 
     // used to control the animation speed,
     animateFrames() {
@@ -70,8 +100,32 @@ export default class Pet {
         }
     }
 
+    checkCollisionWithCanvas(context) {
+        const currentPetBeyondRightBorder = this.position.x + (this.image.width / this.framesMax) * this.scale > context.canvas.width;
+        const currentPetBeyondLeftBorder = this.position.x < 0;
+
+        if (this.movingDirection === 'left' && currentPetBeyondLeftBorder) {
+            this.movingDirection = 'right';
+        } else if (this.movingDirection === 'right' && currentPetBeyondRightBorder) {
+            this.movingDirection = 'left';
+        }
+    }
+
     update(context) {
-        this.draw(context)
-        this.animateFrames()
+        this.checkCollisionWithCanvas(context);
+
+        this.draw(context, this.movingDirection === 'left');
+        this.animateFrames();
+
+        // update position based on velocity and reset velocity
+        if (this.movingDirection === 'left') {
+            this.position.x -= this.velocity.x
+        } else {
+            this.position.x += this.velocity.x
+        }
+        this.position.y += this.velocity.y
+
+        this.velocity.x = 0;
+        this.velocity.y = 0;
     }
 }
