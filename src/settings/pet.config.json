@@ -1,6 +1,101 @@
 [
     {
-        "name": "Cat1",
+        "name": "Tom",
+        "position": {
+            "x": 0,
+            "y": 32
+        },
+        "velocity": {
+            "x": 0,
+            "y": 0
+        },
+        "scale": 1,
+        "currentState": {
+            "state": "idle",
+            "index": 0,
+            "stateHold": 500
+        },
+        "framesMax": 10,
+        "framesHold": 20,
+        "walkSpeed": 0.1,
+        "runSpeed": 0.5,
+        "states": {
+            "idle": {
+                "imageSrc": "media/Cat-1/Cat-1-Idle.png",
+                "framesMax": 10,
+                "stateHold": 500,
+                "framesHold": 20
+            },
+            "itch": {
+                "imageSrc": "media/Cat-1/Cat-1-Itch.png",
+                "framesMax": 2,
+                "stateHold": 1000,
+                "framesHold": 20
+            },
+            "licking": {
+                "imageSrc": "media/Cat-1/Cat-1-Licking 1.png",
+                "framesMax": 5,
+                "stateHold": 500,
+                "framesHold": 20
+            },
+            "licking2": {
+                "imageSrc": "media/Cat-1/Cat-1-Licking 2.png",
+                "framesMax": 5,
+                "stateHold": 500,
+                "framesHold": 20
+            },
+            "meow": {
+                "imageSrc": "media/Cat-1/Cat-1-Meow.png",
+                "framesMax": 4,
+                "stateHold": 400,
+                "framesHold": 20
+            },
+            "sitting": {
+                "imageSrc": "media/Cat-1/Cat-1-Sitting.png",
+                "framesMax": 1,
+                "stateHold": 500,
+                "framesHold": 20
+            },
+            "laying": {
+                "imageSrc": "media/Cat-1/Cat-1-Laying.png",
+                "framesMax": 8,
+                "stateHold": 100,
+                "framesHold": 20
+            },
+            "sleeping": {
+                "imageSrc": "media/Cat-1/Cat-1-Sleeping1.png",
+                "framesMax": 1,
+                "stateHold": 500,
+                "framesHold": 20
+            },
+            "sleeping2": {
+                "imageSrc": "media/Cat-1/Cat-1-Sleeping2.png",
+                "framesMax": 1,
+                "stateHold": 1000,
+                "framesHold": 20
+            },
+            "stretching": {
+                "imageSrc": "media/Cat-1/Cat-1-Stretching.png",
+                "framesMax": 13,
+                "stateHold": 250,
+                "framesHold": 20
+            },
+            "walk": {
+                "imageSrc": "media/Cat-1/Cat-1-Walk.png",
+                "framesMax": 8,
+                "stateHold": 1750,
+                "framesHold": 20
+            },
+            "run": {
+                "imageSrc": "media/Cat-1/Cat-1-Run.png",
+                "framesMax": 8,
+                "stateHold": 2000,
+                "framesHold": 20
+            }
+        }
+    },
+    {
+        "name": "Tom2",
         "position": {
             "x": 0,
             "y": 0
@@ -10,62 +105,92 @@
             "y": 0
         },
         "scale": 2,
-        "imageSrc": "media/Cat-1/Cat-1-Idle.png",
+        "currentState": {
+            "state": "idle",
+            "index": 0,
+            "stateHold": 500
+        },
         "framesMax": 10,
         "framesHold": 20,
+        "walkSpeed": 0.1,
+        "runSpeed": 0.5,
         "states": {
             "idle": {
                 "imageSrc": "media/Cat-1/Cat-1-Idle.png",
-                "framesMax": 10
+                "framesMax": 10,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "itch": {
                 "imageSrc": "media/Cat-1/Cat-1-Itch.png",
-                "framesMax": 2
-            },
-            "laying": {
-                "imageSrc": "media/Cat-1/Cat-1-Laying.png",
-                "framesMax": 8
+                "framesMax": 2,
+                "stateHold": 1000,
+                "framesHold": 20
             },
             "licking": {
                 "imageSrc": "media/Cat-1/Cat-1-Licking 1.png",
-                "framesMax": 5
+                "framesMax": 5,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "licking2": {
                 "imageSrc": "media/Cat-1/Cat-1-Licking 2.png",
-                "framesMax": 5
+                "framesMax": 5,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "meow": {
                 "imageSrc": "media/Cat-1/Cat-1-Meow.png",
-                "framesMax": 4
+                "framesMax": 4,
+                "stateHold": 400,
+                "framesHold": 20
             },
             "sitting": {
                 "imageSrc": "media/Cat-1/Cat-1-Sitting.png",
-                "framesMax": 1
+                "framesMax": 1,
+                "stateHold": 500,
+                "framesHold": 20
+            },
+            "laying": {
+                "imageSrc": "media/Cat-1/Cat-1-Laying.png",
+                "framesMax": 8,
+                "stateHold": 100,
+                "framesHold": 20
             },
             "sleeping": {
                 "imageSrc": "media/Cat-1/Cat-1-Sleeping1.png",
-                "framesMax": 1
+                "framesMax": 1,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "sleeping2": {
                 "imageSrc": "media/Cat-1/Cat-1-Sleeping2.png",
-                "framesMax": 1
+                "framesMax": 1,
+                "stateHold": 1000,
+                "framesHold": 20
             },
             "stretching": {
                 "imageSrc": "media/Cat-1/Cat-1-Stretching.png",
-                "framesMax": 13
+                "framesMax": 13,
+                "stateHold": 250,
+                "framesHold": 20
             },
             "walk": {
                 "imageSrc": "media/Cat-1/Cat-1-Walk.png",
-                "framesMax": 8
+                "framesMax": 8,
+                "stateHold": 1750,
+                "framesHold": 20
             },
             "run": {
                 "imageSrc": "media/Cat-1/Cat-1-Run.png",
-                "framesMax": 8
+                "framesMax": 8,
+                "stateHold": 2000,
+                "framesHold": 20
             }
         }
     },
     {
-        "name": "Cat2",
+        "name": "Jerry",
         "position": {
             "x": 50,
             "y": 0
@@ -75,122 +200,182 @@
             "y": 0
         },
         "scale": 2,
-        "imageSrc": "media/Cat-2/Cat-2-Idle.png",
+        "currentState": {
+            "state": "idle",
+            "index": 0,
+            "stateHold": 500
+        },
         "framesMax": 10,
         "framesHold": 20,
+        "walkSpeed": 0.1,
+        "runSpeed": 0.5,
         "states": {
             "idle": {
                 "imageSrc": "media/Cat-2/Cat-2-Idle.png",
-                "framesMax": 10
+                "framesMax": 10,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "itch": {
                 "imageSrc": "media/Cat-2/Cat-2-Itch.png",
-                "framesMax": 2
-            },
-            "laying": {
-                "imageSrc": "media/Cat-2/Cat-2-Laying.png",
-                "framesMax": 8
+                "framesMax": 2,
+                "stateHold": 1000,
+                "framesHold": 20
             },
             "licking": {
                 "imageSrc": "media/Cat-2/Cat-2-Licking 1.png",
-                "framesMax": 5
+                "framesMax": 5,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "licking2": {
                 "imageSrc": "media/Cat-2/Cat-2-Licking 2.png",
-                "framesMax": 5
+                "framesMax": 5,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "meow": {
                 "imageSrc": "media/Cat-2/Cat-2-Meow.png",
-                "framesMax": 4
+                "framesMax": 4,
+                "stateHold": 400,
+                "framesHold": 20
             },
             "sitting": {
                 "imageSrc": "media/Cat-2/Cat-2-Sitting.png",
-                "framesMax": 1
+                "framesMax": 1,
+                "stateHold": 500,
+                "framesHold": 20
+            },
+            "laying": {
+                "imageSrc": "media/Cat-2/Cat-2-Laying.png",
+                "framesMax": 8,
+                "stateHold": 100,
+                "framesHold": 20
             },
             "sleeping": {
                 "imageSrc": "media/Cat-2/Cat-2-Sleeping1.png",
-                "framesMax": 1
+                "framesMax": 1,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "sleeping2": {
                 "imageSrc": "media/Cat-2/Cat-2-Sleeping2.png",
-                "framesMax": 1
+                "framesMax": 1,
+                "stateHold": 1000,
+                "framesHold": 20
             },
             "stretching": {
                 "imageSrc": "media/Cat-2/Cat-2-Stretching.png",
-                "framesMax": 13
+                "framesMax": 13,
+                "stateHold": 250,
+                "framesHold": 20
             },
             "walk": {
                 "imageSrc": "media/Cat-2/Cat-2-Walk.png",
-                "framesMax": 8
+                "framesMax": 8,
+                "stateHold": 1750,
+                "framesHold": 20
             },
             "run": {
                 "imageSrc": "media/Cat-2/Cat-2-Run.png",
-                "framesMax": 8
+                "framesMax": 8,
+                "stateHold": 2000,
+                "framesHold": 20
             }
         }
     },
     {
-        "name": "Cat3",
+        "name": "Jimmy",
         "position": {
             "x": 100,
-            "y": 0
+            "y": -32
         },
         "velocity": {
             "x": 0,
             "y": 0
         },
-        "scale": 2,
-        "imageSrc": "media/Cat-3/Cat-3-Idle.png",
+        "scale": 3,
+        "currentState": {
+            "state": "idle",
+            "index": 0,
+            "stateHold": 500
+        },
         "framesMax": 10,
         "framesHold": 20,
+        "walkSpeed": 0.4,
+        "runSpeed": 0.8,
         "states": {
             "idle": {
                 "imageSrc": "media/Cat-3/Cat-3-Idle.png",
-                "framesMax": 10
+                "framesMax": 10,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "itch": {
                 "imageSrc": "media/Cat-3/Cat-3-Itch.png",
-                "framesMax": 2
-            },
-            "laying": {
-                "imageSrc": "media/Cat-3/Cat-3-Laying.png",
-                "framesMax": 8
+                "framesMax": 2,
+                "stateHold": 1000,
+                "framesHold": 20
             },
             "licking": {
                 "imageSrc": "media/Cat-3/Cat-3-Licking 1.png",
-                "framesMax": 5
+                "framesMax": 5,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "licking2": {
                 "imageSrc": "media/Cat-3/Cat-3-Licking 2.png",
-                "framesMax": 5
+                "framesMax": 5,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "meow": {
                 "imageSrc": "media/Cat-3/Cat-3-Meow.png",
-                "framesMax": 4
+                "framesMax": 4,
+                "stateHold": 400,
+                "framesHold": 20
             },
             "sitting": {
                 "imageSrc": "media/Cat-3/Cat-3-Sitting.png",
-                "framesMax": 1
+                "framesMax": 1,
+                "stateHold": 500,
+                "framesHold": 20
+            },
+            "laying": {
+                "imageSrc": "media/Cat-3/Cat-3-Laying.png",
+                "framesMax": 8,
+                "stateHold": 100,
+                "framesHold": 20
             },
             "sleeping": {
                 "imageSrc": "media/Cat-3/Cat-3-Sleeping1.png",
-                "framesMax": 1
+                "framesMax": 1,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "sleeping2": {
                 "imageSrc": "media/Cat-3/Cat-3-Sleeping2.png",
-                "framesMax": 1
+                "framesMax": 1,
+                "stateHold": 1000,
+                "framesHold": 20
             },
             "stretching": {
                 "imageSrc": "media/Cat-3/Cat-3-Stretching.png",
-                "framesMax": 13
+                "framesMax": 13,
+                "stateHold": 250,
+                "framesHold": 20
             },
             "walk": {
                 "imageSrc": "media/Cat-3/Cat-3-Walk.png",
-                "framesMax": 8
+                "framesMax": 8,
+                "stateHold": 1750,
+                "framesHold": 20
             },
             "run": {
                 "imageSrc": "media/Cat-3/Cat-3-Run.png",
-                "framesMax": 8
+                "framesMax": 8,
+                "stateHold": 2000,
+                "framesHold": 20
             }
         }
     },
@@ -205,62 +390,92 @@
             "y": 0
         },
         "scale": 2,
-        "imageSrc": "media/Cat-4/Cat-4-Idle.png",
+        "currentState": {
+            "state": "idle",
+            "index": 0,
+            "stateHold": 500
+        },
         "framesMax": 10,
         "framesHold": 20,
+        "walkSpeed": 0.1,
+        "runSpeed": 0.5,
         "states": {
             "idle": {
                 "imageSrc": "media/Cat-4/Cat-4-Idle.png",
-                "framesMax": 10
+                "framesMax": 10,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "itch": {
                 "imageSrc": "media/Cat-4/Cat-4-Itch.png",
-                "framesMax": 2
-            },
-            "laying": {
-                "imageSrc": "media/Cat-4/Cat-4-Laying.png",
-                "framesMax": 8
+                "framesMax": 2,
+                "stateHold": 1000,
+                "framesHold": 20
             },
             "licking": {
                 "imageSrc": "media/Cat-4/Cat-4-Licking 1.png",
-                "framesMax": 5
+                "framesMax": 5,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "licking2": {
                 "imageSrc": "media/Cat-4/Cat-4-Licking 2.png",
-                "framesMax": 5
+                "framesMax": 5,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "meow": {
                 "imageSrc": "media/Cat-4/Cat-4-Meow.png",
-                "framesMax": 4
+                "framesMax": 4,
+                "stateHold": 400,
+                "framesHold": 20
             },
             "sitting": {
                 "imageSrc": "media/Cat-4/Cat-4-Sitting.png",
-                "framesMax": 1
+                "framesMax": 1,
+                "stateHold": 500,
+                "framesHold": 20
+            },
+            "laying": {
+                "imageSrc": "media/Cat-4/Cat-4-Laying.png",
+                "framesMax": 8,
+                "stateHold": 100,
+                "framesHold": 20
             },
             "sleeping": {
                 "imageSrc": "media/Cat-4/Cat-4-Sleeping1.png",
-                "framesMax": 1
+                "framesMax": 1,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "sleeping2": {
                 "imageSrc": "media/Cat-4/Cat-4-Sleeping2.png",
-                "framesMax": 1
+                "framesMax": 1,
+                "stateHold": 1000,
+                "framesHold": 20
             },
             "stretching": {
                 "imageSrc": "media/Cat-4/Cat-4-Stretching.png",
-                "framesMax": 13
+                "framesMax": 13,
+                "stateHold": 250,
+                "framesHold": 20
             },
             "walk": {
                 "imageSrc": "media/Cat-4/Cat-4-Walk.png",
-                "framesMax": 8
+                "framesMax": 8,
+                "stateHold": 1750,
+                "framesHold": 20
             },
             "run": {
                 "imageSrc": "media/Cat-4/Cat-4-Run.png",
-                "framesMax": 8
+                "framesMax": 8,
+                "stateHold": 2000,
+                "framesHold": 20
             }
         }
     },
     {
-        "name": "Cat5",
+        "name": "Jin",
         "position": {
             "x": 200,
             "y": 0
@@ -270,62 +485,92 @@
             "y": 0
         },
         "scale": 2,
-        "imageSrc": "media/Cat-5/Cat-5-Idle.png",
+        "currentState": {
+            "state": "idle",
+            "index": 0,
+            "stateHold": 500
+        },
         "framesMax": 10,
         "framesHold": 20,
+        "walkSpeed": 0.1,
+        "runSpeed": 0.5,
         "states": {
             "idle": {
                 "imageSrc": "media/Cat-5/Cat-5-Idle.png",
-                "framesMax": 10
+                "framesMax": 10,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "itch": {
                 "imageSrc": "media/Cat-5/Cat-5-Itch.png",
-                "framesMax": 2
-            },
-            "laying": {
-                "imageSrc": "media/Cat-5/Cat-5-Laying.png",
-                "framesMax": 8
+                "framesMax": 2,
+                "stateHold": 1000,
+                "framesHold": 20
             },
             "licking": {
                 "imageSrc": "media/Cat-5/Cat-5-Licking 1.png",
-                "framesMax": 5
+                "framesMax": 5,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "licking2": {
                 "imageSrc": "media/Cat-5/Cat-5-Licking 2.png",
-                "framesMax": 5
+                "framesMax": 5,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "meow": {
                 "imageSrc": "media/Cat-5/Cat-5-Meow.png",
-                "framesMax": 4
+                "framesMax": 4,
+                "stateHold": 400,
+                "framesHold": 20
             },
             "sitting": {
                 "imageSrc": "media/Cat-5/Cat-5-Sitting.png",
-                "framesMax": 1
+                "framesMax": 1,
+                "stateHold": 500,
+                "framesHold": 20
+            },
+            "laying": {
+                "imageSrc": "media/Cat-5/Cat-5-Laying.png",
+                "framesMax": 8,
+                "stateHold": 100,
+                "framesHold": 20
             },
             "sleeping": {
                 "imageSrc": "media/Cat-5/Cat-5-Sleeping1.png",
-                "framesMax": 1
+                "framesMax": 1,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "sleeping2": {
                 "imageSrc": "media/Cat-5/Cat-5-Sleeping2.png",
-                "framesMax": 1
+                "framesMax": 1,
+                "stateHold": 1000,
+                "framesHold": 20
             },
             "stretching": {
                 "imageSrc": "media/Cat-5/Cat-5-Stretching.png",
-                "framesMax": 13
+                "framesMax": 13,
+                "stateHold": 250,
+                "framesHold": 20
             },
             "walk": {
                 "imageSrc": "media/Cat-5/Cat-5-Walk.png",
-                "framesMax": 8
+                "framesMax": 8,
+                "stateHold": 1750,
+                "framesHold": 20
             },
             "run": {
                 "imageSrc": "media/Cat-5/Cat-5-Run.png",
-                "framesMax": 8
+                "framesMax": 8,
+                "stateHold": 2000,
+                "framesHold": 20
             }
         }
     },
     {
-        "name": "Cat6",
+        "name": "Zeus",
         "position": {
             "x": 250,
             "y": 0
@@ -335,57 +580,87 @@
             "y": 0
         },
         "scale": 2,
-        "imageSrc": "media/Cat-6/Cat-6-Idle.png",
+        "currentState": {
+            "state": "idle",
+            "index": 0,
+            "stateHold": 500
+        },
         "framesMax": 10,
         "framesHold": 20,
+        "walkSpeed": 0.1,
+        "runSpeed": 0.5,
         "states": {
             "idle": {
                 "imageSrc": "media/Cat-6/Cat-6-Idle.png",
-                "framesMax": 10
+                "framesMax": 10,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "itch": {
                 "imageSrc": "media/Cat-6/Cat-6-Itch.png",
-                "framesMax": 2
-            },
-            "laying": {
-                "imageSrc": "media/Cat-6/Cat-6-Laying.png",
-                "framesMax": 8
+                "framesMax": 2,
+                "stateHold": 1000,
+                "framesHold": 20
             },
             "licking": {
                 "imageSrc": "media/Cat-6/Cat-6-Licking 1.png",
-                "framesMax": 5
+                "framesMax": 5,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "licking2": {
                 "imageSrc": "media/Cat-6/Cat-6-Licking 2.png",
-                "framesMax": 5
+                "framesMax": 5,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "meow": {
                 "imageSrc": "media/Cat-6/Cat-6-Meow.png",
-                "framesMax": 4
+                "framesMax": 4,
+                "stateHold": 400,
+                "framesHold": 20
             },
             "sitting": {
                 "imageSrc": "media/Cat-6/Cat-6-Sitting.png",
-                "framesMax": 1
+                "framesMax": 1,
+                "stateHold": 500,
+                "framesHold": 20
+            },
+            "laying": {
+                "imageSrc": "media/Cat-6/Cat-6-Laying.png",
+                "framesMax": 8,
+                "stateHold": 100,
+                "framesHold": 20
             },
             "sleeping": {
                 "imageSrc": "media/Cat-6/Cat-6-Sleeping1.png",
-                "framesMax": 1
+                "framesMax": 1,
+                "stateHold": 500,
+                "framesHold": 20
             },
             "sleeping2": {
                 "imageSrc": "media/Cat-6/Cat-6-Sleeping2.png",
-                "framesMax": 1
+                "framesMax": 1,
+                "stateHold": 1000,
+                "framesHold": 20
             },
             "stretching": {
                 "imageSrc": "media/Cat-6/Cat-6-Stretching.png",
-                "framesMax": 13
+                "framesMax": 13,
+                "stateHold": 250,
+                "framesHold": 20
             },
             "walk": {
                 "imageSrc": "media/Cat-6/Cat-6-Walk.png",
-                "framesMax": 8
+                "framesMax": 8,
+                "stateHold": 1750,
+                "framesHold": 20
             },
             "run": {
                 "imageSrc": "media/Cat-6/Cat-6-Run.png",
-                "framesMax": 8
+                "framesMax": 8,
+                "stateHold": 2000,
+                "framesHold": 20
             }
         }
     }

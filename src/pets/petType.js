@@ -6,8 +6,8 @@
 export default class Pet {
     constructor({
         position,
-        imageSrc,
         name,
+        currentState,
         velocity,
         scale = 1,
         // framesMax is the frames of the image
@@ -15,21 +15,30 @@ export default class Pet {
         // default
         framesCurrent = 0,
         framesElapsed = 0,
-        framesHold = 10,
+        framesHold = 20,
         states,
+        walkSpeed = 0.1,
+        runSpeed = 0.5,
     }) {
         this.name = name;
         this.velocity = velocity;
         this.position = position;
+        this.states = states;
+
+        // default state from config but we want to randomize the state
+        // this.currentState = currentState;
+        this.currentState = this.generateOneRandomState();
+
         this.image = new Image();
-        this.image.src = imageSrc;
+        this.imageSrc = this.states[this.currentState.state].imageSrc;
         this.scale = scale;
         this.framesMax = framesMax;
         this.framesCurrent = framesCurrent;
         this.framesElapsed = framesElapsed;
         this.framesHold = framesHold;
         this.movingDirection = Math.random() < 0.5 ? 'left' : 'right';
-        this.states = states;
+        this.walkSpeed = walkSpeed;
+        this.runSpeed = runSpeed;
     }
 
     draw(context, flipImage = false) {
@@ -45,6 +54,7 @@ export default class Pet {
          * dWidth: Destination width. It's the width of the image that u want to draw
          * dHeight: Destination height. It's the height of the image that u want to draw
          */
+
         if (flipImage) {
             this.flipImage(context)
         } else {
@@ -118,7 +128,6 @@ export default class Pet {
         this.draw(context, this.movingDirection === 'left');
         this.animateFrames();
 
-        // update position based on velocity and reset velocity
         if (this.movingDirection === 'left') {
             this.position.x -= this.velocity.x
         } else {
@@ -129,4 +138,36 @@ export default class Pet {
         this.velocity.x = 0;
         this.velocity.y = 0;
     }
+
+    generateOneRandomState() {
+        const states = Object.keys(this.states);
+        const index = Math.floor(Math.random() * states.length);
+        const randomState = states[index];
+
+        return {
+            state: randomState,
+            index: index,
+            stateHold: this.states[randomState].stateHold,
+        };
+    }
+
+    // calculatePositionYByScale(positionY) {
+    //     // Notice: this is a work around to calculate the position y by scale,
+    //     // I notice the pattern when scaling the image, the position y will be changed by 32px
+    //     // If the scale is 1, the position y will be 32px
+    //     // If the scale is 2, the position y will be 0px
+    //     // If the scale is 3, the position y will be -32px
+    //     // If the scale is 4, the position y will be -64px and so on
+
+    //     let sum = 0;
+
+    //     for (let i = 1; i <= this.scale; i++) {
+    //         if (i === 1)  {
+    //             sum += 32
+    //         } else {
+    //             sum -= 32
+    //         }
+    //     }
+    //     return parseInt(positionY + sum);
+    // }
 }

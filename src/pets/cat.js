@@ -4,14 +4,14 @@ export default class Cat extends Pet {
     constructor({
         // old attribute of PetType
         position,
-        imageSrc,
         name,
+        currentState,
         scale = 1,
         framesMax = 1,
         // default
         framesCurrent = 0,
         framesElapsed = 0,
-        framesHold = 10,
+        framesHold = 20,
         velocity,
         states,
         walkSpeed = 0.1,
@@ -24,8 +24,8 @@ export default class Cat extends Pet {
 
         super({
             name,
+            currentState,
             position,
-            imageSrc,
             scale,
             framesMax,
             framesCurrent,
@@ -33,68 +33,59 @@ export default class Cat extends Pet {
             framesHold,
             velocity,
             states,
+            walkSpeed,
+            runSpeed,
         });
 
-        this.walkSpeed = walkSpeed;
-        this.runSpeed = runSpeed;
-        this.stateNumber = Math.floor(Math.random() * 6000);
+        this.stateNumber = 0;
 
         // generate the images for each state
         for (const state in this.states) {
-            states[state].image = new Image()
-            states[state].image.src = states[state].imageSrc
+            this.states[state].image = new Image()
+            this.states[state].image.src = states[state].imageSrc
         }
     }
 
     switchState(state) {
-        for (const _state in this.states) {
-            if (_state === state) {
-                if (_state !== "walk" && _state !== "run") {
-                    this.velocity.x = 0;
-                }
-
-                if (this.image !== this.states[_state].image) {
-                    this.image = this.states[_state].image
-                    this.framesMax = this.states[_state].framesMax
-                    this.framesCurrent = 0
-                    break;
-                }
-            }
+        // console.log('switchState', state);
+        if (this.image !== this.states[state].image) {
+            this.image = this.states[state].image;
+            this.framesMax = this.states[state].framesMax;
+            this.framesHold = this.states[state].framesHold;
+            this.currentState.stateHold = this.states[state].stateHold;
+            this.currentState.state = state;
+            this.framesCurrent = 0;
         }
     }
 
     animateBehavior() {
         this.stateNumber++;
-        this.velocity.x = 0;
 
-        if (this.stateNumber <= 500) {
-            this.switchState('idle');
-        } else if (this.stateNumber <= 1000) {
-            this.switchState('itch');
-        } else if (this.stateNumber <= 2000) {
-            this.switchState('licking');
-        } else if (this.stateNumber <= 2500) {
-            this.switchState('licking2');
-        } else if (this.stateNumber <= 3000) {
-            this.switchState('meow');
-        } else if (this.stateNumber <= 3400) {
-            this.switchState('sitting');
-        } else if (this.stateNumber <= 3500) {
-            this.switchState('laying');
-        } else if (this.stateNumber <= 4000) {
-            this.switchState('sleeping');
-        } else if (this.stateNumber <= 5000) {
-            this.switchState('sleeping2');
-        } else if (this.stateNumber <= 5250) {
-            this.switchState('stretching');
-        } else if (this.stateNumber <= 7000) {
-            this.switchState('walk');
-            this.velocity.x += this.walkSpeed;
-        } else if (this.stateNumber <= 9000) {
-            this.switchState('run');
-            this.velocity.x += this.runSpeed;
-        } else {
-            this.stateNumber = 0;
+        switch (this.currentState.state) {
+            case 'walk':
+                this.velocity.x += this.walkSpeed;
+                break;
+            case 'run':
+                this.velocity.x += this.runSpeed;
+                break;
+            default:
+                this.velocity.x = 0;
+                break;
         }
+
+        if (this.stateNumber < this.currentState.stateHold) {
+            this.switchState(this.currentState.state);
+            return
+        }
+
+        this.stateNumber = 0;
+        this.currentState.index++;
+
+        if (this.currentState.index >= Object.keys(this.states).length) {
+            this.currentState.index = 0;
+        }
+
+        const state = Object.keys(this.states)[this.currentState.index];
+        this.switchState(state);
     }
 }

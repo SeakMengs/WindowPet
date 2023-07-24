@@ -16,7 +16,6 @@ function Canvas() {
 
     // set app window position to bottom above taskbar
     invoke("change_current_app_position", { x: 0, y: positionOfTaskbar });
-
     invoke("change_current_app_size", { w: currentScreenWidth, h: canvasHeight });
 
     const canvasRef = useRef(null);
@@ -48,7 +47,6 @@ function Canvas() {
         canvas.height = canvasHeight;
 
         function animate() {
-            // disable image smoothing, so the pixel art stays crisp
             context.imageSmoothingEnabled = false;
 
             window.requestAnimationFrame(animate)
@@ -69,7 +67,7 @@ function Canvas() {
         }
 
         animate();
-    }, [])
+    }, [petConfig])
 
     return (
         <div className="" id="allowCanvasDrag" data-tauri-drag-region>
