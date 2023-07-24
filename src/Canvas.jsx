@@ -5,17 +5,19 @@ import petConfig from "./settings/pet.config.json";
 import { invoke } from "@tauri-apps/api/tauri";
 
 function Canvas() {
-    const currentScreenWidth = window.screen.width;
-    const currentScreenHeight = window.screen.height;
+    // credit: https://stackoverflow.com/questions/16277383/javascript-screen-height-and-screen-width-returns-incorrect-values
+    const DPR = window.devicePixelRatio;
+    const canvasHeight = 64 * DPR;
+    const currentScreenWidth = Math.round(DPR * window.screen.width);
+    const currentScreenHeight = Math.round(DPR * window.screen.height);
 
-    // 48 is the height of the taskbar, 64 is the height of the app window
-    const positionOfTaskbar = currentScreenHeight - (48 + 64);
+    // 48 is the height of the taskbar
+    const positionOfTaskbar = currentScreenHeight - ((48 * DPR) + canvasHeight);
 
     // set app window position to bottom above taskbar
     invoke("change_current_app_position", { x: 0, y: positionOfTaskbar });
 
-    // set app window size to full screen width and 64px height
-    invoke("change_current_app_size", { w: currentScreenWidth, h: 64 });
+    invoke("change_current_app_size", { w: currentScreenWidth, h: canvasHeight });
 
     const canvasRef = useRef(null);
 
@@ -27,7 +29,6 @@ function Canvas() {
 
     //* credit: https://medium.com/@pdx.lucasm/canvas-with-react-js-32e133c05258
     useEffect(() => {
-
         // register cat object
         if (petConfig.length > 0) {
             for (let i = 0; i < petConfig.length; i++) {
@@ -44,16 +45,15 @@ function Canvas() {
         const canvas = canvasRef.current;
         const context = canvas.getContext("2d");
         canvas.width = currentScreenWidth
-        canvas.height = 64;
+        canvas.height = canvasHeight;
 
         function animate() {
             // disable image smoothing, so the pixel art stays crisp
             context.imageSmoothingEnabled = false;
 
-            // This code runs the animation loop for the canvas
             window.requestAnimationFrame(animate)
 
-            //* credit: https://stackoverflow.com/questions/4815166/how-do-i-make-a-transparent-canvas-in-html5
+            // credit: https://stackoverflow.com/questions/4815166/how-do-i-make-a-transparent-canvas-in-html5
             context.clearRect(0, 0, canvas.width, canvas.height);
 
             // Debug purposes

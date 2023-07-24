@@ -1,5 +1,6 @@
 /* 
- * Credit: https://www.youtube.com/watch?v=vyqbNFMDRGQ&t=8593s&ab_channel=ChrisCourses
+ * A good resource to learn about canvas, the project is based on this tutorial.
+ * credit: https://www.youtube.com/watch?v=vyqbNFMDRGQ&t=8593s&ab_channel=ChrisCourses
  */
 
 export default class Pet {
