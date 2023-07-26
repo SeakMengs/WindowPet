@@ -1,4 +1,8 @@
-use tauri::{AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu};
+use super::utils::reopen_main_window;
+use tauri::{
+    AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu,
+    SystemTrayMenuItem,
+};
 
 pub fn init_system_tray() -> SystemTray {
     let menu = SystemTrayMenu::new()
@@ -7,6 +11,8 @@ pub fn init_system_tray() -> SystemTray {
             "pause".to_string(),
             "Pause (Free Memory)",
         ))
+        .add_item(CustomMenuItem::new("setting".to_string(), "Setting"))
+        .add_native_item(SystemTrayMenuItem::Separator)
         .add_item(CustomMenuItem::new("restart".to_string(), "Restart"))
         .add_item(CustomMenuItem::new("quit".to_string(), "Quit"));
 
@@ -15,19 +21,45 @@ pub fn init_system_tray() -> SystemTray {
 
 pub fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
     if let SystemTrayEvent::MenuItemClick { id, .. } = event {
-        let window = app.get_window("main").unwrap();
-
         match id.as_str() {
             "show" => {
-                if !window.is_visible().unwrap() {
-                    window.show().expect("failed to show window");
-                }
+                match app.get_window("main") {
+                    Some(_window) => {
+                        println!("Window already exists");
+                    }
+                    None => {
+                        reopen_main_window(app);
+                        return;
+                    }
+                };
             }
             "pause" => {
-                if window.is_visible().unwrap() {
-                    window.hide().expect("failed to hide window");
-                }
+                match app.get_window("main") {
+                    Some(window) => {
+                        window.close().expect("failed to close frontend window");
+                    }
+                    None => {
+                        println!("Window not found");
+                        return;
+                    }
+                };
             }
+            "setting" => match app.get_window("setting") {
+                Some(_window) => {
+                    println!("Window setting already exists");
+                }
+                None => {
+                    let _window = tauri::WindowBuilder::new(
+                        app,
+                        "setting",
+                        tauri::WindowUrl::App("/setting".into()),
+                    )
+                    .title("WindowPet Setting")
+                    .build()
+                    .unwrap();
+                    return;
+                }
+            },
             "restart" => {
                 app.restart();
             }

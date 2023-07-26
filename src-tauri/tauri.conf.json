@@ -42,7 +42,8 @@
         "height": 64,
         "transparent": true,
         "decorations": false,
-        "alwaysOnTop": true
+        "alwaysOnTop": true,
+        "skipTaskbar": true
       }
     ],
     "systemTray": {
