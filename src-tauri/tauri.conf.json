@@ -26,8 +26,8 @@
       "targets": "all",
       "identifier": "com.WindowPet.dev",
       "icon": [
-        "icons/WindowPet.png",
-        "icons/WindowPet.ico"
+        "icons/WindowPetNewTransparent.png",
+        "icons/WindowPetNewTransparent.ico"
       ]
     },
     "security": {
@@ -44,6 +44,10 @@
         "decorations": false,
         "alwaysOnTop": true
       }
-    ]
+    ],
+    "systemTray": {
+      "iconPath": "icons/WindowPetNewTransparent.png",
+      "iconAsTemplate": true
+    }
   }
 }

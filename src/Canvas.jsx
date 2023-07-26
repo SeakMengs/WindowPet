@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import Cat from "./pets/cat";
+import Pet from "./Class/Pet";
 import { appWindow } from "@tauri-apps/api/window";
 import petConfig from "./settings/pet.config.json";
 import { invoke } from "@tauri-apps/api/tauri";
@@ -31,7 +31,7 @@ function Canvas() {
         // register cat object
         if (petConfig.length > 0) {
             for (let i = 0; i < petConfig.length; i++) {
-                pets[i] = new Cat(petConfig[i]);
+                pets[i] = new Pet(petConfig[i]);
             }
         }
 
@@ -70,7 +70,7 @@ function Canvas() {
     }, [petConfig])
 
     return (
-        <div className="" id="allowCanvasDrag" data-tauri-drag-region>
+        <div id="allowCanvasDrag" data-tauri-drag-region>
             <canvas ref={canvasRef} />
         </div>
     )

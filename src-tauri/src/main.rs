@@ -4,7 +4,7 @@
 mod app;
 
 use app::cmd::{change_current_app_position, change_current_app_size};
-
+use app::tray::{handle_tray_event, init_system_tray};
 fn main() {
     // click through window
     // credit: https://github.com/4t145/tauri-windows-clickthrough-example
@@ -29,10 +29,18 @@ fn main() {
             };
             Ok(())
         })
+        .system_tray(init_system_tray())
+        .on_system_tray_event(handle_tray_event)
         .invoke_handler(tauri::generate_handler![
             change_current_app_position,
             change_current_app_size
         ])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .build(tauri::generate_context!())
+        .expect("error while running tauri application")
+        .run(|_app_handle, event| match event {
+            tauri::RunEvent::ExitRequested { api, .. } => {
+                api.prevent_exit();
+            }
+            _ => {}
+        });
 }
