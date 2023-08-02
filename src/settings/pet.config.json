@@ -9,6 +9,10 @@
             "x": 0,
             "y": 0
         },
+        "offset": {
+            "x": 0,
+            "y": 18
+        },
         "scale": 1,
         "currentState": {
             "state": "idle",
@@ -98,11 +102,15 @@
         "name": "Tom2",
         "position": {
             "x": 0,
-            "y": 0
+            "y": 64
         },
         "velocity": {
             "x": 0,
             "y": 0
+        },
+        "offset": {
+            "x": 0,
+            "y": 18
         },
         "scale": 2,
         "currentState": {
@@ -193,11 +201,15 @@
         "name": "Jerry",
         "position": {
             "x": 50,
-            "y": 0
+            "y": 64
         },
         "velocity": {
             "x": 0,
             "y": 0
+        },
+        "offset": {
+            "x": 0,
+            "y": 18
         },
         "scale": 2,
         "currentState": {
@@ -288,11 +300,15 @@
         "name": "Jimmy",
         "position": {
             "x": 100,
-            "y": -32
+            "y": 96
         },
         "velocity": {
             "x": 0,
             "y": 0
+        },
+        "offset": {
+            "x": 0,
+            "y": 18
         },
         "scale": 3,
         "currentState": {
@@ -383,11 +399,15 @@
         "name": "Cat4",
         "position": {
             "x": 150,
-            "y": 0
+            "y": 64
         },
         "velocity": {
             "x": 0,
             "y": 0
+        },
+        "offset": {
+            "x": 0,
+            "y": 18
         },
         "scale": 2,
         "currentState": {
@@ -478,11 +498,15 @@
         "name": "Jin",
         "position": {
             "x": 200,
-            "y": 0
+            "y": 64
         },
         "velocity": {
             "x": 0,
             "y": 0
+        },
+        "offset": {
+            "x": 0,
+            "y": 18
         },
         "scale": 2,
         "currentState": {
@@ -573,11 +597,15 @@
         "name": "Zeus",
         "position": {
             "x": 250,
-            "y": 0
+            "y": 64
         },
         "velocity": {
             "x": 0,
             "y": 0
+        },
+        "offset": {
+            "x": 0,
+            "y": 18
         },
         "scale": 2,
         "currentState": {

@@ -15,8 +15,8 @@ function Canvas() {
     const positionOfTaskbar: number = currentScreenHeight - ((48 * DPR) + canvasHeight);
 
     // set app window position to bottom above taskbar
-    invoke("change_current_app_position", { x: 0, y: positionOfTaskbar });
-    invoke("change_current_app_size", { w: currentScreenWidth, h: canvasHeight });
+    invoke("change_current_app_size", { w: currentScreenWidth, h: currentScreenHeight });
+    invoke("change_current_app_position", { x: 0, y: 0 });
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -45,7 +45,7 @@ function Canvas() {
         const context = canvas?.getContext("2d");
 
         canvas!.width = currentScreenWidth
-        canvas!.height = canvasHeight;
+        canvas!.height = currentScreenHeight;
 
         function animate() {
             context!.imageSmoothingEnabled = false;

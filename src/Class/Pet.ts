@@ -1,9 +1,7 @@
-import { H } from "@tauri-apps/api/path-c062430b";
-
 /* 
  * A good resource to learn about canvas, the project is based on this tutorial.
  * credit: https://www.youtube.com/watch?v=vyqbNFMDRGQ&t=8593s&ab_channel=ChrisCourses
-*/
+ */
 type PetState = {
     imageSrc: string;
     framesMax: number;
@@ -23,6 +21,7 @@ interface PetParams {
     name: string;
     currentState: CurrentPetState;
     velocity: { x: number; y: number };
+    offset: { x: number; y: number };
     scale?: number;
     framesMax?: number;
     framesCurrent?: number;
@@ -37,6 +36,7 @@ export default class Pet {
     position: { x: number; y: number };
     name: string;
     velocity: { x: number; y: number };
+    offset: { x: number; y: number };
     states: Record<string, PetState>;
     stateNumber: number;
     currentState: CurrentPetState;
@@ -50,11 +50,13 @@ export default class Pet {
     movingDirection: 'left' | 'right';
     walkSpeed: number;
     runSpeed: number;
+    isBeingSelected: boolean = false;
 
     constructor({
         position,
         name,
         currentState,
+        offset = { x: 0, y: 0 },
         velocity,
         scale = 1,
         // framesMax is the frames of the image
@@ -75,8 +77,7 @@ export default class Pet {
         this.name = name;
         this.velocity = velocity;
         this.states = states;
-
-
+        this.offset = offset;
         this.stateNumber = Math.floor(Math.random() * 500);
 
         // default state from config but we want to randomize the state
@@ -93,6 +94,9 @@ export default class Pet {
         this.movingDirection = Math.random() < 0.5 ? 'left' : 'right';
         this.walkSpeed = walkSpeed;
         this.runSpeed = runSpeed;
+
+        // current work around for above taskbar
+        if (true) this.position.y += 48;
 
         // generate the images for each state
         for (const state in this.states) {
@@ -115,48 +119,60 @@ export default class Pet {
          * dHeight: Destination height. It's the height of the image that u want to draw
          */
 
+        const DPR = window.devicePixelRatio;
+        const currentScreenHeight = Math.round(DPR * window.screen.height);
+
+        const sx_start_crop_position = this.framesCurrent * (this.image.width / this.framesMax);
+        const sy_start_crop_position = 0;
+        const sWidth_crop_width = this.image.width / this.framesMax;
+        const sHeight_crop_height = this.image.height;
+        const dx_start_draw_position = this.position.x;
+        const dy_start_draw_position = currentScreenHeight - this.position.y;
+        const dWidth_draw_width = (this.image.width / this.framesMax) * this.scale;
+        const dHeight_draw_height = this.image.height * this.scale;
+
         if (flipImage) {
-            this.flipImage(context)
+            context.save();
+            context.translate(dx_start_draw_position + dWidth_draw_width, dy_start_draw_position);
+            context.scale(-1, 1);
+            context.drawImage(
+                this.image,
+                sx_start_crop_position,
+                sy_start_crop_position,
+                sWidth_crop_width,
+                sHeight_crop_height,
+                0,
+                0,
+                dWidth_draw_width,
+                dHeight_draw_height
+            );
+            context.restore();
         } else {
             context.drawImage(
                 this.image,
-                (this.framesCurrent * (this.image.width / this.framesMax)),
-                0,
-                this.image.width / this.framesMax,
-                this.image.height,
-                this.position.x,
-                this.position.y,
-                (this.image.width / this.framesMax) * this.scale,
-                this.image.height * this.scale
+                sx_start_crop_position,
+                sy_start_crop_position,
+                sWidth_crop_width,
+                sHeight_crop_height,
+                dx_start_draw_position,
+                dy_start_draw_position,
+                dWidth_draw_width,
+                dHeight_draw_height
+            )
+
+        }
+
+        if (this.isBeingSelected) {
+            context.strokeStyle = "red";
+            context.lineWidth = 1;
+            context.strokeRect(
+                dx_start_draw_position,
+                dy_start_draw_position - this.offset.y * this.scale,
+                dWidth_draw_width,
+                dHeight_draw_height
             )
         }
     }
-
-    //Credit: https://stackoverflow.com/questions/35973441/how-to-horizontally-flip-an-image
-    flipImage(context: CanvasRenderingContext2D) {
-        // Calculate the center of the image
-        const centerX: number = this.position.x + (this.image.width / this.framesMax) * this.scale / 2;
-        const centerY: number = this.position.y + this.image.height * this.scale / 2;
-
-        context.translate(centerX, centerY);
-        context.scale(-1, 1);
-
-        context.drawImage(
-            this.image,
-            (this.framesCurrent * (this.image.width / this.framesMax)),
-            0,
-            this.image.width / this.framesMax,
-            this.image.height,
-            -(this.image.width / this.framesMax) * this.scale / 2,
-            -this.image.height * this.scale / 2,
-            (this.image.width / this.framesMax) * this.scale,
-            this.image.height * this.scale
-        );
-
-        // 4. Reset the context back to its original state
-        context.setTransform(1, 0, 0, 1, 0, 0);
-    }
-
 
     // used to control the animation speed,
     animateFrames() {
