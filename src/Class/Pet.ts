@@ -1,9 +1,56 @@
+import { H } from "@tauri-apps/api/path-c062430b";
+
 /* 
  * A good resource to learn about canvas, the project is based on this tutorial.
  * credit: https://www.youtube.com/watch?v=vyqbNFMDRGQ&t=8593s&ab_channel=ChrisCourses
- */
+*/
+type PetState = {
+    imageSrc: string;
+    framesMax: number;
+    stateHold: number;
+    framesHold: number;
+    image?: HTMLImageElement;
+};
+
+type CurrentPetState = {
+    state: string;
+    index?: number;
+    stateHold: number;
+};
+
+interface PetParams {
+    position: { x: number; y: number };
+    name: string;
+    currentState: CurrentPetState;
+    velocity: { x: number; y: number };
+    scale?: number;
+    framesMax?: number;
+    framesCurrent?: number;
+    framesElapsed?: number;
+    framesHold?: number;
+    states: Record<string, PetState>;
+    walkSpeed?: number;
+    runSpeed?: number;
+}
 
 export default class Pet {
+    position: { x: number; y: number };
+    name: string;
+    velocity: { x: number; y: number };
+    states: Record<string, PetState>;
+    stateNumber: number;
+    currentState: CurrentPetState;
+    image: HTMLImageElement;
+    imageSrc: string;
+    scale: number;
+    framesMax: number;
+    framesCurrent: number;
+    framesElapsed: number;
+    framesHold: number;
+    movingDirection: 'left' | 'right';
+    walkSpeed: number;
+    runSpeed: number;
+
     constructor({
         position,
         name,
@@ -19,7 +66,7 @@ export default class Pet {
         states,
         walkSpeed = 0.1,
         runSpeed = 0.5,
-    }) {
+    }: PetParams) {
         // generate number from 0 to current screen width
         do {
             position.x = Math.floor(Math.random() * window.screen.width);
@@ -49,12 +96,12 @@ export default class Pet {
 
         // generate the images for each state
         for (const state in this.states) {
-            this.states[state].image = new Image()
-            this.states[state].image.src = states[state].imageSrc
+            this.states[state].image = new Image();
+            this.states[state].image!.src = states[state].imageSrc
         }
     }
 
-    draw(context, flipImage = false) {
+    draw(context: CanvasRenderingContext2D, flipImage = false) {
         /* 
          * context.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
          * image: Image object
@@ -86,10 +133,10 @@ export default class Pet {
     }
 
     //Credit: https://stackoverflow.com/questions/35973441/how-to-horizontally-flip-an-image
-    flipImage(context) {
+    flipImage(context: CanvasRenderingContext2D) {
         // Calculate the center of the image
-        const centerX = this.position.x + (this.image.width / this.framesMax) * this.scale / 2;
-        const centerY = this.position.y + this.image.height * this.scale / 2;
+        const centerX: number = this.position.x + (this.image.width / this.framesMax) * this.scale / 2;
+        const centerY: number = this.position.y + this.image.height * this.scale / 2;
 
         context.translate(centerX, centerY);
         context.scale(-1, 1);
@@ -124,7 +171,7 @@ export default class Pet {
         }
     }
 
-    checkCollisionWithCanvas(context) {
+    checkCollisionWithCanvas(context: CanvasRenderingContext2D) {
         const currentPetBeyondRightBorder = this.position.x + (this.image.width / this.framesMax) * this.scale > context.canvas.width;
         const currentPetBeyondLeftBorder = this.position.x < 0;
 
@@ -135,7 +182,7 @@ export default class Pet {
         }
     }
 
-    update(context) {
+    update(context: CanvasRenderingContext2D) {
         this.checkCollisionWithCanvas(context);
 
         this.draw(context, this.movingDirection === 'left');
@@ -152,10 +199,10 @@ export default class Pet {
         this.velocity.y = 0;
     }
 
-    switchState(state) {
+    switchState(state: string) {
         // console.log('switchState', state);
         if (this.image !== this.states[state].image) {
-            this.image = this.states[state].image;
+            this.image = this.states[state].image as HTMLImageElement;
             this.framesMax = this.states[state].framesMax;
             this.framesHold = this.states[state].framesHold;
             this.currentState.stateHold = this.states[state].stateHold;
@@ -185,13 +232,13 @@ export default class Pet {
         }
 
         this.stateNumber = 0;
-        this.currentState.index++;
+        this.currentState.index!++;
 
-        if (this.currentState.index >= Object.keys(this.states).length) {
+        if (this.currentState.index! >= Object.keys(this.states).length) {
             this.currentState.index = 0;
         }
 
-        const state = Object.keys(this.states)[this.currentState.index];
+        const state = Object.keys(this.states)[this.currentState.index!];
         this.switchState(state);
     }
 

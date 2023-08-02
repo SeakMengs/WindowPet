@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri"
   },
@@ -14,13 +14,15 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.14.2",
-    "sass": "^1.63.6"
+    "sass": "^1.64.2"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.4.0",
+    "@types/node": "^18.7.10",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^3.0.0",
+    "typescript": "^4.9.5",
     "vite": "^4.2.1"
   }
 }
