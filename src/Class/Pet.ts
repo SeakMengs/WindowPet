@@ -10,6 +10,10 @@ type PetState = {
     image?: HTMLImageElement;
 };
 
+type States = {
+    [key: string]: PetState | undefined;
+}
+
 type CurrentPetState = {
     state: string;
     index?: number;
@@ -27,7 +31,7 @@ interface PetParams {
     framesCurrent?: number;
     framesElapsed?: number;
     framesHold?: number;
-    states: Record<string, PetState>;
+    states: States;
     walkSpeed?: number;
     runSpeed?: number;
 }
@@ -37,7 +41,7 @@ export default class Pet {
     name: string;
     velocity: { x: number; y: number };
     offset: { x: number; y: number };
-    states: Record<string, PetState>;
+    states: States;
     stateNumber: number;
     currentState: CurrentPetState;
     image: HTMLImageElement;
@@ -85,7 +89,7 @@ export default class Pet {
         this.currentState = this.generateOneRandomState();
 
         this.image = new Image();
-        this.imageSrc = this.states[this.currentState.state].imageSrc;
+        this.imageSrc = this.states[this.currentState.state]!.imageSrc;
         this.scale = scale;
         this.framesMax = framesMax;
         this.framesCurrent = framesCurrent;
@@ -96,12 +100,12 @@ export default class Pet {
         this.runSpeed = runSpeed;
 
         // current work around for above taskbar
-        if (true) this.position.y += 48;
-
+        this.position.y += 48;
+        
         // generate the images for each state
         for (const state in this.states) {
-            this.states[state].image = new Image();
-            this.states[state].image!.src = states[state].imageSrc
+            this.states[state]!.image = new Image();
+            this.states[state]!.image!.src = states[state]!.imageSrc
         }
     }
 
@@ -120,7 +124,8 @@ export default class Pet {
          */
 
         const DPR = window.devicePixelRatio;
-        const currentScreenHeight = Math.round(DPR * window.screen.height);
+        // const currentScreenHeight = Math.round(DPR * window.screen.height);
+        const currentScreenHeight = Math.round(window.visualViewport?.height!);
 
         const sx_start_crop_position = this.framesCurrent * (this.image.width / this.framesMax);
         const sy_start_crop_position = 0;
@@ -217,11 +222,11 @@ export default class Pet {
 
     switchState(state: string) {
         // console.log('switchState', state);
-        if (this.image !== this.states[state].image) {
-            this.image = this.states[state].image as HTMLImageElement;
-            this.framesMax = this.states[state].framesMax;
-            this.framesHold = this.states[state].framesHold;
-            this.currentState.stateHold = this.states[state].stateHold;
+        if (this.image !== this.states[state]!.image) {
+            this.image = this.states[state]!.image as HTMLImageElement;
+            this.framesMax = this.states[state]!.framesMax;
+            this.framesHold = this.states[state]!.framesHold;
+            this.currentState.stateHold = this.states[state]!.stateHold;
             this.currentState.state = state;
             this.framesCurrent = 0;
         }
@@ -266,7 +271,7 @@ export default class Pet {
         return {
             state: randomState,
             index: index,
-            stateHold: this.states[randomState].stateHold,
+            stateHold: this.states[randomState]!.stateHold,
         };
     }
 

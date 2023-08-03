@@ -691,5 +691,56 @@
                 "framesHold": 20
             }
         }
+    },
+    {
+        "name": "EvilWizard",
+        "position": {
+            "x": 300,
+            "y": 103
+        },
+        "velocity": {
+            "x": 0,
+            "y": 0
+        },
+        "offset": {
+            "x": 0,
+            "y": 18
+        },
+        "scale": 1,
+        "currentState": {
+            "state": "idle",
+            "index": 0,
+            "stateHold": 500
+        },
+        "framesMax": 8,
+        "framesHold": 20,
+        "walkSpeed": 0.1,
+        "runSpeed": 0.5,
+        "states": {
+            "idle": {
+                "imageSrc": "media/Evil-Wizard/Idle.png",
+                "framesMax": 8,
+                "stateHold": 500,
+                "framesHold": 20
+            },
+            "run": {
+                "imageSrc": "media/Evil-Wizard/Move.png",
+                "framesMax": 8,
+                "stateHold": 2000,
+                "framesHold": 20
+            },
+            "attack": {
+                "imageSrc": "media/Evil-Wizard/Attack.png",
+                "framesMax": 8,
+                "stateHold": 500,
+                "framesHold": 20
+            },
+            "death": {
+                "imageSrc": "media/Evil-Wizard/Death.png",
+                "framesMax": 5,
+                "stateHold": 100,
+                "framesHold": 20
+            }
+        }
     }
 ]
