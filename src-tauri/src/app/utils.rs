@@ -34,3 +34,15 @@ pub fn reopen_main_window(app: &AppHandle) {
     
     allow_window_click_through(window, true);
 }
+
+pub fn open_setting_window(app: &AppHandle) {
+    let _window = tauri::WindowBuilder::new(
+        app,
+        "setting",
+        tauri::WindowUrl::App("/setting".into()),
+    )
+    .title("WindowPet Setting")
+    .build()
+    .unwrap();
+    return;
+}

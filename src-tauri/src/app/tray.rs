@@ -1,4 +1,4 @@
-use super::utils::reopen_main_window;
+use super::utils::{open_setting_window, reopen_main_window};
 use tauri::{
     AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu,
     SystemTrayMenuItem,
@@ -49,14 +49,7 @@ pub fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                     println!("Window setting already exists");
                 }
                 None => {
-                    let _window = tauri::WindowBuilder::new(
-                        app,
-                        "setting",
-                        tauri::WindowUrl::App("/setting".into()),
-                    )
-                    .title("WindowPet Setting")
-                    .build()
-                    .unwrap();
+                    open_setting_window(app);
                     return;
                 }
             },
@@ -67,6 +60,21 @@ pub fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                 app.exit(0);
             }
             _ => {}
+        }
+    } else if let SystemTrayEvent::DoubleClick {
+        position: _,
+        size: _,
+        ..
+    } = event
+    {
+        match app.get_window("setting") {
+            Some(_window) => {
+                println!("Window setting already exists");
+            }
+            None => {
+                open_setting_window(app);
+                return;
+            }
         }
     }
 }
