@@ -77,6 +77,9 @@ export default class Pet {
         do {
             position.x = Math.floor(Math.random() * window.screen.width);
         } while (position.x < 0 || position.x > window.screen.width - 100);
+
+        if (true) position.y += 48;
+        
         this.position = position;
         this.name = name;
         this.velocity = velocity;
@@ -98,9 +101,6 @@ export default class Pet {
         this.movingDirection = Math.random() < 0.5 ? 'left' : 'right';
         this.walkSpeed = walkSpeed;
         this.runSpeed = runSpeed;
-
-        // current work around for above taskbar
-        this.position.y += 48;
         
         // generate the images for each state
         for (const state in this.states) {
@@ -123,8 +123,6 @@ export default class Pet {
          * dHeight: Destination height. It's the height of the image that u want to draw
          */
 
-        const DPR = window.devicePixelRatio;
-        // const currentScreenHeight = Math.round(DPR * window.screen.height);
         const currentScreenHeight = Math.round(window.visualViewport?.height!);
 
         const sx_start_crop_position = this.framesCurrent * (this.image.width / this.framesMax);

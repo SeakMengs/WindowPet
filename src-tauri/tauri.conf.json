@@ -35,7 +35,7 @@
     },
     "windows": [
       {
-        "fullscreen": false,
+        "fullscreen": true,
         "resizable": false,
         "title": "WindowPet",
         "width": 64,

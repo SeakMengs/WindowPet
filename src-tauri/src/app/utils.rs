@@ -22,7 +22,7 @@ pub fn allow_window_click_through(window: Window, allow_click_through_window: bo
 
 pub fn reopen_main_window(app: &AppHandle) {
     let window = tauri::WindowBuilder::new(app, "main", tauri::WindowUrl::App("/".into()))
-        .fullscreen(false)
+        .fullscreen(true)
         .resizable(false)
         .transparent(true)
         .decorations(false)
