@@ -11,7 +11,14 @@ import {
 import { IconSun, IconMoonStars } from '@tabler/icons-react';
 import Logo from './components/shell/Logo';
 import { MantineProvider, ColorSchemeProvider, ColorScheme } from "@mantine/core";
-import { SettingSections, useSettingSectionStore } from './components/shell/SettingSections';
+import { SettingTabs, useSettingTabStore } from './components/shell/SettingTabs';
+import AddPet from './components/setting_tabs/AddPet';
+import EditPet from './components/setting_tabs/EditPet';
+import Settings from './components/setting_tabs/Settings';
+
+interface SettingTabComponentInterface {
+  [key: number]: () => JSX.Element;
+}
 
 function Setting() {
   // disable right click (context menu) for build version only. uncomment for development
@@ -22,7 +29,19 @@ function Setting() {
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
 
-  const page = useSettingSectionStore((state) => state.page);
+  const page = useSettingTabStore((state) => state.page);
+
+  const SettingTabComponent: SettingTabComponentInterface = {
+    0: AddPet,
+    1: EditPet,
+    2: Settings,
+  }
+
+  let CurrentSettingTab = SettingTabComponent[page];
+
+  if (!CurrentSettingTab) {
+    CurrentSettingTab = () => <Text component='h1'>Seem like the content of this page doesn't exist or has not been updated.</Text>;
+  }
 
   return (
     //docs: https://mantine.dev/guides/dark-theme/
@@ -30,7 +49,7 @@ function Setting() {
       <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
         <AppShell
           navbar={
-            <Navbar height={600} p="xs" width={{ base: 300 }}>
+            <Navbar height={'100%'} p="xs" width={{ base: 300 }}>
               <Navbar.Section mt="xs">
                 <Box
                   sx={(theme) => ({
@@ -50,7 +69,7 @@ function Setting() {
                 </Box>
               </Navbar.Section>
               <Navbar.Section grow mt="md">
-                <SettingSections />
+                <SettingTabs />
               </Navbar.Section>
               {/* <Navbar.Section>
                 <User />
@@ -58,7 +77,8 @@ function Setting() {
             </Navbar>
           }
         >
-          <Text>Resize app to see responsive navbar in action {page}</Text>
+          {/* <Text>Resize app to see responsive navbar in action {page}</Text> */}
+          <CurrentSettingTab />
         </AppShell>
       </MantineProvider>
     </ColorSchemeProvider>

@@ -8,25 +8,25 @@ import {
 import { ThemeIcon, UnstyledButton, Group, Text } from '@mantine/core';
 import { create } from 'zustand';
 
-interface SettingSectionProps {
+interface SettingTabProps {
   icon: React.ReactNode;
   color: string;
   label: string;
   index: number;
 }
 
-interface SettingSectionState {
+interface SettingTabState {
   page: number;
   setPage: (page: number) => void;
 }
 
-export const useSettingSectionStore = create<SettingSectionState>((set) => ({
-  page: 1,
+export const useSettingTabStore = create<SettingTabState>((set) => ({
+  page: 0,
   setPage: (page: number) => set({ page }),
 }));
 
-function SettingSection({ icon, color, label, index }: SettingSectionProps) {
-  const setPage = useSettingSectionStore((state) => state.setPage);
+function SettingTab({ icon, color, label, index }: SettingTabProps) {
+  const setPage = useSettingTabStore((state) => state.setPage);
 
   return (
     <UnstyledButton
@@ -62,7 +62,7 @@ const data = [
   { icon: <IconInfoCircle  size="1rem" />, color: 'grape', label: 'About' },
 ];
 
-export function SettingSections() {
-  const sections = data.map((link, index) => <SettingSection {...link} key={link.label} index={index} />);
+export function SettingTabs() {
+  const sections = data.map((link, index) => <SettingTab {...link} key={link.label} index={index} />);
   return <div>{sections}</div>;
 }
