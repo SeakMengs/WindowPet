@@ -1,56 +1,71 @@
-import { Switch, Flex, Select, Button, Group } from "@mantine/core";
+import { Select, Button, Group, Text, createStyles } from "@mantine/core";
 import { SelectItem } from "./settings/SelectItem";
 import { useEffect, useState } from "react";
+import languages from "../../locale/languages";
+import SettingSwitch from "./settings/SettingSwitch";
 
-const inputMarginTop = 'sm';
-
-const languages = [
-    {
-        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Flag_of_the_United_Kingdom_%281-2%29.svg/1200px-Flag_of_the_United_Kingdom_%281-2%29.svg.png',
-        label: 'English',
-        value: 'en',
-    },
-    {
-        image: 'https://cdn.britannica.com/27/4027-004-B57F84E9/Flag-Cambodia.jpg',
-        label: 'Khmer',
-        value: 'kh',
-    },
-];
+interface dataProps {
+    parent: {
+        title: string;
+        description: string;
+    };
+    child: {
+        title: string;
+        description: string;
+    }[];
+}
 
 function Settings() {
+
     const [language, setLanguage] = useState<string | null>('en');
 
-    useEffect(() => {
-        console.log(language)
-    }, [language]);
+    const data: dataProps = {
+        parent: {
+            title: "Setting preferences",
+            description: "Choose what u desire, do what u love"
+        },
+        child: [
+            {
+                title: "Messages",
+                description: "Direct messages you have received from other users"
+            },
+            {
+                title: "Review requests",
+                description: "Code review requests from your team members"
+            },
+            {
+                title: "Comments",
+                description: "Daily digest with comments on your posts"
+            },
+            {
+                title: "Recommendations",
+                description: "Digest with best community posts from previous week"
+            }
+        ]
+    }
+
+    const settingSwitches = data.child.map((data, index) => {
+        return <SettingSwitch {...data} key={index} />
+    })
 
     return (
         <>
-            <Flex direction={{ base: 'column' }}>
-                <Switch.Group
-                    defaultValue={['petOnTopTaskBar']}
-                    label="Settings preferences"
-                    withAsterisk
-                >
-                    <Switch mt={inputMarginTop} value="petOnTopTaskBar" label="Pet on top of taskbar" />
-                    <Switch mt={inputMarginTop} value="2" label="Start on window start up" />
-                </Switch.Group>
-
-                <Select
-                    sx={{
-                        maxWidth: 300,
-                    }}
-                    mt={inputMarginTop}
-                    label="Language"
-                    placeholder="Pick one"
-                    itemComponent={SelectItem}
-                    data={languages}
-                    maxDropdownHeight={400}
-                    value={language}
-                    onChange={setLanguage}
-                />
-            </Flex>
-            <Group mt={inputMarginTop}>
+            <Text fz={"lg"} fw={500}>{data.parent.title}</Text>
+            <Text fz={"xs"} c={"dimmed"} mt={3} mb={"xl"}>
+                {data.parent.description}
+            </Text>
+            {settingSwitches}
+            <Select
+                my={"sm"}
+                label="Language"
+                placeholder="Pick one"
+                itemComponent={SelectItem}
+                data={languages}
+                maxDropdownHeight={400}
+                value={language}
+                onChange={setLanguage}
+            />
+            <Group position={"right"}>
                 <Button color="green">
                     Apply
                 </Button>

@@ -1,7 +1,9 @@
+import { Text } from "@mantine/core";
+
 function EditPet() {
     return (
         <>
-            <h1>Edit Pet</h1>
+            <Text>Edit Pet</Text>
         </>
     )
 }
