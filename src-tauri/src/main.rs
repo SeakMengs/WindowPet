@@ -6,9 +6,14 @@ mod app;
 use app::cmd::{change_current_app_position, change_current_app_size};
 use app::tray::{handle_tray_event, init_system_tray};
 use app::utils::allow_window_click_through;
+use tauri_plugin_autostart::MacosLauncher;
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_autostart::init(
+            MacosLauncher::LaunchAgent,
+            Some(vec!["--flag1", "--flag2"]), /* arbitrary number of args to pass to your app */
+        ))
         .setup(move |app| {
             use tauri::Manager;
             let window = app.get_window("main").unwrap();

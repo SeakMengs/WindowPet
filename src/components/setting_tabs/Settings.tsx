@@ -1,9 +1,10 @@
-import { Select, Button, Group, Text, createStyles } from "@mantine/core";
+import { Select, Button, Group, Text } from "@mantine/core";
 import { SelectItem } from "./settings/SelectItem";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import languages from "../../locale/languages";
 import SettingSwitch from "./settings/SettingSwitch";
 import { useTranslation } from "react-i18next";
+import { enable, isEnabled, disable } from "tauri-plugin-autostart-api";
 
 interface dataProps {
     parent: {
@@ -13,39 +14,48 @@ interface dataProps {
     child: {
         title: string;
         description: string;
+        checked: boolean;
+        setCheck: Dispatch<SetStateAction<boolean>>;
     }[];
 }
+
+const isAutoStartUp = await isEnabled();
 
 function Settings() {
     const { t, i18n } = useTranslation("translation");
     const [language, setLanguage] = useState<string | null>(i18n.language);
+    const [autoStartUp, setAutoStartUp] = useState(isAutoStartUp);
+
+    useEffect(() => {
+        if (autoStartUp) {
+            async function enableAutoStartUp() {
+                await enable();
+            }
+            enableAutoStartUp();
+        } else {
+            async function disableAutoStartUp() {
+                await disable();
+            }
+            disableAutoStartUp();
+        }
+    }, [autoStartUp]);
 
     useEffect(() => {
         i18n.changeLanguage(language as string);
     }, [language]);
 
-    const data: dataProps = {
+    const data = {
         parent: {
             title: t("Setting preferences"),
-            description: "Choose what u desire, do what u love"
+            description: t("Choose what u desire, do what u love")
         },
         child: [
             {
-                title: "Messages",
-                description: "Direct messages you have received from other users"
+                title: t("Auto start-up"),
+                description: t("Automatically open WindowPet every time u start the computer"),
+                checked: autoStartUp,
+                setCheck: setAutoStartUp,
             },
-            {
-                title: "Review requests",
-                description: "Code review requests from your team members"
-            },
-            {
-                title: "Comments",
-                description: "Daily digest with comments on your posts"
-            },
-            {
-                title: "Recommendations",
-                description: "Digest with best community posts from previous week"
-            }
         ]
     }
 
@@ -62,7 +72,7 @@ function Settings() {
             {settingSwitches}
             <Select
                 my={"sm"}
-                label="Language"
+                label={t("Language")}
                 placeholder="Pick one"
                 itemComponent={SelectItem}
                 data={languages}

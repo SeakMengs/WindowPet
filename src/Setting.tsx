@@ -15,6 +15,7 @@ import { SettingTabs, useSettingTabStore } from './components/shell/SettingTabs'
 import AddPet from './components/setting_tabs/AddPet';
 import EditPet from './components/setting_tabs/EditPet';
 import Settings from './components/setting_tabs/Settings';
+import { useTranslation } from 'react-i18next';
 
 interface SettingTabComponentInterface {
   [key: number]: () => JSX.Element;
@@ -30,7 +31,8 @@ function Setting() {
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
 
   const page = useSettingTabStore((state) => state.page);
-
+  const { t } = useTranslation();
+  
   const SettingTabComponent: SettingTabComponentInterface = {
     0: AddPet,
     1: EditPet,
@@ -40,7 +42,7 @@ function Setting() {
   let CurrentSettingTab = SettingTabComponent[page];
 
   if (!CurrentSettingTab) {
-    CurrentSettingTab = () => <Text component='h1'>Seem like the content of this page doesn't exist or has not been updated.</Text>;
+    CurrentSettingTab = () => <Text component='h1'>{t("Seem like the content of this page doesn't exist or has not been updated")}</Text>;
   }
 
   return (
