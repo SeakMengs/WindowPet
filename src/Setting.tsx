@@ -46,7 +46,10 @@ function Setting() {
   return (
     //docs: https://mantine.dev/guides/dark-theme/
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-      <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
+      <MantineProvider theme={{
+        colorScheme,
+        fontFamily: 'cursive, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji',
+      }} withGlobalStyles withNormalizeCSS>
         <AppShell
           navbar={
             <Navbar height={'100%'} p="xs" width={{ base: 300 }}>

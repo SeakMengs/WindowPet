@@ -3,6 +3,7 @@ import { SelectItem } from "./settings/SelectItem";
 import { useEffect, useState } from "react";
 import languages from "../../locale/languages";
 import SettingSwitch from "./settings/SettingSwitch";
+import { useTranslation } from "react-i18next";
 
 interface dataProps {
     parent: {
@@ -16,12 +17,16 @@ interface dataProps {
 }
 
 function Settings() {
+    const { t, i18n } = useTranslation("translation");
+    const [language, setLanguage] = useState<string | null>(i18n.language);
 
-    const [language, setLanguage] = useState<string | null>('en');
+    useEffect(() => {
+        i18n.changeLanguage(language as string);
+    }, [language]);
 
     const data: dataProps = {
         parent: {
-            title: "Setting preferences",
+            title: t("Setting preferences"),
             description: "Choose what u desire, do what u love"
         },
         child: [
@@ -67,10 +72,10 @@ function Settings() {
             />
             <Group position={"right"}>
                 <Button color="green">
-                    Apply
+                    {t("Apply")}
                 </Button>
                 <Button color="red">
-                    Cancel
+                    {t("Cancel")}
                 </Button>
             </Group>
         </>
