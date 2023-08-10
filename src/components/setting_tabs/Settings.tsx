@@ -1,12 +1,13 @@
 import { Select, Button, Group, Text } from "@mantine/core";
 import { SelectItem } from "./settings/SelectItem";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 import languages from "../../locale/languages";
 import SettingSwitch from "./settings/SettingSwitch";
 import { useTranslation } from "react-i18next";
 import { enable, isEnabled, disable } from "tauri-plugin-autostart-api";
+import { settingReducer } from "../../hooks/settingReducer";
 
-interface dataProps {
+interface settingsProp {
     parent: {
         title: string;
         description: string;
@@ -15,19 +16,38 @@ interface dataProps {
         title: string;
         description: string;
         checked: boolean;
-        setCheck: Dispatch<SetStateAction<boolean>>;
+        dispatchType: string;
     }[];
 }
 
-const isAutoStartUp = await isEnabled();
+let isAutoStartUp: boolean
+
+async function isAutoStartUpEnabled() {
+    isAutoStartUp = await isEnabled();
+}
+isAutoStartUpEnabled();
 
 function Settings() {
-    const { t, i18n } = useTranslation("translation");
-    const [language, setLanguage] = useState<string | null>(i18n.language);
-    const [autoStartUp, setAutoStartUp] = useState(isAutoStartUp);
+    const { t, i18n } = useTranslation();
+
+    const initialSettingState = {
+        language: i18n.language,
+        autoStartUp: isAutoStartUp,
+    }
+
+    const [state, dispatch] = useReducer(settingReducer, initialSettingState);
+
+    const handleSettingChange = (dispatchType: string, value: any) => {
+        dispatch({
+            type: dispatchType,
+            payload: {
+                value: value
+            }
+        })
+    };
 
     useEffect(() => {
-        if (autoStartUp) {
+        if (state.autoStartUp) {
             async function enableAutoStartUp() {
                 await enable();
             }
@@ -38,13 +58,13 @@ function Settings() {
             }
             disableAutoStartUp();
         }
-    }, [autoStartUp]);
+    }, [state.autoStartUp]);
 
     useEffect(() => {
-        i18n.changeLanguage(language as string);
-    }, [language]);
+        i18n.changeLanguage(state.language as string);
+    }, [state.language]);
 
-    const data = {
+    const settings: settingsProp = {
         parent: {
             title: t("Setting preferences"),
             description: t("Choose what u desire, do what u love")
@@ -53,23 +73,23 @@ function Settings() {
             {
                 title: t("Auto start-up"),
                 description: t("Automatically open WindowPet every time u start the computer"),
-                checked: autoStartUp,
-                setCheck: setAutoStartUp,
+                checked: state.autoStartUp,
+                dispatchType: "switchAutoWindowStartUp",
             },
         ]
     }
 
-    const settingSwitches = data.child.map((data, index) => {
-        return <SettingSwitch {...data} key={index} />
+    const SettingSwitches = settings.child.map((setting, index) => {
+        return <SettingSwitch {...setting} handleSettingChange={handleSettingChange} key={index} />
     })
 
     return (
         <>
-            <Text fz={"lg"} fw={500}>{data.parent.title}</Text>
+            <Text fz={"lg"} fw={500}>{settings.parent.title}</Text>
             <Text fz={"xs"} c={"dimmed"} mt={3} mb={"xl"}>
-                {data.parent.description}
+                {settings.parent.description}
             </Text>
-            {settingSwitches}
+            {SettingSwitches}
             <Select
                 my={"sm"}
                 label={t("Language")}
@@ -77,8 +97,8 @@ function Settings() {
                 itemComponent={SelectItem}
                 data={languages}
                 maxDropdownHeight={400}
-                value={language}
-                onChange={setLanguage}
+                value={state.language}
+                onChange={(value) => handleSettingChange("changeAppLanguage", value)}
             />
             <Group position={"right"}>
                 <Button color="green">

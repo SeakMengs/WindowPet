@@ -1,15 +1,14 @@
 import { Switch, Group, Text, Divider } from "@mantine/core";
-import { Dispatch, SetStateAction } from "react";
 
 interface SettingSwitchProps {
     title: string,
     description: string,
     checked: boolean,
-    setCheck: Dispatch<SetStateAction<boolean>>;
+    dispatchType: string;
+    handleSettingChange: (dispatchType: string, value: any) => void;
 }
 
-function SettingSwitch({ title, description, checked = false, setCheck }: SettingSwitchProps) {
-
+function SettingSwitch({ title, description, checked = false, dispatchType, handleSettingChange }: SettingSwitchProps) {
     return (
         <>
             <Group position="apart">
@@ -19,7 +18,7 @@ function SettingSwitch({ title, description, checked = false, setCheck }: Settin
                         {description}
                     </Text>
                 </div>
-                <Switch size={"lg"} checked={checked} onChange={(event) => setCheck(event.target.checked)}  />
+                <Switch size={"lg"} checked={checked} onChange={(event) => handleSettingChange(dispatchType, event.target.checked)} />
             </Group>
             <Divider my={"sm"} />
         </>

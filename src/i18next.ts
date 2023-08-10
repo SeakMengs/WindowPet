@@ -3,10 +3,12 @@ import Khmer from "./locale/kh/translation.json";
 import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
 
+const defaultLanguage = 'en';
+
 i18next
     .use(initReactI18next)
     .init({
-        lng: 'en',
+        lng: defaultLanguage,
         fallbackLng: 'en',
         resources: {
             en: {

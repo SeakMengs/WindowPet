@@ -42,6 +42,7 @@ pub fn open_setting_window(app: &AppHandle) {
         tauri::WindowUrl::App("/setting".into()),
     )
     .title("WindowPet Setting")
+    .inner_size(800.0, 620.0)
     .build()
     .unwrap();
     return;
