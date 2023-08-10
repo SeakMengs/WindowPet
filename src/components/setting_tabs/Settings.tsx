@@ -20,8 +20,9 @@ interface settingsProp {
     }[];
 }
 
+// Top level await is now allow in production build.
+// creating function and call it like this solve the problem :)
 let isAutoStartUp: boolean
-
 async function isAutoStartUpEnabled() {
     isAutoStartUp = await isEnabled();
 }

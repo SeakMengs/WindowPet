@@ -8,6 +8,7 @@ function Canvas() {
     const DPR: number = window.devicePixelRatio;
     const currentScreenHeight: number = Math.round(DPR * window.screen.height);
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const FPS = 60;
 
     // disable right click (context menu) for build version only. uncomment for development
     // credit: https://github.com/tauri-apps/wry/issues/30
@@ -38,23 +39,28 @@ function Canvas() {
         canvas!.height = currentScreenHeight;
 
         function animate() {
+            context!.save();
             context!.imageSmoothingEnabled = false;
-
-            window.requestAnimationFrame(animate)
-
+            
             // credit: https://stackoverflow.com/questions/4815166/how-do-i-make-a-transparent-canvas-in-html5
             context!.clearRect(0, 0, canvas!.width, canvas!.height);
-
+            
             // Debug purposes
             // context.fillStyle = 'black'
             // context.fillRect(0, 0, canvas.width, canvas.height)
-
+            
             if (pets.length > 0) {
                 for (let i = 0; i < pets.length; i++) {
                     pets[i].animateBehavior();
                     pets[i].update(context);
                 }
             }
+            
+            context!.restore();
+
+            setTimeout(() => {
+                window.requestAnimationFrame(animate)
+            }, 1000 / FPS);
         }
 
         animate();
