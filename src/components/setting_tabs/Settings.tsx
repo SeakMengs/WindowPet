@@ -30,7 +30,6 @@ isAutoStartUpEnabled();
 
 function Settings() {
     const { t, i18n } = useTranslation();
-
     const initialSettingState = {
         language: i18n.language,
         autoStartUp: isAutoStartUp,

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   AppShell,
   Navbar,
@@ -16,7 +16,7 @@ import AddPet from './components/setting_tabs/AddPet';
 import EditPet from './components/setting_tabs/EditPet';
 import Settings from './components/setting_tabs/Settings';
 import { useTranslation } from 'react-i18next';
-import { createDefaultSettingsIfNotExist, setSettings, getAppSettings } from "./utils/settingsFunction";
+import { createDefaultSettingsIfNotExist, getAppSettings, setSettings } from "./utils/settingsFunction";
 
 createDefaultSettingsIfNotExist();
 
@@ -24,28 +24,33 @@ interface SettingTabComponentInterface {
   [key: number]: () => JSX.Element;
 }
 
-// current work around for 
-// Top-level await is not available in the configured target environment ("safari13" + 3 overrides)
-let settings:any
-async function setSetting() {
-  settings = await getAppSettings()
-}
-setSetting()
-
 function Setting() {
   // disable right click (context menu) for build version only. uncomment for development
   // credit: https://github.com/tauri-apps/wry/issues/30
   document.addEventListener('contextmenu', event => event.preventDefault());
 
-  const [colorScheme, setColorScheme] = useState<ColorScheme>(settings!.theme);
-  const toggleColorScheme = async (value?: ColorScheme) => {
+  const [colorScheme, setColorScheme] = useState<ColorScheme>("dark");
+  const { t, i18n } = useTranslation();
+
+  useEffect(() => {
+    getAppSettings().then((appSetting) => {
+      if (appSetting.theme !== colorScheme) {
+        setColorScheme(appSetting.theme);
+      }
+
+      if (appSetting.language !== i18n.language) {
+        i18n.changeLanguage(appSetting.language);
+      }
+    })
+  }, [colorScheme, i18n.language]);
+
+  const toggleColorScheme = (value?: ColorScheme) => {
     const theme = value || (colorScheme === 'dark' ? 'light' : 'dark');
     setColorScheme(theme);
-    await setSettings("theme", theme);
+    setSettings("theme", theme);
   }
 
   const page = useSettingTabStore((state) => state.page);
-  const { t } = useTranslation();
 
   const SettingTabComponent: SettingTabComponentInterface = {
     0: AddPet,
@@ -96,7 +101,6 @@ function Setting() {
             </Navbar>
           }
         >
-          {/* <Text>Resize app to see responsive navbar in action {page}</Text> */}
           <CurrentSettingTab />
         </AppShell>
       </MantineProvider>

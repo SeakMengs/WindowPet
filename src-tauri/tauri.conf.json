@@ -45,7 +45,6 @@
       "active": true,
       "targets": "all",
       "identifier": "WindowPet",
-      "category": "",
       "icon": [
         "icons/WindowPetNewTransparent.png",
         "icons/WindowPetNewTransparent.ico",
