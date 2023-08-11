@@ -4,7 +4,11 @@ import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
 import { getAppSettings } from "./utils/settingsFunction";
 
-const settings = await getAppSettings()
+let settings:any
+async function setSetting() {
+  settings = await getAppSettings()
+}
+setSetting()
 
 i18next
     .use(initReactI18next)

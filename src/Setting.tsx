@@ -24,7 +24,13 @@ interface SettingTabComponentInterface {
   [key: number]: () => JSX.Element;
 }
 
-const settings = await getAppSettings()
+// current work around for 
+// Top-level await is not available in the configured target environment ("safari13" + 3 overrides)
+let settings:any
+async function setSetting() {
+  settings = await getAppSettings()
+}
+setSetting()
 
 function Setting() {
   // disable right click (context menu) for build version only. uncomment for development
