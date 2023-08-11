@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Canvas from "./Canvas";
-import Setting from "./Setting";
+import React from "react";
+const Canvas = React.lazy(() => import("./Canvas"));
+const Setting = React.lazy(() => import("./Setting"));
 
 function App() {
 

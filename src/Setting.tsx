@@ -16,23 +16,31 @@ import AddPet from './components/setting_tabs/AddPet';
 import EditPet from './components/setting_tabs/EditPet';
 import Settings from './components/setting_tabs/Settings';
 import { useTranslation } from 'react-i18next';
+import { createDefaultSettingsIfNotExist, setSettings, getAppSettings } from "./utils/settingsFunction";
+
+createDefaultSettingsIfNotExist();
 
 interface SettingTabComponentInterface {
   [key: number]: () => JSX.Element;
 }
+
+const settings = await getAppSettings()
 
 function Setting() {
   // disable right click (context menu) for build version only. uncomment for development
   // credit: https://github.com/tauri-apps/wry/issues/30
   document.addEventListener('contextmenu', event => event.preventDefault());
 
-  const [colorScheme, setColorScheme] = useState<ColorScheme>('dark');
-  const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
+  const [colorScheme, setColorScheme] = useState<ColorScheme>(settings!.theme);
+  const toggleColorScheme = async (value?: ColorScheme) => {
+    const theme = value || (colorScheme === 'dark' ? 'light' : 'dark');
+    setColorScheme(theme);
+    await setSettings("theme", theme);
+  }
 
   const page = useSettingTabStore((state) => state.page);
   const { t } = useTranslation();
-  
+
   const SettingTabComponent: SettingTabComponentInterface = {
     0: AddPet,
     1: EditPet,

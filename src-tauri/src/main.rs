@@ -3,6 +3,7 @@
 
 mod app;
 use app::cmd::{change_current_app_position, change_current_app_size};
+use app::utils::get_os;
 use app::tray::{handle_tray_event, init_system_tray};
 use tauri_plugin_autostart::MacosLauncher;
 
@@ -12,6 +13,7 @@ fn main() {
             MacosLauncher::LaunchAgent,
             Some(vec!["--flag1", "--flag2"]), /* arbitrary number of args to pass to your app */
         ))
+        .plugin(tauri_plugin_store::Builder::default().build())
         .setup(move |app| {
             use tauri::Manager;
             let window = app.get_window("main").unwrap();
@@ -25,7 +27,8 @@ fn main() {
         .on_system_tray_event(handle_tray_event)
         .invoke_handler(tauri::generate_handler![
             change_current_app_position,
-            change_current_app_size
+            change_current_app_size,
+            get_os,
         ])
         .build(tauri::generate_context!())
         .expect("error while running tauri application")

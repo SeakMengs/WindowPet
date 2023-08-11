@@ -19,15 +19,37 @@
       },
       "window": {
         "startDragging": true
+      },
+      "fs": {
+        "all": false,
+        "copyFile": false,
+        "createDir": false,
+        "exists": true,
+        "readDir": false,
+        "readFile": false,
+        "removeDir": false,
+        "removeFile": false,
+        "renameFile": false,
+        "scope": [
+          "$RESOURCE/**",
+          "$APPDATA/**",
+          "$CONFIG"
+        ],
+        "writeFile": false
+      },
+      "path": {
+        "all": true
       }
     },
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.WindowPet.dev",
+      "identifier": "WindowPet",
+      "category": "",
       "icon": [
         "icons/WindowPetNewTransparent.png",
-        "icons/WindowPetNewTransparent.ico"
+        "icons/WindowPetNewTransparent.ico",
+        "icons/WindowPetNewTransparent.icns"
       ]
     },
     "security": {

@@ -1,5 +1,6 @@
 import {
     toggleAutoStartUp,
+    setSettings
 } from "../utils/settingsFunction";
 
 interface State {
@@ -15,6 +16,8 @@ interface Action {
 export const settingReducer = (state: State, action: Action) => {
     switch (action.type) {
         case 'changeAppLanguage':
+            // the function return a promise but since it doesn't matter even if we wait for setting to change, I don't use a wait.
+            setSettings('language', action.payload.value);
             return {
                 ...state,
                 language: action.payload.value

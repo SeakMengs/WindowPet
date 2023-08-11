@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 import Pet from "./Class/Pet";
-// import { appWindow } from "@tauri-apps/api/window";
 import petConfig from "./settings/pet.config.json";
 
 function Canvas() {

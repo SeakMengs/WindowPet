@@ -20,6 +20,7 @@
     "react-router-dom": "^6.14.2",
     "sass": "^1.64.2",
     "tauri-plugin-autostart-api": "github:tauri-apps/tauri-plugin-autostart#v1",
+    "tauri-plugin-store-api": "github:tauri-apps/tauri-plugin-store#v1",
     "zustand": "^4.4.0"
   },
   "devDependencies": {

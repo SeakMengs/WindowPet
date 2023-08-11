@@ -1,4 +1,5 @@
 use tauri::AppHandle;
+use std::env;
 
 pub fn reopen_main_window(app: &AppHandle) {
     let window = tauri::WindowBuilder::new(app, "main", tauri::WindowUrl::App("/".into()))
@@ -26,4 +27,9 @@ pub fn open_setting_window(app: &AppHandle) {
             .build()
             .unwrap();
     return;
+}
+
+#[tauri::command]
+pub fn get_os() -> &'static str {
+    return env::consts::OS;
 }

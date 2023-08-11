@@ -87,14 +87,14 @@ function Settings() {
                 value={state.language}
                 onChange={(value) => handleSettingChange("changeAppLanguage", value)}
             />
-            <Group position={"right"}>
+            {/* <Group position={"right"}>
                 <Button color="green">
                     {t("Apply")}
                 </Button>
                 <Button color="red">
                     {t("Cancel")}
                 </Button>
-            </Group>
+            </Group> */}
         </>
     )
 }
