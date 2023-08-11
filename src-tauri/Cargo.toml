@@ -13,23 +13,15 @@ edition = "2021"
 tauri-build = { version = "1.4", features = [] }
 
 [dependencies]
-tauri = { version = "1.4", features = [ "system-tray", "window-start-dragging", "shell-open"] }
+tauri = { version = "1.4", features = [ "macos-private-api", "system-tray", "window-start-dragging", "shell-open"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 tauri-plugin-autostart = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
-
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
 # DO NOT REMOVE!!
 custom-protocol = ["tauri/custom-protocol"]
-
-[dependencies.windows]
-version = "0.48"
-features = [
-    "Win32_Foundation",
-    "Win32_UI_WindowsAndMessaging",
-]
 
 [profile.release]
 panic = "abort" # Strip expensive panic clean-up logic

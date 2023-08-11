@@ -41,7 +41,6 @@
         "width": 64,
         "height": 64,
         "transparent": true,
-        "decorations": false,
         "alwaysOnTop": true,
         "skipTaskbar": true
       }
@@ -49,6 +48,7 @@
     "systemTray": {
       "iconPath": "icons/WindowPetNewTransparent.png",
       "iconAsTemplate": true
-    }
+    },
+    "macOSPrivateApi": true
   }
 }

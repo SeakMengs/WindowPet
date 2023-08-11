@@ -4,7 +4,7 @@ import { useEffect, useReducer } from "react";
 import languages from "../../locale/languages";
 import SettingSwitch from "./settings/SettingSwitch";
 import { useTranslation } from "react-i18next";
-import { enable, isEnabled, disable } from "tauri-plugin-autostart-api";
+import { isEnabled } from "tauri-plugin-autostart-api";
 import { settingReducer } from "../../hooks/settingReducer";
 
 interface settingsProp {
@@ -46,20 +46,6 @@ function Settings() {
             }
         })
     };
-
-    useEffect(() => {
-        if (state.autoStartUp) {
-            async function enableAutoStartUp() {
-                await enable();
-            }
-            enableAutoStartUp();
-        } else {
-            async function disableAutoStartUp() {
-                await disable();
-            }
-            disableAutoStartUp();
-        }
-    }, [state.autoStartUp]);
 
     useEffect(() => {
         i18n.changeLanguage(state.language as string);

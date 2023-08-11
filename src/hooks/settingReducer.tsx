@@ -1,3 +1,7 @@
+import {
+    toggleAutoStartUp,
+} from "../utils/settingsFunction";
+
 interface State {
     language: string;
     autoStartUp: boolean;
@@ -16,9 +20,12 @@ export const settingReducer = (state: State, action: Action) => {
                 language: action.payload.value
             }
         case 'switchAutoWindowStartUp':
+            const isAutoStartUp: boolean = action.payload.value
+            toggleAutoStartUp(isAutoStartUp);
+            
             return {
                 ...state,
-                autoStartUp: action.payload.value
+                autoStartUp: isAutoStartUp
             }
         default:
             return state
