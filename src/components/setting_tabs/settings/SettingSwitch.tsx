@@ -1,14 +1,14 @@
 import { Switch, Group, Text, Divider } from "@mantine/core";
+import { handleSettingChange } from "../../../utils/handleSettingChange";
 
 interface SettingSwitchProps {
     title: string,
     description: string,
     checked: boolean,
     dispatchType: string;
-    handleSettingChange: (dispatchType: string, value: any) => void;
 }
 
-function SettingSwitch({ title, description, checked = false, dispatchType, handleSettingChange }: SettingSwitchProps) {
+function SettingSwitch({ title, description, checked = false, dispatchType }: SettingSwitchProps) {
     return (
         <>
             <Group position="apart">

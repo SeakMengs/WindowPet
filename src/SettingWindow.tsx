@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import {
   AppShell,
   Navbar,
@@ -11,46 +10,35 @@ import {
 import { IconSun, IconMoonStars } from '@tabler/icons-react';
 import Logo from './components/shell/Logo';
 import { MantineProvider, ColorSchemeProvider, ColorScheme } from "@mantine/core";
-import { SettingTabs, useSettingTabStore } from './components/shell/SettingTabs';
+import { SettingTabs } from './components/shell/SettingTabs';
 import AddPet from './components/setting_tabs/AddPet';
 import EditPet from './components/setting_tabs/EditPet';
 import Settings from './components/setting_tabs/Settings';
 import { useTranslation } from 'react-i18next';
-import { createDefaultSettingsIfNotExist, getAppSettings, setSettings } from "./utils/settingsFunction";
+import { useSettingStore } from './hooks/useSettingStore';
+import { handleSettingChange } from './utils/handleSettingChange';
+import { SettingTabComponentInterface } from './utils/type';
+import { useSettingTabStore } from './hooks/useSettingTabStore';
+import { useEffect } from 'react';
 
-createDefaultSettingsIfNotExist();
-
-interface SettingTabComponentInterface {
-  [key: number]: () => JSX.Element;
-}
-
-function Setting() {
+function SettingWindow() {
   // disable right click (context menu) for build version only. uncomment for development
   // credit: https://github.com/tauri-apps/wry/issues/30
   document.addEventListener('contextmenu', event => event.preventDefault());
 
-  const [colorScheme, setColorScheme] = useState<ColorScheme>("dark");
+  // get object theme change it name to colorScheme for readability
+  const { theme: colorScheme, language } = useSettingStore();
   const { t, i18n } = useTranslation();
-
-  useEffect(() => {
-    getAppSettings().then((appSetting) => {
-      if (appSetting.theme !== colorScheme) {
-        setColorScheme(appSetting.theme);
-      }
-
-      if (appSetting.language !== i18n.language) {
-        i18n.changeLanguage(appSetting.language);
-      }
-    })
-  }, [colorScheme, i18n.language]);
+  const page = useSettingTabStore((state) => state.page);
 
   const toggleColorScheme = (value?: ColorScheme) => {
-    const theme = value || (colorScheme === 'dark' ? 'light' : 'dark');
-    setColorScheme(theme);
-    setSettings("theme", theme);
+    const newTheme = value || (colorScheme === 'dark' ? 'light' : 'dark');
+    handleSettingChange('changeAppTheme', newTheme);
   }
 
-  const page = useSettingTabStore((state) => state.page);
+  useEffect(() => {
+    if (language != i18n.language) i18n.changeLanguage(language);
+  }, [language]);
 
   const SettingTabComponent: SettingTabComponentInterface = {
     0: AddPet,
@@ -59,7 +47,6 @@ function Setting() {
   }
 
   let CurrentSettingTab = SettingTabComponent[page];
-
   if (!CurrentSettingTab) {
     CurrentSettingTab = () => <Text component='h1'>{t("Seem like the content of this page doesn't exist or has not been updated")}</Text>;
   }
@@ -68,7 +55,7 @@ function Setting() {
     //docs: https://mantine.dev/guides/dark-theme/
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <MantineProvider theme={{
-        colorScheme,
+        colorScheme: colorScheme,
         fontFamily: 'cursive, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji',
       }} withGlobalStyles withNormalizeCSS>
         <AppShell
@@ -95,9 +82,6 @@ function Setting() {
               <Navbar.Section grow mt="md">
                 <SettingTabs />
               </Navbar.Section>
-              {/* <Navbar.Section>
-                <User />
-              </Navbar.Section> */}
             </Navbar>
           }
         >
@@ -108,4 +92,4 @@ function Setting() {
   );
 }
 
-export default Setting;
+export default SettingWindow;

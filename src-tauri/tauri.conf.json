@@ -21,21 +21,12 @@
         "startDragging": true
       },
       "fs": {
-        "all": false,
-        "copyFile": false,
-        "createDir": false,
-        "exists": true,
-        "readDir": false,
-        "readFile": false,
-        "removeDir": false,
-        "removeFile": false,
-        "renameFile": false,
+        "all": true,
         "scope": [
-          "$RESOURCE/**",
-          "$APPDATA/**",
+          "$RESOURCE/*",
+          "$APPDATA/*",
           "$CONFIG"
-        ],
-        "writeFile": false
+        ]
       },
       "path": {
         "all": true

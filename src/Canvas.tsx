@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import Pet from "./Class/Pet";
-import petConfig from "./settings/pet.config.json";
+import petConfig from "./default/pets.json"
 
 function Canvas() {
     // credit: https://stackoverflow.com/questions/16277383/javascript-screen-height-and-screen-width-returns-incorrect-values

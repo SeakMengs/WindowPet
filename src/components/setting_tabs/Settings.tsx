@@ -1,56 +1,25 @@
 import { Select, Button, Group, Text } from "@mantine/core";
 import { SelectItem } from "./settings/SelectItem";
-import { useEffect, useReducer } from "react";
 import languages from "../../locale/languages";
 import SettingSwitch from "./settings/SettingSwitch";
 import { useTranslation } from "react-i18next";
 import { isEnabled } from "tauri-plugin-autostart-api";
-import { settingReducer } from "../../hooks/settingReducer";
-
-interface settingsProp {
-    parent: {
-        title: string;
-        description: string;
-    };
-    child: {
-        title: string;
-        description: string;
-        checked: boolean;
-        dispatchType: string;
-    }[];
-}
-
-// Top level await is now allow in production build.
-// creating function and call it like this solve the problem :)
-let isAutoStartUp: boolean
-async function isAutoStartUpEnabled() {
-    isAutoStartUp = await isEnabled();
-}
-isAutoStartUpEnabled();
+import { handleSettingChange } from "../../utils/handleSettingChange";
+import { SettingsContent } from "../../utils/type";
+import { useSettingStore } from "../../hooks/useSettingStore";
+import { useEffect } from "react";
 
 function Settings() {
     const { t, i18n } = useTranslation();
-    const initialSettingState = {
-        language: i18n.language,
-        autoStartUp: isAutoStartUp,
-    }
-
-    const [state, dispatch] = useReducer(settingReducer, initialSettingState);
-
-    const handleSettingChange = (dispatchType: string, value: any) => {
-        dispatch({
-            type: dispatchType,
-            payload: {
-                value: value
-            }
-        })
-    };
+    const { isAutoStartUp, setIsAutoStartUp } = useSettingStore();
 
     useEffect(() => {
-        i18n.changeLanguage(state.language as string);
-    }, [state.language]);
+        isEnabled().then((enabled) => {
+            setIsAutoStartUp(enabled);
+        })
+    }, []);
 
-    const settings: settingsProp = {
+    const settings: SettingsContent = {
         parent: {
             title: t("Setting preferences"),
             description: t("Choose what u desire, do what u love")
@@ -59,14 +28,14 @@ function Settings() {
             {
                 title: t("Auto start-up"),
                 description: t("Automatically open WindowPet every time u start the computer"),
-                checked: state.autoStartUp,
+                checked: isAutoStartUp,
                 dispatchType: "switchAutoWindowStartUp",
             },
         ]
     }
 
     const SettingSwitches = settings.child.map((setting, index) => {
-        return <SettingSwitch {...setting} handleSettingChange={handleSettingChange} key={index} />
+        return <SettingSwitch {...setting} key={index} />
     })
 
     return (
@@ -83,8 +52,8 @@ function Settings() {
                 itemComponent={SelectItem}
                 data={languages}
                 maxDropdownHeight={400}
-                value={state.language}
-                onChange={(value) => handleSettingChange("changeAppLanguage", value)}
+                value={i18n.language}
+                onChange={(value) => handleSettingChange("changeAppLanguage", value as string)}
             />
             {/* <Group position={"right"}>
                 <Button color="green">
