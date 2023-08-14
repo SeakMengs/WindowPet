@@ -4,10 +4,11 @@ import SettingWindow from "./SettingWindow";
 import Canvas from "./Canvas";
 import { getAppSettings } from "./utils/settingsHelper";
 import { useSettingStore } from "./hooks/useSettingStore";
+import { isEnabled } from "tauri-plugin-autostart-api";
 
 function App() {
 
-  const { setLanguage, setTheme } = useSettingStore();
+  const { setLanguage, setTheme, setIsAutoStartUp } = useSettingStore();
 
   // initialize settings
   useEffect(() => {
@@ -15,6 +16,10 @@ function App() {
       setLanguage(settings.language);
       setTheme(settings.theme);
     });
+
+    isEnabled().then((enabled) => {
+        setIsAutoStartUp(enabled);
+    })
   }, []);
 
   return (

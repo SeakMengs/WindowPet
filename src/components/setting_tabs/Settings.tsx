@@ -3,21 +3,13 @@ import { SelectItem } from "./settings/SelectItem";
 import languages from "../../locale/languages";
 import SettingSwitch from "./settings/SettingSwitch";
 import { useTranslation } from "react-i18next";
-import { isEnabled } from "tauri-plugin-autostart-api";
 import { handleSettingChange } from "../../utils/handleSettingChange";
 import { SettingsContent } from "../../utils/type";
 import { useSettingStore } from "../../hooks/useSettingStore";
-import { useEffect } from "react";
 
 function Settings() {
     const { t, i18n } = useTranslation();
-    const { isAutoStartUp, setIsAutoStartUp } = useSettingStore();
-
-    useEffect(() => {
-        isEnabled().then((enabled) => {
-            setIsAutoStartUp(enabled);
-        })
-    }, []);
+    const { isAutoStartUp } = useSettingStore();
 
     const settings: SettingsContent = {
         parent: {
