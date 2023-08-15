@@ -4,7 +4,7 @@
 mod app;
 use app::cmd::{change_current_app_position, change_current_app_size};
 use app::tray::{handle_tray_event, init_system_tray};
-use app::utils::{get_os, if_app_setting_does_not_exist_create_default};
+use app::utils::{get_os, if_app_config_does_not_exist_create_default};
 use tauri_plugin_autostart::MacosLauncher;
 
 fn main() {
@@ -21,7 +21,8 @@ fn main() {
                 .set_ignore_cursor_events(true)
                 .unwrap_or_else(|err| println!("{:?}", err));
 
-            if_app_setting_does_not_exist_create_default(app);
+            if_app_config_does_not_exist_create_default(app, "settings.json");
+            if_app_config_does_not_exist_create_default(app, "pets.json");
 
             Ok(())
         })

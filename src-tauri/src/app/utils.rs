@@ -40,13 +40,24 @@ pub fn convert_path(path_str: &str) -> String {
     }
 }
 
-pub fn if_app_setting_does_not_exist_create_default(app: &mut App) {
-    let binding = path::config_dir().unwrap().join("WindowPet\\settings.json");
+pub fn if_app_config_does_not_exist_create_default(app: &mut App, config_name: &str) {
+    let binding = path::config_dir()
+        .unwrap()
+        .join("WindowPet\\".to_owned() + config_name);
     let setting_config_path = convert_path(binding.to_str().unwrap());
     let is_config_already_exist = Path::new(&setting_config_path).exists();
 
     if !is_config_already_exist {
-        let data = include_str!("default/settings.json");
+        // might rewrite how we read content inside file if this function is frequently used
+        let data;
+        if config_name == "settings.json" {
+            data = include_str!("default/settings.json");
+        } else if config_name == "pets.json" {
+            data = include_str!("default/pets.json");
+        } else {
+            return;
+        }
+
         let json_data: serde_json::Value = serde_json::from_str(&data).unwrap();
 
         let mut store = StoreBuilder::new(app.handle(), PathBuf::from(setting_config_path)).build();

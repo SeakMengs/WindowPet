@@ -2,39 +2,7 @@
  * A good resource to learn about canvas, the project is based on this tutorial.
  * credit: https://www.youtube.com/watch?v=vyqbNFMDRGQ&t=8593s&ab_channel=ChrisCourses
  */
-type PetState = {
-    imageSrc: string;
-    framesMax: number;
-    stateHold: number;
-    framesHold: number;
-    image?: HTMLImageElement;
-};
-
-type States = {
-    [key: string]: PetState | undefined;
-}
-
-type CurrentPetState = {
-    state: string;
-    index?: number;
-    stateHold: number;
-};
-
-interface PetParams {
-    position: { x: number; y: number };
-    name: string;
-    currentState: CurrentPetState;
-    velocity: { x: number; y: number };
-    offset: { x: number; y: number };
-    scale?: number;
-    framesMax?: number;
-    framesCurrent?: number;
-    framesElapsed?: number;
-    framesHold?: number;
-    states: States;
-    walkSpeed?: number;
-    runSpeed?: number;
-}
+import { States, CurrentPetState, PetParams } from "./type";
 
 export default class Pet {
     position: { x: number; y: number };

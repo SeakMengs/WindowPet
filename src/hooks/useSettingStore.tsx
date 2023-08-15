@@ -8,6 +8,8 @@ interface SettingStore {
     setTheme: (newTheme: ColorScheme) => void;
     isAutoStartUp: boolean,
     setIsAutoStartUp: (newBoolean: boolean) => void;
+    petConfig: any[],
+    setPetConfig: (newConfig: any[]) => void;
 }
 
 export const useSettingStore = create<SettingStore>()((set) => ({
@@ -22,5 +24,9 @@ export const useSettingStore = create<SettingStore>()((set) => ({
     isAutoStartUp: false,
     setIsAutoStartUp: (newBoolean) => {
         set({ isAutoStartUp: newBoolean })
+    },
+    petConfig: [],
+    setPetConfig: (newConfig) => {
+        set({ petConfig: newConfig });
     },
 }));

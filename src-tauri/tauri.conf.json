@@ -17,9 +17,6 @@
         "all": false,
         "open": true
       },
-      "window": {
-        "startDragging": true
-      },
       "fs": {
         "all": true,
         "scope": [

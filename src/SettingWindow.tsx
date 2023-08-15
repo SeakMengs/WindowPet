@@ -5,11 +5,13 @@ import {
   Box,
   rem,
   Text,
-  ActionIcon
+  ActionIcon,
+  MantineProvider,
+  ColorSchemeProvider,
+  ColorScheme
 } from '@mantine/core';
 import { IconSun, IconMoonStars } from '@tabler/icons-react';
 import Logo from './components/shell/Logo';
-import { MantineProvider, ColorSchemeProvider, ColorScheme } from "@mantine/core";
 import { SettingTabs } from './components/shell/SettingTabs';
 import AddPet from './components/setting_tabs/AddPet';
 import EditPet from './components/setting_tabs/EditPet';
