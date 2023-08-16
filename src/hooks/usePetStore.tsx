@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { CurrentPetState, States } from "../Class/type";
 
-
 export type TPet = {
     position: { x: number; y: number };
     name: string;
@@ -32,6 +31,7 @@ export type TPet = {
 
 interface PetStore {
     pets: TPet[];
+    clonePets: (pets: TPet[]) => void;
     addPet: (pet: TPet) => void;
     clearPets: () => void;
     isPetsInitialized: boolean;
@@ -40,6 +40,9 @@ interface PetStore {
 
 export const usePetStore = create<PetStore>()((set) => ({
     pets: [],
+    clonePets: (pets: TPet[]) => {
+        set({ pets: [...pets] });
+    },
     addPet: (pet: TPet) => {
         set((state) => ({ pets: [...state.pets, pet] }));
     },
