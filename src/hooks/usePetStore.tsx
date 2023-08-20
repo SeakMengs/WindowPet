@@ -38,7 +38,7 @@ interface PetStore {
     setIsPetsInitialized: (value: boolean) => void;
 }
 
-export const usePetStore = create<PetStore>()((set) => ({
+export const usePetStore = create<PetStore>((set) => ({
     pets: [],
     clonePets: (pets: TPet[]) => {
         set({ pets: [...pets] });

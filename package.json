@@ -10,15 +10,17 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@mantine/carousel": "^6.0.19",
     "@mantine/core": "^6.0.17",
     "@tabler/icons-react": "^2.30.0",
     "@tauri-apps/api": "^1.4.0",
+    "embla-carousel-react": "^7.1.0",
     "i18next": "^23.4.3",
+    "immer": "^10.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^13.0.3",
     "react-router-dom": "^6.14.2",
-    "sass": "^1.64.2",
     "tauri-plugin-autostart-api": "github:tauri-apps/tauri-plugin-autostart#v1",
     "tauri-plugin-store-api": "github:tauri-apps/tauri-plugin-store#v1",
     "zustand": "^4.4.0"

@@ -1,4 +1,5 @@
 {
     "theme": "dark",
-    "language": "en"
+    "language": "en",
+    "isPetAboveTaskbar": false
 }

@@ -8,7 +8,8 @@ import {
   ActionIcon,
   MantineProvider,
   ColorSchemeProvider,
-  ColorScheme
+  ColorScheme,
+  ScrollArea
 } from '@mantine/core';
 import { IconSun, IconMoonStars } from '@tabler/icons-react';
 import Logo from './components/shell/Logo';
@@ -58,9 +59,10 @@ function SettingWindow() {
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <MantineProvider theme={{
         colorScheme: colorScheme,
-        fontFamily: 'cursive, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji',
+        fontFamily: 'Rubik, Siemreap, cursive, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji',
       }} withGlobalStyles withNormalizeCSS>
         <AppShell
+          padding={0}
           navbar={
             <Navbar height={'100%'} p="xs" width={{ base: 300 }}>
               <Navbar.Section mt="xs">
@@ -87,7 +89,9 @@ function SettingWindow() {
             </Navbar>
           }
         >
-          <CurrentSettingTab />
+          <Box m={"xl"}>
+              <CurrentSettingTab />
+          </Box>
         </AppShell>
       </MantineProvider>
     </ColorSchemeProvider>

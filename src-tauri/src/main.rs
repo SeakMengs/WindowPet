@@ -6,6 +6,13 @@ use app::cmd::{change_current_app_position, change_current_app_size};
 use app::tray::{handle_tray_event, init_system_tray};
 use app::utils::{get_os, if_app_config_does_not_exist_create_default};
 use tauri_plugin_autostart::MacosLauncher;
+use tauri::Manager;
+
+#[derive(Clone, serde::Serialize)]
+struct Payload {
+  args: Vec<String>,
+  cwd: String,
+}
 
 fn main() {
     tauri::Builder::default()
@@ -14,8 +21,12 @@ fn main() {
             Some(vec!["--flag1", "--flag2"]), /* arbitrary number of args to pass to your app */
         ))
         .plugin(tauri_plugin_store::Builder::default().build())
+        .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
+            println!("{}, {argv:?}, {cwd}", app.package_info().name);
+
+            app.emit_all("single-instance", Payload { args: argv, cwd }).unwrap();
+        }))
         .setup(move |app| {
-            use tauri::Manager;
             let window = app.get_window("main").unwrap();
             window
                 .set_ignore_cursor_events(true)

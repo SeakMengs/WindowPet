@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import "./styles.scss";
+import "./styles.css";
 import i18next from "./i18next";
 import { I18nextProvider } from 'react-i18next';
 

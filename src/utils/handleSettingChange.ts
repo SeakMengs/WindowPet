@@ -7,7 +7,7 @@ export const handleSettingChange: HandleSettingChange = (dispatchType, newValue)
      * Reading/writing state and reacting to changes outside of components, for more detail read  
      * zustand docs here: https://docs.pmnd.rs/zustand/recipes/recipes
      */
-    const { setLanguage, setTheme, setIsAutoStartUp } = useSettingStore.getState();
+    const { setLanguage, setTheme, setIsAutoStartUp, setIsPetAboveTaskbar } = useSettingStore.getState();
 
     switch (dispatchType) {
         case 'changeAppLanguage':
@@ -23,6 +23,9 @@ export const handleSettingChange: HandleSettingChange = (dispatchType, newValue)
             toggleAutoStartUp(newValue as boolean);
             setIsAutoStartUp(newValue as boolean);
             return
+        case 'switchPetAboveTaskBar':
+            setSettings({ setKey: "isPetAboveTaskbar", newValue: newValue });
+            setIsPetAboveTaskbar(newValue as boolean);
         default:
             return;
     }

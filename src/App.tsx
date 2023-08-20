@@ -7,12 +7,13 @@ import { isEnabled } from "tauri-plugin-autostart-api";
 import useInit from "./hooks/useInit";
 
 function App() {
+  const { setLanguage, setTheme, setIsAutoStartUp, setIsPetAboveTaskbar } = useSettingStore();
 
-  const { setLanguage, setTheme, setIsAutoStartUp, setPetConfig } = useSettingStore();
   useInit(async () => {
     const settings = await getAppSettings({ path: "settings.json" });
-    setLanguage(settings.language);
-    setTheme(settings.theme);
+    setLanguage(settings?.language);
+    setTheme(settings?.theme);
+    setIsPetAboveTaskbar(settings?.isPetAboveTaskbar);
     setIsAutoStartUp(await isEnabled());
   });
 

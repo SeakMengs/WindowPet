@@ -24,8 +24,9 @@ pub fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
         match id.as_str() {
             "show" => {
                 match app.get_window("main") {
-                    Some(_window) => {
+                    Some(window) => {
                         println!("Window already exists");
+                        tauri::api::dialog::message(Some(&window), "WindowPet Dialog", "Pet already exist");
                     }
                     None => {
                         reopen_main_window(app);
@@ -45,8 +46,9 @@ pub fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                 };
             }
             "setting" => match app.get_window("setting") {
-                Some(_window) => {
-                    println!("Window setting already exists");
+                Some(window) => {
+                    tauri::api::dialog::message(Some(&window), "WindowPet Dialog", "WindowPet setting already exist");
+                    println!("Window setting already exist");
                 }
                 None => {
                     open_setting_window(app);
@@ -68,7 +70,8 @@ pub fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
     } = event
     {
         match app.get_window("setting") {
-            Some(_window) => {
+            Some(window) => {
+                tauri::api::dialog::message(Some(&window), "WindowPet Dialog", "WindowPet setting already exist");
                 println!("Window setting already exists");
             }
             None => {

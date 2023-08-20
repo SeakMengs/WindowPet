@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import Pet from "./Class/Pet";
 import { usePetStore } from "./hooks/usePetStore";
+import { useSettingStore } from "./hooks/useSettingStore";
 import { getAppSettings } from "./utils/settingsHelper";
 
 function Canvas() {
@@ -11,6 +12,8 @@ function Canvas() {
     const FPS = 60;
     const Interval = 1000 / FPS;
     const requestAnimateFrameId = useRef<number>(0);
+
+    const isPetAboveTaskBar = useSettingStore(state => state.isPetAboveTaskBar);
     const { pets, clonePets, isPetsInitialized, setIsPetsInitialized } = usePetStore();
 
     // disable right click (context menu) for build version only. uncomment for development
@@ -18,14 +21,18 @@ function Canvas() {
     document.addEventListener('contextmenu', event => event.preventDefault());
 
     useEffect(() => {
+        console.log("isAboveTaskBar: ", isPetAboveTaskBar);
+    }, [isPetAboveTaskBar]);
+
+    useEffect(() => {
         (async () => {
-            const petConfig = await getAppSettings({ path: "pets.json" });
+            const petConfigs = await getAppSettings({ path: "pets.json" });
             const tempPets: Pet[] = [];
-            for (let i = 0; i < petConfig.length; i++) {
-                tempPets.push(new Pet(petConfig[i]));
+            for (let petConfig of petConfigs) {
+                tempPets.push(new Pet(petConfig));
             }
             clonePets(tempPets);
-        })();            
+        })();
     }, [isPetsInitialized]);
 
     useEffect(() => {

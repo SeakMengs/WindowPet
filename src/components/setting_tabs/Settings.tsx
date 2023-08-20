@@ -1,4 +1,4 @@
-import { Select, Button, Group, Text } from "@mantine/core";
+import { Select, Button, Group, Text, Divider } from "@mantine/core";
 import { SelectItem } from "./settings/SelectItem";
 import languages from "../../locale/languages";
 import SettingSwitch from "./settings/SettingSwitch";
@@ -9,7 +9,7 @@ import { useSettingStore } from "../../hooks/useSettingStore";
 
 function Settings() {
     const { t, i18n } = useTranslation();
-    const { isAutoStartUp } = useSettingStore();
+    const { isAutoStartUp, isPetAboveTaskBar } = useSettingStore();
 
     const settings: SettingsContent = {
         parent: {
@@ -22,6 +22,12 @@ function Settings() {
                 description: t("Automatically open WindowPet every time u start the computer"),
                 checked: isAutoStartUp,
                 dispatchType: "switchAutoWindowStartUp",
+            },
+            {
+                title: t("Pet above taskbar"),
+                description: t("Make the pet float above taskbar (For Window User)"),
+                checked: isPetAboveTaskBar,
+                dispatchType: "switchPetAboveTaskBar",
             },
         ]
     }
@@ -55,7 +61,7 @@ function Settings() {
                     {t("Cancel")}
                 </Button>
             </Group> */}
-        </>
+    </>
     )
 }
 

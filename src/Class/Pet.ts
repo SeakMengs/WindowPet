@@ -2,9 +2,14 @@
  * A good resource to learn about canvas, the project is based on this tutorial.
  * credit: https://www.youtube.com/watch?v=vyqbNFMDRGQ&t=8593s&ab_channel=ChrisCourses
  */
+import { useSettingStore } from "../hooks/useSettingStore";
 import { States, CurrentPetState, PetParams } from "./type";
+import {immerable} from "immer"
+
+const { isPetAboveTaskBar } = useSettingStore.getState();
 
 export default class Pet {
+    [immerable] = true;
     position: { x: number; y: number };
     name: string;
     velocity: { x: number; y: number };
@@ -46,8 +51,9 @@ export default class Pet {
             position.x = Math.floor(Math.random() * window.screen.width);
         } while (position.x < 0 || position.x > window.screen.width - 100);
 
-        if (true) position.y += 48;
-        
+        console.log(isPetAboveTaskBar);
+        if (isPetAboveTaskBar) position.y += 48;
+
         this.position = position;
         this.name = name;
         this.velocity = velocity;
@@ -69,7 +75,7 @@ export default class Pet {
         this.movingDirection = Math.random() < 0.5 ? 'left' : 'right';
         this.walkSpeed = walkSpeed;
         this.runSpeed = runSpeed;
-        
+
         // generate the images for each state
         for (const state in this.states) {
             this.states[state]!.image = new Image();
