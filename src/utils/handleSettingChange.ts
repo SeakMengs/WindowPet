@@ -1,6 +1,7 @@
 import { setSettings, toggleAutoStartUp } from "./settingsHelper";
 import { HandleSettingChange, Theme } from "./type";
 import { useSettingStore } from "../hooks/useSettingStore";
+import { WebviewWindow } from '@tauri-apps/api/window'
 
 export const handleSettingChange: HandleSettingChange = (dispatchType, newValue) => {
     /* 
@@ -26,6 +27,18 @@ export const handleSettingChange: HandleSettingChange = (dispatchType, newValue)
         case 'switchPetAboveTaskBar':
             setSettings({ setKey: "isPetAboveTaskbar", newValue: newValue });
             setIsPetAboveTaskbar(newValue as boolean);
+
+            (async () => {
+                // get the window instance by its label
+                const mainWindow = WebviewWindow.getByLabel('main');
+
+                if (mainWindow) {
+                    await mainWindow.emit('render', {
+                        message: 'Hey, re-render pets! :)',
+                        isPetAboveTaskbar: newValue,
+                    });
+                }
+            })();
         default:
             return;
     }

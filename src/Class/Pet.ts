@@ -4,12 +4,8 @@
  */
 import { useSettingStore } from "../hooks/useSettingStore";
 import { States, CurrentPetState, PetParams } from "./type";
-import {immerable} from "immer"
-
-const { isPetAboveTaskBar } = useSettingStore.getState();
 
 export default class Pet {
-    [immerable] = true;
     position: { x: number; y: number };
     name: string;
     velocity: { x: number; y: number };
@@ -51,7 +47,7 @@ export default class Pet {
             position.x = Math.floor(Math.random() * window.screen.width);
         } while (position.x < 0 || position.x > window.screen.width - 100);
 
-        console.log(isPetAboveTaskBar);
+        const isPetAboveTaskBar = useSettingStore.getState().isPetAboveTaskBar;
         if (isPetAboveTaskBar) position.y += 48;
 
         this.position = position;

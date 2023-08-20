@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { immer } from 'zustand/middleware/immer'
 import { ColorScheme } from "@mantine/core";
 
 interface SettingStore {
@@ -15,7 +14,7 @@ interface SettingStore {
     setIsPetAboveTaskbar: (newBoolean: boolean) => void;
 }
 
-export const useSettingStore = create(immer<SettingStore>((set) => ({
+export const useSettingStore = create<SettingStore>()((set) => ({
     language: 'en',
     setLanguage: (newLanguage) => {
         set({ language: newLanguage })
@@ -34,8 +33,6 @@ export const useSettingStore = create(immer<SettingStore>((set) => ({
     },
     isPetAboveTaskBar: false,
     setIsPetAboveTaskbar: (newBoolean) => {
-        // set({ isAboveTaskBar: newBoolean })
-        set((state) => { state.isPetAboveTaskBar = newBoolean }
-        )
+        set({ isPetAboveTaskBar: newBoolean })
     }
-})));
+}));

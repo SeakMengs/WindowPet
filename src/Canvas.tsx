@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
-import Pet from "./Class/Pet";
 import { usePetStore } from "./hooks/usePetStore";
+import { listen } from '@tauri-apps/api/event';
+import { clonePetsFromSettings } from "./utils/clonePetsFromSettings";
 import { useSettingStore } from "./hooks/useSettingStore";
-import { getAppSettings } from "./utils/settingsHelper";
 
 function Canvas() {
     // credit: https://stackoverflow.com/questions/16277383/javascript-screen-height-and-screen-width-returns-incorrect-values
@@ -13,26 +13,29 @@ function Canvas() {
     const Interval = 1000 / FPS;
     const requestAnimateFrameId = useRef<number>(0);
 
-    const isPetAboveTaskBar = useSettingStore(state => state.isPetAboveTaskBar);
-    const { pets, clonePets, isPetsInitialized, setIsPetsInitialized } = usePetStore();
+    const { pets, isPetsInitialized, setIsPetsInitialized } = usePetStore();
+    const { setIsPetAboveTaskbar } = useSettingStore();
 
     // disable right click (context menu) for build version only. uncomment for development
     // credit: https://github.com/tauri-apps/wry/issues/30
     document.addEventListener('contextmenu', event => event.preventDefault());
 
     useEffect(() => {
-        console.log("isAboveTaskBar: ", isPetAboveTaskBar);
-    }, [isPetAboveTaskBar]);
+        let unListen: () => void;
+        (async () => {
+            // listening to re-render event from settings webview instance
+            unListen = await listen<any>('render', (event) => {
+                setIsPetAboveTaskbar(event.payload!.isPetAboveTaskbar);
+                clonePetsFromSettings();
+            });
+        })();
+        return () => {
+            unListen();
+        }
+    }, [])
 
     useEffect(() => {
-        (async () => {
-            const petConfigs = await getAppSettings({ path: "pets.json" });
-            const tempPets: Pet[] = [];
-            for (let petConfig of petConfigs) {
-                tempPets.push(new Pet(petConfig));
-            }
-            clonePets(tempPets);
-        })();
+        clonePetsFromSettings();
     }, [isPetsInitialized]);
 
     useEffect(() => {
