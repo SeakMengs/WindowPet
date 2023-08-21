@@ -1,4 +1,4 @@
-import { Select, Button, Group, Text, Divider } from "@mantine/core";
+import { Select, Button, Group, Text } from "@mantine/core";
 import { SelectItem } from "./settings/SelectItem";
 import languages from "../../locale/languages";
 import SettingSwitch from "./settings/SettingSwitch";

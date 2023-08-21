@@ -1,4 +1,4 @@
-import Pet from "../Class/Pet";
+import Pet from "../class/Pet";
 import { usePetStore } from "../hooks/usePetStore";
 import { getAppSettings } from "./settingsHelper";
 

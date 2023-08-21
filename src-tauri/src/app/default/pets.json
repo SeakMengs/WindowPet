@@ -14,13 +14,6 @@
             "y": 18
         },
         "scale": 1,
-        "currentState": {
-            "state": "idle",
-            "index": 0,
-            "stateHold": 500
-        },
-        "framesMax": 10,
-        "framesHold": 8,
         "walkSpeed": 0.3,
         "runSpeed": 1.2,
         "states": {
@@ -113,13 +106,6 @@
             "y": 18
         },
         "scale": 2,
-        "currentState": {
-            "state": "idle",
-            "index": 0,
-            "stateHold": 500
-        },
-        "framesMax": 10,
-        "framesHold": 8,
         "walkSpeed": 0.3,
         "runSpeed": 1.2,
         "states": {
@@ -212,13 +198,6 @@
             "y": 18
         },
         "scale": 2,
-        "currentState": {
-            "state": "idle",
-            "index": 0,
-            "stateHold": 500
-        },
-        "framesMax": 10,
-        "framesHold": 8,
         "walkSpeed": 0.3,
         "runSpeed": 1.2,
         "states": {
@@ -311,13 +290,6 @@
             "y": 18
         },
         "scale": 3,
-        "currentState": {
-            "state": "idle",
-            "index": 0,
-            "stateHold": 500
-        },
-        "framesMax": 10,
-        "framesHold": 8,
         "walkSpeed": 0.4,
         "runSpeed": 1.5,
         "states": {
@@ -410,13 +382,6 @@
             "y": 18
         },
         "scale": 2,
-        "currentState": {
-            "state": "idle",
-            "index": 0,
-            "stateHold": 500
-        },
-        "framesMax": 10,
-        "framesHold": 8,
         "walkSpeed": 0.3,
         "runSpeed": 1.2,
         "states": {
@@ -509,13 +474,6 @@
             "y": 18
         },
         "scale": 2,
-        "currentState": {
-            "state": "idle",
-            "index": 0,
-            "stateHold": 500
-        },
-        "framesMax": 10,
-        "framesHold": 8,
         "walkSpeed": 0.3,
         "runSpeed": 1.2,
         "states": {
@@ -608,13 +566,6 @@
             "y": 18
         },
         "scale": 2,
-        "currentState": {
-            "state": "idle",
-            "index": 0,
-            "stateHold": 500
-        },
-        "framesMax": 10,
-        "framesHold": 8,
         "walkSpeed": 0.3,
         "runSpeed": 1.2,
         "states": {
@@ -707,13 +658,6 @@
             "y": 18
         },
         "scale": 1,
-        "currentState": {
-            "state": "idle",
-            "index": 0,
-            "stateHold": 500
-        },
-        "framesMax": 8,
-        "framesHold": 8,
         "walkSpeed": 0.3,
         "runSpeed": 1.2,
         "states": {

@@ -59,7 +59,7 @@ function SettingWindow() {
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <MantineProvider theme={{
         colorScheme: colorScheme,
-        fontFamily: 'Rubik, Siemreap, cursive, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji',
+        fontFamily: 'cursive, Siemreap, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji',
       }} withGlobalStyles withNormalizeCSS>
         <AppShell
           padding={0}
@@ -89,9 +89,13 @@ function SettingWindow() {
             </Navbar>
           }
         >
-          <Box m={"xl"}>
+          <ScrollArea style={{
+            height: "100vh"
+          }}>
+            <Box m={"xl"}>
               <CurrentSettingTab />
-          </Box>
+            </Box>
+          </ScrollArea>
         </AppShell>
       </MantineProvider>
     </ColorSchemeProvider>

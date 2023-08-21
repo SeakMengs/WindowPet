@@ -12,5 +12,15 @@
     "Auto start-up": "Auto start-up",
     "Automatically open WindowPet every time u start the computer": "Automatically open WindowPet every time u start the computer",
     "Make the pet float above taskbar (For Window User)": "Make the pet float above taskbar (For Window User)",
-    "Pet above taskbar": "Pet above taskbar"
+    "Pet above taskbar": "Pet above taskbar",
+    "Position Y": "Position Y",
+    "Position X": "Position X",
+    "Animation speed": "Animation speed",
+    "Scale": "Scale",
+    "Walk speed": "Walk speed",
+    "Run speed": "Run speed",
+    "Pet Name": "Pet Name",
+    "Pet States": "Pet States",
+    "Animate duration": "Animate duration",
+    "It is the time it takes for an animation to complete one cycle. If the animate duration exceeds the default animation time, it will reset to the default animation and repeat": "It is the time it takes for an animation to complete one cycle. If the animate duration exceeds the default animation time, it will reset to the default animation and repeat"
 }

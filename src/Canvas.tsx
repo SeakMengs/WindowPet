@@ -22,15 +22,16 @@ function Canvas() {
 
     useEffect(() => {
         let unListen: () => void;
-        (async () => {
-            // listening to re-render event from settings webview instance
-            unListen = await listen<any>('render', (event) => {
-                setIsPetAboveTaskbar(event.payload!.isPetAboveTaskbar);
-                clonePetsFromSettings();
-            });
-        })();
+        listen<any>('render', (event) => {
+            setIsPetAboveTaskbar(event.payload!.isPetAboveTaskbar);
+            clonePetsFromSettings();
+        }).then((unListenFn) => {
+            unListen = unListenFn;
+        });
         return () => {
-            unListen();
+            if (unListen) {
+                unListen();
+            }
         }
     }, [])
 

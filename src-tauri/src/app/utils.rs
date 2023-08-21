@@ -29,15 +29,14 @@ pub fn open_setting_window(app: &AppHandle) {
             .min_inner_size(920.0, 650.0)
             .build()
             .unwrap();
-    return;
 }
 
 pub fn convert_path(path_str: &str) -> String {
     if cfg!(target_os = "windows") {
         return path_str.replace('/', "\\");
-    } else {
-        return path_str.replace('\\', "/");
-    }
+    } 
+    
+    return path_str.replace('\\', "/");
 }
 
 pub fn if_app_config_does_not_exist_create_default(app: &mut App, config_name: &str) {

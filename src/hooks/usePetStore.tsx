@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { CurrentPetState, States } from "../Class/type";
+import { CurrentPetState, States } from "../class/type";
 
 export type TPet = {
     position: { x: number; y: number };

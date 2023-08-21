@@ -28,7 +28,6 @@ export default class Pet {
     constructor({
         position,
         name,
-        currentState,
         offset = { x: 0, y: 0 },
         velocity,
         scale = 1,
@@ -37,7 +36,7 @@ export default class Pet {
         // default
         framesCurrent = 0,
         framesElapsed = 0,
-        framesHold = 20,
+        framesHold = 8,
         states,
         walkSpeed = 0.1,
         runSpeed = 0.5,
@@ -56,11 +55,7 @@ export default class Pet {
         this.states = states;
         this.offset = offset;
         this.stateNumber = Math.floor(Math.random() * 500);
-
-        // default state from config but we want to randomize the state
-        // this.currentState = currentState;
         this.currentState = this.generateOneRandomState();
-
         this.image = new Image();
         this.imageSrc = this.states[this.currentState.state]!.imageSrc;
         this.scale = scale;
