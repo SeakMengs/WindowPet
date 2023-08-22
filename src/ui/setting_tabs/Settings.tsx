@@ -4,14 +4,14 @@ import languages from "../../locale/languages";
 import SettingSwitch from "./settings/SettingSwitch";
 import { useTranslation } from "react-i18next";
 import { handleSettingChange } from "../../utils/handleSettingChange";
-import { SettingsContent } from "../../utils/type";
+import { ISettingsContent } from "../../types/ISetting";
 import { useSettingStore } from "../../hooks/useSettingStore";
 
 function Settings() {
     const { t, i18n } = useTranslation();
     const { isAutoStartUp, isPetAboveTaskBar } = useSettingStore();
 
-    const settings: SettingsContent = {
+    const settings: ISettingsContent = {
         parent: {
             title: t("Setting preferences"),
             description: t("Choose what u desire, do what u love")

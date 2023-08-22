@@ -1,27 +1,27 @@
-export interface GetAppSetting {
+export interface IGetAppSetting {
     path?: string,
     key?: string,
 }
 
-export interface SetSetting extends GetAppSetting {
+export interface ISetSetting extends IGetAppSetting {
     setKey: string,
     newValue: unknown,
 }
 
-export interface HandleSettingChange {
+export interface IHandleSettingChange {
     (
         dispatchType: string,
         newValue: string | boolean,
     ): void;
 }
 
-export interface SettingTabComponentInterface {
+export interface ISettingTabComponentInterface {
     [key: number]: () => JSX.Element;
 }
 
 export type Theme = 'dark' | 'light';
 
-export interface SettingsContent {
+export interface ISettingsContent {
     parent: {
         title: string;
         description: string;
@@ -32,4 +32,11 @@ export interface SettingsContent {
         checked: boolean;
         dispatchType: string;
     }[];
+}
+
+export interface ISettingTabProps {
+    icon: React.ReactNode;
+    color: string;
+    label: string;
+    index: number;
 }

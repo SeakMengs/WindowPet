@@ -1,4 +1,4 @@
-export type PetState = {
+export type TPetState = {
     imageSrc: string;
     framesMax: number;
     stateHold: number;
@@ -6,20 +6,20 @@ export type PetState = {
     image?: HTMLImageElement;
 };
 
-export type States = {
-    [key: string]: PetState | undefined;
+export type TStates = {
+    [key: string]: TPetState | undefined;
 }
 
-export type CurrentPetState = {
+export type TCurrentPetState = {
     state: string;
     index?: number;
     stateHold: number;
 };
 
-export interface PetParams {
+export interface IPetParams {
     position: { x: number; y: number };
     name: string;
-    currentState: CurrentPetState;
+    currentState: TCurrentPetState;
     velocity: { x: number; y: number };
     offset: { x: number; y: number };
     scale?: number;
@@ -27,7 +27,7 @@ export interface PetParams {
     framesCurrent?: number;
     framesElapsed?: number;
     framesHold?: number;
-    states: States;
+    states: TStates;
     walkSpeed?: number;
     runSpeed?: number;
 }

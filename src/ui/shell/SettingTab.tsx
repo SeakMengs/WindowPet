@@ -1,14 +1,8 @@
 import { ThemeIcon, UnstyledButton, Group, Text } from '@mantine/core';
 import { useSettingTabStore } from '../../hooks/useSettingTabStore';
+import { ISettingTabProps } from '../../types/ISetting';
 
-interface SettingTabProps {
-    icon: React.ReactNode;
-    color: string;
-    label: string;
-    index: number;
-}
-
-function SettingTab({ icon, color, label, index }: SettingTabProps) {
+function SettingTab({ icon, color, label, index }: ISettingTabProps) {
     const { setPage } = useSettingTabStore();
 
     return (

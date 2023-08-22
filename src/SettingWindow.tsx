@@ -12,15 +12,15 @@ import {
   ScrollArea
 } from '@mantine/core';
 import { IconSun, IconMoonStars } from '@tabler/icons-react';
-import Logo from './components/shell/Logo';
-import { SettingTabs } from './components/shell/SettingTabs';
-import AddPet from './components/setting_tabs/AddPet';
-import EditPet from './components/setting_tabs/EditPet';
-import Settings from './components/setting_tabs/Settings';
+import Logo from './ui/shell/Logo';
+import { SettingTabs } from './ui/shell/SettingTabs';
+import AddPet from './ui/setting_tabs/AddPet';
+import EditPet from './ui/setting_tabs/EditPet';
+import Settings from './ui/setting_tabs/Settings';
 import { useTranslation } from 'react-i18next';
 import { useSettingStore } from './hooks/useSettingStore';
 import { handleSettingChange } from './utils/handleSettingChange';
-import { SettingTabComponentInterface } from './utils/type';
+import { ISettingTabComponentInterface } from './types/ISetting';
 import { useSettingTabStore } from './hooks/useSettingTabStore';
 import { useEffect } from 'react';
 
@@ -43,7 +43,7 @@ function SettingWindow() {
     if (language != i18n.language) i18n.changeLanguage(language);
   }, [language]);
 
-  const SettingTabComponent: SettingTabComponentInterface = {
+  const SettingTabComponent: ISettingTabComponentInterface = {
     0: AddPet,
     1: EditPet,
     2: Settings,

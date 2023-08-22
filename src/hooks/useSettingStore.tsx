@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { ColorScheme } from "@mantine/core";
 
-interface SettingStore {
+interface ISettingStore {
     language: string;
     setLanguage: (newLanguage: string) => void;
     theme: ColorScheme;
@@ -14,7 +14,7 @@ interface SettingStore {
     setIsPetAboveTaskbar: (newBoolean: boolean) => void;
 }
 
-export const useSettingStore = create<SettingStore>()((set) => ({
+export const useSettingStore = create<ISettingStore>()((set) => ({
     language: 'en',
     setLanguage: (newLanguage) => {
         set({ language: newLanguage })

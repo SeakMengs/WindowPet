@@ -1,5 +1,5 @@
 import { setSettings, toggleAutoStartUp } from "./settingsHelper";
-import { HandleSettingChange, Theme } from "./type";
+import { HandleSettingChange, Theme } from "../types/ISetting";
 import { useSettingStore } from "../hooks/useSettingStore";
 import { WebviewWindow } from '@tauri-apps/api/window'
 

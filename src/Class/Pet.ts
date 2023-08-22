@@ -3,16 +3,16 @@
  * credit: https://www.youtube.com/watch?v=vyqbNFMDRGQ&t=8593s&ab_channel=ChrisCourses
  */
 import { useSettingStore } from "../hooks/useSettingStore";
-import { States, CurrentPetState, PetParams } from "./type";
+import { IPetParams, TStates, TCurrentPetState } from "../types/IPet";
 
 export default class Pet {
     position: { x: number; y: number };
     name: string;
     velocity: { x: number; y: number };
     offset: { x: number; y: number };
-    states: States;
+    states: TStates;
     stateNumber: number;
-    currentState: CurrentPetState;
+    currentState: TCurrentPetState;
     image: HTMLImageElement;
     imageSrc: string;
     scale: number;
@@ -40,7 +40,7 @@ export default class Pet {
         states,
         walkSpeed = 0.1,
         runSpeed = 0.5,
-    }: PetParams) {
+    }: IPetParams) {
         // generate number from 0 to current screen width
         do {
             position.x = Math.floor(Math.random() * window.screen.width);

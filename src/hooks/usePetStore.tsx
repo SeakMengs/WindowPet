@@ -1,14 +1,14 @@
 import { create } from "zustand";
-import { CurrentPetState, States } from "../class/type";
+import { TCurrentPetState, TStates } from "../types/IPet";
 
-export type TPet = {
+type TPet = {
     position: { x: number; y: number };
     name: string;
     velocity: { x: number; y: number };
     offset: { x: number; y: number };
-    states: States;
+    states: TStates;
     stateNumber: number;
-    currentState: CurrentPetState;
+    currentState: TCurrentPetState;
     image: HTMLImageElement;
     imageSrc: string;
     scale: number;
@@ -29,7 +29,7 @@ export type TPet = {
     generateOneRandomState: () => void;
 };
 
-interface PetStore {
+interface IPetStore {
     pets: TPet[];
     clonePets: (pets: TPet[]) => void;
     addPet: (pet: TPet) => void;
@@ -38,7 +38,7 @@ interface PetStore {
     setIsPetsInitialized: (value: boolean) => void;
 }
 
-export const usePetStore = create<PetStore>()((set) => ({
+export const usePetStore = create<IPetStore>()((set) => ({
     pets: [],
     clonePets: (pets: TPet[]) => {
         set({ pets: [...pets] });
