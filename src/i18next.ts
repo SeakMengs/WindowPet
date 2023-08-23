@@ -3,25 +3,24 @@ import Khmer from "./locale/kh/translation.json";
 import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
 import { getAppSettings } from "./utils/settingsHelper";
-import { TAppSetting } from "./types/ISetting";
 
 const defaultLanguage = 'en';
-let settings: TAppSetting = await getAppSettings({});
-
-i18next
-    .use(initReactI18next)
-    .init({
-        // lng: 'en',
-        lng: settings.language,
-        fallbackLng: defaultLanguage,
-        resources: {
-            en: {
-                translation: English
-            },
-            kh: {
-                translation: Khmer
-            },
-        }
-    });
+getAppSettings({}).then((settings) => {
+    i18next
+        .use(initReactI18next)
+        .init({
+            // lng: 'en',
+            lng: settings.language,
+            fallbackLng: defaultLanguage,
+            resources: {
+                en: {
+                    translation: English
+                },
+                kh: {
+                    translation: Khmer
+                },
+            }
+        });
+});
 
 export default i18next;

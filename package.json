@@ -14,7 +14,7 @@
     "@mantine/core": "^6.0.17",
     "@tabler/icons-react": "^2.30.0",
     "@tauri-apps/api": "^1.4.0",
-    "embla-carousel-react": "^8.0.0-rc11",
+    "embla-carousel-react": "^7.1.0",
     "i18next": "^23.4.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
