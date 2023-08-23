@@ -1,9 +1,9 @@
 import { setSettings, toggleAutoStartUp } from "./settingsHelper";
-import { HandleSettingChange, Theme } from "../types/ISetting";
+import { IHandleSettingChange, Theme } from "../types/ISetting";
 import { useSettingStore } from "../hooks/useSettingStore";
 import { WebviewWindow } from '@tauri-apps/api/window'
 
-export const handleSettingChange: HandleSettingChange = (dispatchType, newValue) => {
+export const handleSettingChange: IHandleSettingChange = (dispatchType, newValue) => {
     /* 
      * Reading/writing state and reacting to changes outside of components, for more detail read  
      * zustand docs here: https://docs.pmnd.rs/zustand/recipes/recipes

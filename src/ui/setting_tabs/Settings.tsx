@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { handleSettingChange } from "../../utils/handleSettingChange";
 import { ISettingsContent } from "../../types/ISetting";
 import { useSettingStore } from "../../hooks/useSettingStore";
+import { memo } from "react";
 
 function Settings() {
     const { t, i18n } = useTranslation();
@@ -65,4 +66,4 @@ function Settings() {
     )
 }
 
-export default Settings;
+export default memo(Settings);

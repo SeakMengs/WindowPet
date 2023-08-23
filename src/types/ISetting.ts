@@ -1,11 +1,22 @@
+import { ColorScheme } from "@mantine/core";
+import { MemoExoticComponent } from "react";
+
 export interface IGetAppSetting {
-    path?: string,
+    configName?: string,
     key?: string,
 }
 
 export interface ISetSetting extends IGetAppSetting {
+    configName?: string,
+    key?: string,
     setKey: string,
     newValue: unknown,
+}
+
+export type TAppSetting = {
+    isPetAboveTaskbar: boolean,
+    language: string,
+    theme: ColorScheme
 }
 
 export interface IHandleSettingChange {
@@ -16,7 +27,7 @@ export interface IHandleSettingChange {
 }
 
 export interface ISettingTabComponentInterface {
-    [key: number]: () => JSX.Element;
+    [key: number]: MemoExoticComponent<() => JSX.Element>;
 }
 
 export type Theme = 'dark' | 'light';
@@ -39,4 +50,5 @@ export interface ISettingTabProps {
     color: string;
     label: string;
     index: number;
+    handleSetTab: (index: number) => void;
 }

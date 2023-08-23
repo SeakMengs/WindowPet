@@ -13,7 +13,7 @@ import {
 } from '@mantine/core';
 import { IconSun, IconMoonStars } from '@tabler/icons-react';
 import Logo from './ui/shell/Logo';
-import { SettingTabs } from './ui/shell/SettingTabs';
+import SettingTabs from './ui/shell/SettingTabs';
 import AddPet from './ui/setting_tabs/AddPet';
 import EditPet from './ui/setting_tabs/EditPet';
 import Settings from './ui/setting_tabs/Settings';
@@ -22,7 +22,7 @@ import { useSettingStore } from './hooks/useSettingStore';
 import { handleSettingChange } from './utils/handleSettingChange';
 import { ISettingTabComponentInterface } from './types/ISetting';
 import { useSettingTabStore } from './hooks/useSettingTabStore';
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 
 function SettingWindow() {
   // disable right click (context menu) for build version only. uncomment for development
@@ -51,7 +51,7 @@ function SettingWindow() {
 
   let CurrentSettingTab = SettingTabComponent[page];
   if (!CurrentSettingTab) {
-    CurrentSettingTab = () => <Text component='h1'>{t("Seem like the content of this page doesn't exist or has not been updated")}</Text>;
+    CurrentSettingTab = memo(() => <Text component='h1'>{t("Seem like the content of this page doesn't exist or has not been updated")}</Text>);
   }
 
   return (

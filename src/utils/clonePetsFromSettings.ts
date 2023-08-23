@@ -4,7 +4,7 @@ import { getAppSettings } from "./settingsHelper";
 
 export const clonePetsFromSettings = async () => {
     const clonePets = usePetStore.getState().clonePets;
-    const petConfigs = await getAppSettings({ path: "pets.json" });
+    const petConfigs = await getAppSettings({ configName: "pets.json" });
     const tempPets: Pet[] = [];
 
     for (let petConfig of petConfigs) {

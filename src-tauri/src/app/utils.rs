@@ -1,6 +1,6 @@
 use serde_json::json;
-use std::env;
 use std::path::{Path, PathBuf};
+use std::{env, fs};
 use tauri::api::path;
 use tauri::{App, AppHandle};
 use tauri_plugin_store::StoreBuilder;
@@ -31,44 +31,62 @@ pub fn open_setting_window(app: &AppHandle) {
             .unwrap();
 }
 
-pub fn convert_path(path_str: &str) -> String {
+pub fn convert_path(path_str: &str) -> Option<String> {
     if cfg!(target_os = "windows") {
-        return path_str.replace('/', "\\");
-    } 
-    
-    return path_str.replace('\\', "/");
+        return Some(path_str.replace('/', "\\"));
+    }
+
+    return Some(path_str.replace('\\', "/"));
+}
+
+pub fn combine_config_path(config_name: &str, folder_name: Option<String>) -> Option<String> {
+    let folder_name = folder_name.unwrap_or("WindowPet\\".to_string());
+    let config_dir = path::config_dir().unwrap();
+    return convert_path(
+        config_dir
+            .join(folder_name)
+            .join(config_name)
+            .to_str()
+            .unwrap(),
+    );
+}
+
+pub fn read_file_to_json(path: &String) -> Option<serde_json::Value> {
+    let data = match fs::read_to_string(path) {
+        Ok(data) => data,
+        Err(err) => {
+            println!("Error reading file: {}", err);
+            return None;
+        }
+    };
+    return Some(serde_json::from_str(&data).unwrap());
 }
 
 pub fn if_app_config_does_not_exist_create_default(app: &mut App, config_name: &str) {
-    let binding = path::config_dir()
-        .unwrap()
-        .join("WindowPet\\".to_owned() + config_name);
-    let setting_config_path = convert_path(binding.to_str().unwrap());
+    let setting_config_path = combine_config_path(config_name, None).unwrap();
     let is_config_already_exist = Path::new(&setting_config_path).exists();
 
-    if !is_config_already_exist {
-        // might rewrite how we read content inside file if this function is frequently used
-        let data;
-        if config_name == "settings.json" {
-            data = include_str!("default/settings.json");
-        } else if config_name == "pets.json" {
-            data = include_str!("default/pets.json");
-        } else {
+    if is_config_already_exist {
+        return;
+    }
+
+    let default_settings = convert_path(&("src/app/default/".to_owned() + config_name)).unwrap();
+    let json_data = match read_file_to_json(&default_settings) {
+        Some(data) => data,
+        None => {
+            println!("Error reading file: {}", default_settings);
             return;
         }
+    };
+    let mut store = StoreBuilder::new(app.handle(), PathBuf::from(setting_config_path)).build();
 
-        let json_data: serde_json::Value = serde_json::from_str(&data).unwrap();
-
-        let mut store = StoreBuilder::new(app.handle(), PathBuf::from(setting_config_path)).build();
-
-        // note that values must be serd_json::Value to be compatible with JS
-        store
-            .insert("app".to_string(), json!(json_data))
-            .unwrap_or_else(|err| {
-                println!("Error inserting into store: {}", err);
-            });
-        store.save().unwrap();
-    }
+    // note that values must be serd_json::Value to be compatible with JS
+    store
+        .insert("app".to_string(), json!(json_data))
+        .unwrap_or_else(|err| {
+            println!("Error inserting into store: {}", err);
+        });
+    store.save().unwrap();
 }
 
 #[tauri::command]

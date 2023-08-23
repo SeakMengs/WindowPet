@@ -23,9 +23,8 @@
       "fs": {
         "all": true,
         "scope": [
-          "$RESOURCE/*",
-          "$APPDATA/*",
-          "$CONFIG"
+          "$RESOURCE/**",
+          "$CONFIG/**"
         ]
       },
       "path": {

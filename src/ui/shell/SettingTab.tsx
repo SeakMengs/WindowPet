@@ -1,13 +1,11 @@
 import { ThemeIcon, UnstyledButton, Group, Text } from '@mantine/core';
-import { useSettingTabStore } from '../../hooks/useSettingTabStore';
 import { ISettingTabProps } from '../../types/ISetting';
+import { memo } from 'react';
 
-function SettingTab({ icon, color, label, index }: ISettingTabProps) {
-    const { setPage } = useSettingTabStore();
-
+function SettingTab({ icon, color, label, index, handleSetTab }: ISettingTabProps) {
     return (
         <UnstyledButton
-            onClick={() => setPage(index)}
+            onClick={() => handleSetTab(index)}
             sx={(theme) => ({
                 display: 'block',
                 width: '100%',
@@ -32,4 +30,4 @@ function SettingTab({ icon, color, label, index }: ISettingTabProps) {
     );
 }
 
-export default SettingTab;
+export default memo(SettingTab);

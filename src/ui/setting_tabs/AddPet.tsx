@@ -10,16 +10,15 @@ import {
     TextInput,
 } from "@mantine/core";
 import { Carousel } from '@mantine/carousel';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { memo } from "react";
 
 function AddPet() {
     const { t } = useTranslation();
     const [selectedPet, setSelectedPet] = useState<number>(0);
 
-    useEffect(() => {
-        console.log(selectedPet);
-    }, [selectedPet]);
+    console.log("AddPet render time");
 
     return (
         <>
@@ -120,4 +119,4 @@ function AddPet() {
     )
 }
 
-export default AddPet;
+export default memo(AddPet);
