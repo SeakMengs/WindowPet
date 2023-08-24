@@ -2,16 +2,15 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod app;
-use app::cmd::{change_current_app_position, change_current_app_size};
+use app::conf::{combine_config_path, convert_path, if_app_config_does_not_exist_create_default};
 use app::tray::{handle_tray_event, init_system_tray};
-use app::utils::{get_os, if_app_config_does_not_exist_create_default};
-use tauri_plugin_autostart::MacosLauncher;
 use tauri::Manager;
+use tauri_plugin_autostart::MacosLauncher;
 
 #[derive(Clone, serde::Serialize)]
 struct Payload {
-  args: Vec<String>,
-  cwd: String,
+    args: Vec<String>,
+    cwd: String,
 }
 
 fn main() {
@@ -24,7 +23,8 @@ fn main() {
         .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
             println!("{}, {argv:?}, {cwd}", app.package_info().name);
 
-            app.emit_all("single-instance", Payload { args: argv, cwd }).unwrap();
+            app.emit_all("single-instance", Payload { args: argv, cwd })
+                .unwrap();
         }))
         .setup(move |app| {
             let window = app.get_window("main").unwrap();
@@ -39,17 +39,12 @@ fn main() {
         })
         .system_tray(init_system_tray())
         .on_system_tray_event(handle_tray_event)
-        .invoke_handler(tauri::generate_handler![
-            change_current_app_position,
-            change_current_app_size,
-            get_os,
-        ])
+        .invoke_handler(tauri::generate_handler![convert_path, combine_config_path])
         .build(tauri::generate_context!())
         .expect("error while running tauri application")
-        .run(|_app_handle, event| match event {
-            tauri::RunEvent::ExitRequested { api, .. } => {
+        .run(|_app_handle, event| {
+            if let tauri::RunEvent::ExitRequested { api, .. } = event {
                 api.prevent_exit();
             }
-            _ => {}
         });
 }

@@ -16,7 +16,7 @@ pub fn init_system_tray() -> SystemTray {
         .add_item(CustomMenuItem::new("restart".to_string(), "Restart"))
         .add_item(CustomMenuItem::new("quit".to_string(), "Quit"));
 
-    return SystemTray::new().with_menu(menu);
+    SystemTray::new().with_menu(menu)
 }
 
 pub fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
@@ -30,7 +30,6 @@ pub fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                     }
                     None => {
                         reopen_main_window(app);
-                        return;
                     }
                 };
             }
@@ -41,7 +40,6 @@ pub fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                     }
                     None => {
                         println!("Window not found");
-                        return;
                     }
                 };
             }
@@ -52,7 +50,6 @@ pub fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                 }
                 None => {
                     open_setting_window(app);
-                    return;
                 }
             },
             "restart" => {
@@ -76,7 +73,6 @@ pub fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
             }
             None => {
                 open_setting_window(app);
-                return;
             }
         }
     }
