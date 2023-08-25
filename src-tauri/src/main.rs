@@ -2,6 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod app;
+use app::cmd::get_mouse_position;
 use app::conf::{combine_config_path, convert_path, if_app_config_does_not_exist_create_default};
 use app::tray::{handle_tray_event, init_system_tray};
 use tauri::Manager;
@@ -39,7 +40,11 @@ fn main() {
         })
         .system_tray(init_system_tray())
         .on_system_tray_event(handle_tray_event)
-        .invoke_handler(tauri::generate_handler![convert_path, combine_config_path])
+        .invoke_handler(tauri::generate_handler![
+            convert_path,
+            combine_config_path,
+            get_mouse_position
+        ])
         .build(tauri::generate_context!())
         .expect("error while running tauri application")
         .run(|_app_handle, event| {

@@ -31,3 +31,10 @@ export interface IPetParams {
     walkSpeed?: number;
     runSpeed?: number;
 }
+
+export interface IStateInput {
+    framesHold?: number;
+    stateHold?: number;
+    state: string;
+    exclude?: boolean;
+}

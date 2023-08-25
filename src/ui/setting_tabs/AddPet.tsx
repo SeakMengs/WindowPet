@@ -1,24 +1,42 @@
 import {
     Center,
     Group,
-    Image,
     NumberInput,
     Flex,
     Button,
     Accordion,
     Divider,
+    Alert,
     TextInput,
 } from "@mantine/core";
 import { Carousel } from '@mantine/carousel';
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
+import StateInput from "./add_pet/StateInput";
+import { IPetParams } from "../../types/IPet";
+import PetSlide from "./add_pet/PetSlide";
+import { defaultPetOptions } from "../../default/defaultPetExport";
+import { IconAlertCircle } from '@tabler/icons-react';
 
 function AddPet() {
     const { t } = useTranslation();
-    const [selectedPet, setSelectedPet] = useState<number>(0);
+    const [selectedPetIndex, setSelectedPetIndex] = useState<number>(0);
+    const [currentPet, setCurrentPet] = useState<IPetParams>(defaultPetOptions[selectedPetIndex]);
+    const [currentPetName, setCurrentPetName] = useState<string>(currentPet.name);
 
-    console.log("AddPet render time");
+    const PetOptionImages = defaultPetOptions.map((pet, index) => {
+        const imageSrc = pet.states[Object.keys(currentPet.states)[0]]?.imageSrc;
+        return <PetSlide imageSrc={imageSrc} key={index} />
+    });
+
+    useEffect(() => {
+        setCurrentPet(defaultPetOptions[selectedPetIndex]);
+        setCurrentPetName(defaultPetOptions[selectedPetIndex].name);
+    }, [selectedPetIndex]);
+
+    const CurrentPetStateInputs: any = Object.keys(currentPet.states).map((state, index) => {
+        return <StateInput framesHold={currentPet.states[state]?.framesHold} stateHold={currentPet.states[state]?.stateHold} state={state} key={index} exclude={index === 2 ? true : false}/>;
+    });
 
     return (
         <>
@@ -28,89 +46,82 @@ function AddPet() {
                     mx="auto"
                     height={200}
                     loop
-                    initialSlide={selectedPet}
-                    onSlideChange={(index) => setSelectedPet(index)}
+                    initialSlide={selectedPetIndex}
+                    onSlideChange={(index) => setSelectedPetIndex(index)}
                 >
-                    <Carousel.Slide>
-                        <Image src={"https://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ"} />
-                    </Carousel.Slide>
-                    <Carousel.Slide>
-                        <Image src={"https://cdn.britannica.com/79/232779-050-6B0411D7/German-Shepherd-dog-Alsatian.jpg"} />
-                    </Carousel.Slide>
+                    {PetOptionImages}
                 </Carousel>
             </Center>
             <Flex direction={"column"}>
+                <Alert icon={<IconAlertCircle size="1rem" />} title={t("Attention")} variant="outline">
+                    {t("We have already tested and fine-tuned the default pet configuration to provide the best user experience. You only need to change the name of your pet. Making other changes to the configuration may prevent you from seeing your pet after adding it")}
+                </Alert>
                 <TextInput
                     mt="xl"
                     withAsterisk
                     label={t("Pet Name")}
                     placeholder={t("Pet Name")}
+                    value={currentPetName}
+                    onChange={(event) => {
+                        setCurrentPetName(event.currentTarget.value);
+                    }}
                 />
                 <Group spacing={"xl"} grow>
                     <NumberInput
                         mt="xl"
                         withAsterisk
+                        precision={2}
                         label={t("Position Y")}
                         placeholder={t("Position Y")}
                         stepHoldDelay={500}
                         stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
+                        value={currentPet.position.y}
                     />
                     <NumberInput
                         mt="xl"
                         withAsterisk
+                        precision={2}
                         label={t("Scale")}
                         placeholder={t("Scale")}
                         stepHoldDelay={500}
                         stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
+                        value={currentPet.scale}
+                        min={1}
                     />
                 </Group>
                 <Group spacing={"xl"} grow>
                     <NumberInput
                         mt="xl"
                         withAsterisk
+                        precision={2}
                         label={t("Walk speed")}
                         placeholder={t("Walk speed")}
                         stepHoldDelay={500}
                         stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
+                        value={currentPet.walkSpeed}
+                        min={0}
                     />
                     <NumberInput
                         mt="xl"
                         withAsterisk
+                        precision={2}
                         label={t("Run speed")}
                         placeholder={t("Run speed")}
                         stepHoldDelay={500}
                         stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
+                        value={currentPet.runSpeed}
+                        min={0}
                     />
                 </Group>
                 <Divider label={t("Pet States")} labelPosition="center" my={"xl"} />
                 <Accordion variant="separated">
-                    <Accordion.Item value="idle">
-                        <Accordion.Control>Idle</Accordion.Control>
-                        <Accordion.Panel>
-                            <NumberInput
-                                withAsterisk
-                                label={t("Animate duration")}
-                                placeholder={t("Animate duration")}
-                                description={t("It is the time it takes for an animation to complete one cycle. If the animate duration exceeds the default animation time, it will reset to the default animation and repeat")}
-                                stepHoldDelay={500}
-                                stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
-                            />
-                            <NumberInput
-                                my="xl"
-                                withAsterisk
-                                label={t("Animation speed")}
-                                placeholder={t("Animation speed")}
-                                stepHoldDelay={500}
-                                stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
-                            />
-                        </Accordion.Panel>
-                    </Accordion.Item>
+                    {CurrentPetStateInputs}
                 </Accordion>
                 <Group position={"right"} my="xl">
-                    <Button color="green">
+                    <Button color="green" variant="outline">
                         {t("Apply")}
                     </Button>
-                    <Button color="red">
+                    <Button color="red" variant="outline">
                         {t("Cancel")}
                     </Button>
                 </Group>

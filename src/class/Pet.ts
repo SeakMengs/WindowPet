@@ -2,9 +2,10 @@
  * A good resource to learn about canvas, the project is based on this tutorial.
  * credit: https://www.youtube.com/watch?v=vyqbNFMDRGQ&t=8593s&ab_channel=ChrisCourses
  */
+import { invoke } from "@tauri-apps/api";
 import { useSettingStore } from "../hooks/useSettingStore";
 import { IPetParams, TStates, TCurrentPetState } from "../types/IPet";
-
+import { IMousePosition } from "../types/IMousePosition";
 export default class Pet {
     position: { x: number; y: number };
     name: string;
@@ -130,16 +131,39 @@ export default class Pet {
 
         }
 
-        if (this.isBeingSelected) {
-            context.strokeStyle = "red";
-            context.lineWidth = 1;
-            context.strokeRect(
-                dx_start_draw_position,
-                dy_start_draw_position - this.offset.y * this.scale,
-                dWidth_draw_width,
-                dHeight_draw_height
-            )
+        const isAllowHoverOnPet = useSettingStore.getState().isAllowHoverOnPet;
+        if (isAllowHoverOnPet) {
+            invoke<IMousePosition>('get_mouse_position').then((mousePosition) => {
+                // if hover on the pet set isBeingSelected to true
+                if (
+                    mousePosition.clientX >= dx_start_draw_position &&
+                    mousePosition.clientX <= dx_start_draw_position + dWidth_draw_width &&
+                    mousePosition.clientY >= dy_start_draw_position - this.offset.y * this.scale &&
+                    mousePosition.clientY <= dy_start_draw_position + dHeight_draw_height - this.offset.y * this.scale
+                ) {
+                    this.isBeingSelected = true;
+                    // check state before switch because not all pets have the same states
+                    if (this.states.meow) this.switchState('meow');
+                    else if (this.states.attack) this.switchState('attack');
+                    return
+                }
+
+                this.isBeingSelected = false;
+                if (this.states.walk) this.switchState('walk');
+                else if (this.states.run) this.switchState('run');
+            });
         }
+
+        // if (this.isBeingSelected) {
+        //     context.strokeStyle = "red";
+        //     context.lineWidth = 1;
+        //     context.strokeRect(
+        //         dx_start_draw_position,
+        //         dy_start_draw_position - this.offset.y * this.scale,
+        //         dWidth_draw_width,
+        //         dHeight_draw_height
+        //     )
+        // }
     }
 
     // used to control the animation speed,

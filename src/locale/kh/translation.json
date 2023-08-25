@@ -22,5 +22,10 @@
     "Pet Name": "ឈ្មោះសត្វចិញ្ចឹម",
     "Pet States": "ចលនាសត្វចិញ្ចឹម",
     "Animate duration": "រយៈពេលនៃចលនាសត្វចិញ្ចឹម",
-    "It is the time it takes for an animation to complete one cycle. If the animate duration exceeds the default animation time, it will reset to the default animation and repeat": "វាជាពេលវេលាដែលវាត្រូវការសម្រាប់ចលនាដើម្បីបញ្ចប់វដ្តមួយ។ ប្រសិនបើរយៈពេលចលនាលើសពីពេលវេលាចលនាលំនាំដើម វានឹងកំណត់ឡើងវិញទៅចលនាលំនាំដើម ហើយធ្វើម្តងទៀត"
+    "It is the time it takes for an animation to complete one cycle. If the animate duration exceeds the default animation time, it will reset to the default animation and repeat": "វាជាពេលវេលាដែលវាត្រូវការសម្រាប់ចលនាដើម្បីបញ្ចប់វដ្តមួយ។ ប្រសិនបើរយៈពេលចលនាលើសពីពេលវេលាចលនាលំនាំដើម វានឹងកំណត់ឡើងវិញទៅចលនាលំនាំដើម ហើយធ្វើម្តងទៀត",
+    "Animation speed, the smaller the value, the faster the animation": "ល្បឿនចលនា តម្លៃកាន់តែតូច ចលនាកាន់តែលឿន",
+    "Attention": "យកចិត្តទុកដាក់",
+    "We have already tested and fine-tuned the default pet configuration to provide the best user experience. You only need to change the name of your pet. Making other changes to the configuration may prevent you from seeing your pet after adding it": "យើងបានសាកល្បងនិងកែសម្រួលការកំណត់រចនាសម្ព័ន្ធសត្វចិញ្ចឹមលំនាំដើមរួចហើយដើម្បីផ្តល់នូវបទពិសោធន៍អ្នកប្រើប្រាស់ដ៏ល្អបំផុត។ អ្នកគ្រាន់តែត្រូវប្តូរឈ្មោះសត្វចិញ្ចឹមរបស់អ្នកប៉ុណ្ណោះ។ ការផ្លាស់ប្តូរផ្សេងទៀតចំពោះការកំណត់អាចរារាំងអ្នកមិនឱ្យឃើញសត្វចិញ្ចឹមរបស់អ្នកបន្ទាប់ពីបន្ថែមវា។",
+    "Allow hover on pet": "អនុញ្ញាតឱ្យដាក់លើសត្វចិញ្ចឹម",
+    "Pets will switch state when u hover on them": "សត្វចិញ្ចឹមនឹងប្តូរស្ថានភាពនៅពេលអ្នកដាក់លើពួកវា"
 }

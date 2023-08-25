@@ -1,14 +1,14 @@
-import { setSettings, toggleAutoStartUp } from "./settingsHelper";
+import { setSettings, toggleAutoStartUp } from "./settings";
 import { IHandleSettingChange, Theme } from "../types/ISetting";
 import { useSettingStore } from "../hooks/useSettingStore";
-import { WebviewWindow } from '@tauri-apps/api/window'
+import { emitReRenderPetsEvent } from "./event";
 
 export const handleSettingChange: IHandleSettingChange = (dispatchType, newValue) => {
     /* 
      * Reading/writing state and reacting to changes outside of components, for more detail read  
      * zustand docs here: https://docs.pmnd.rs/zustand/recipes/recipes
      */
-    const { setLanguage, setTheme, setIsAutoStartUp, setIsPetAboveTaskbar } = useSettingStore.getState();
+    const { setLanguage, setTheme, setIsAutoStartUp, setIsPetAboveTaskbar, setIsAllowHoverOnPet } = useSettingStore.getState();
 
     switch (dispatchType) {
         case 'changeAppLanguage':
@@ -27,18 +27,12 @@ export const handleSettingChange: IHandleSettingChange = (dispatchType, newValue
         case 'switchPetAboveTaskBar':
             setSettings({ setKey: "isPetAboveTaskbar", newValue: newValue });
             setIsPetAboveTaskbar(newValue as boolean);
-
-            (async () => {
-                // get the window instance by its label
-                const mainWindow = WebviewWindow.getByLabel('main');
-
-                if (mainWindow) {
-                    await mainWindow.emit('render', {
-                        message: 'Hey, re-render pets! :)',
-                        isPetAboveTaskbar: newValue,
-                    });
-                }
-            })();
+            emitReRenderPetsEvent({ dispatchType, newValue });
+            return
+        case 'switchAllowHoverOnPet':
+            setSettings({ setKey: "isAllowHoverOnPet", newValue: newValue });
+            setIsAllowHoverOnPet(newValue as boolean);
+            emitReRenderPetsEvent({ dispatchType, newValue });
         default:
             return;
     }

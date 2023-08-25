@@ -1,6 +1,6 @@
 import Pet from "../class/Pet";
 import { usePetStore } from "../hooks/usePetStore";
-import { getAppSettings } from "./settingsHelper";
+import { getAppSettings } from "./settings";
 
 export const clonePetsFromSettings = async () => {
     const clonePets = usePetStore.getState().clonePets;

@@ -2,7 +2,7 @@ import English from "./locale/en/translation.json";
 import Khmer from "./locale/kh/translation.json";
 import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
-import { getAppSettings } from "./utils/settingsHelper";
+import { getAppSettings } from "./utils/settings";
 
 const defaultLanguage = 'en';
 getAppSettings({}).then((settings) => {

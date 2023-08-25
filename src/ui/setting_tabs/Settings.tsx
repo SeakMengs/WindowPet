@@ -10,7 +10,7 @@ import { memo } from "react";
 
 function Settings() {
     const { t, i18n } = useTranslation();
-    const { isAutoStartUp, isPetAboveTaskBar } = useSettingStore();
+    const { isAutoStartUp, isPetAboveTaskBar, isAllowHoverOnPet } = useSettingStore();
 
     const settings: ISettingsContent = {
         parent: {
@@ -29,6 +29,12 @@ function Settings() {
                 description: t("Make the pet float above taskbar (For Window User)"),
                 checked: isPetAboveTaskBar,
                 dispatchType: "switchPetAboveTaskBar",
+            },
+            {
+                title: t("Allow hover on pet"),
+                description: t("Pets will switch state when u hover on them"),
+                checked: isAllowHoverOnPet,
+                dispatchType: "switchAllowHoverOnPet",
             },
         ]
     }
@@ -54,14 +60,6 @@ function Settings() {
                 value={i18n.language}
                 onChange={(value) => handleSettingChange("changeAppLanguage", value as string)}
             />
-            {/* <Group position={"right"}>
-                <Button color="green">
-                    {t("Apply")}
-                </Button>
-                <Button color="red">
-                    {t("Cancel")}
-                </Button>
-            </Group> */}
     </>
     )
 }

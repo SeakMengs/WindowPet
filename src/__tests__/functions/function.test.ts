@@ -4,7 +4,7 @@
  */
 
 import { mockIPC, mockWindows, clearMocks } from '@tauri-apps/api/mocks'
-import { getAppSettings } from "../../utils/settingsHelper";
+import { getAppSettings } from "../../utils/settings";
 import { expect, test, afterEach } from "vitest";
 
 afterEach(() => {

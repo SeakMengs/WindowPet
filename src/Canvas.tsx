@@ -3,6 +3,7 @@ import { usePetStore } from "./hooks/usePetStore";
 import { listen } from '@tauri-apps/api/event';
 import { clonePetsFromSettings } from "./utils/clonePetsFromSettings";
 import { useSettingStore } from "./hooks/useSettingStore";
+import { TRenderEventListener } from "./types/IEvents";
 
 function Canvas() {
     // credit: https://stackoverflow.com/questions/16277383/javascript-screen-height-and-screen-width-returns-incorrect-values
@@ -14,7 +15,7 @@ function Canvas() {
     const requestAnimateFrameId = useRef<number>(0);
 
     const { pets, isPetsInitialized, setIsPetsInitialized } = usePetStore();
-    const { setIsPetAboveTaskbar } = useSettingStore();
+    const { setIsPetAboveTaskbar, setIsAllowHoverOnPet } = useSettingStore();
 
     // disable right click (context menu) for build version only. uncomment for development
     // credit: https://github.com/tauri-apps/wry/issues/30
@@ -22,8 +23,17 @@ function Canvas() {
 
     useEffect(() => {
         let unListen: () => void;
-        listen<any>('render', (event) => {
-            setIsPetAboveTaskbar(event.payload!.isPetAboveTaskbar);
+        listen<any>('render', (event: TRenderEventListener) => {
+            switch (event.payload.dispatchType) {
+                case 'switchPetAboveTaskBar':
+                    setIsPetAboveTaskbar(event.payload!.value as boolean);
+                    break;
+                case 'switchAllowHoverOnPet':
+                    setIsAllowHoverOnPet(event.payload!.value as boolean);
+                    break;
+                default:
+                    return;
+            }
             clonePetsFromSettings();
         }).then((unListenFn) => {
             unListen = unListenFn;

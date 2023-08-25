@@ -22,5 +22,10 @@
     "Pet Name": "Pet Name",
     "Pet States": "Pet States",
     "Animate duration": "Animate duration",
-    "It is the time it takes for an animation to complete one cycle. If the animate duration exceeds the default animation time, it will reset to the default animation and repeat": "It is the time it takes for an animation to complete one cycle. If the animate duration exceeds the default animation time, it will reset to the default animation and repeat"
+    "It is the time it takes for an animation to complete one cycle. If the animate duration exceeds the default animation time, it will reset to the default animation and repeat": "It is the time it takes for an animation to complete one cycle. If the animate duration exceeds the default animation time, it will reset to the default animation and repeat",
+    "Animation speed, the smaller the value, the faster the animation": "Animation speed, the smaller the value, the faster the animation",
+    "Attention": "Attention",
+    "We have already tested and fine-tuned the default pet configuration to provide the best user experience. You only need to change the name of your pet. Making other changes to the configuration may prevent you from seeing your pet after adding it": "We have already tested and fine-tuned the default pet configuration to provide the best user experience. You only need to change the name of your pet. Making other changes to the configuration may prevent you from seeing your pet after adding it",
+    "Allow hover on pet": "Allow hover on pet",
+    "Pets will switch state when u hover on them": "Pets will switch state when u hover on them"
 }

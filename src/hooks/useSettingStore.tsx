@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { ColorScheme } from "@mantine/core";
-import { getAppSettings } from "../utils/settingsHelper";
+import { getAppSettings } from "../utils/settings";
 import { TAppSetting } from "../types/ISetting";
 import { isEnabled } from "tauri-plugin-autostart-api";
 
@@ -13,6 +13,8 @@ interface ISettingStore {
     setIsPetAboveTaskbar: (newBoolean: boolean) => void;
     isAutoStartUp: boolean;
     setIsAutoStartUp: (newBoolean: boolean) => void;
+    isAllowHoverOnPet: boolean;
+    setIsAllowHoverOnPet: (newBoolean: boolean) => void;
     petConfig: any[];
     setPetConfig: (newConfig: any[]) => void;
 }
@@ -24,21 +26,25 @@ let [settings, autoStartUpEnabled] = await Promise.all<TAppSetting & boolean>([
 
 // initialize settings
 export const useSettingStore = create<ISettingStore>()((set) => ({
-    language: settings.language,
+    language: settings.language || "en",
     setLanguage: (newLanguage) => {
         set({ language: newLanguage })
     },
-    theme: settings.theme,
+    theme: settings.theme || "dark",
     setTheme: (newTheme) => {
         set({ theme: newTheme })
     },
-    isPetAboveTaskBar: settings.isPetAboveTaskbar,
+    isPetAboveTaskBar: settings.isPetAboveTaskbar || false,
     setIsPetAboveTaskbar: (newBoolean) => {
         set({ isPetAboveTaskBar: newBoolean })
     },
     isAutoStartUp: autoStartUpEnabled,
     setIsAutoStartUp: (newBoolean) => {
         set({ isAutoStartUp: newBoolean })
+    },
+    isAllowHoverOnPet: settings.isAllowHoverOnPet || true,
+    setIsAllowHoverOnPet: (newBoolean) => {
+        set({ isAllowHoverOnPet: newBoolean })
     },
     petConfig: [],
     setPetConfig: (newConfig) => {

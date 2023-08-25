@@ -28,7 +28,6 @@ function SettingWindow() {
   // disable right click (context menu) for build version only. uncomment for development
   // credit: https://github.com/tauri-apps/wry/issues/30
   document.addEventListener('contextmenu', event => event.preventDefault());
-
   // get object theme change it name to colorScheme for readability
   const { theme: colorScheme, language } = useSettingStore();
   const { t, i18n } = useTranslation();
@@ -50,6 +49,7 @@ function SettingWindow() {
   }
 
   let CurrentSettingTab = SettingTabComponent[page];
+
   if (!CurrentSettingTab) {
     CurrentSettingTab = memo(() => <Text component='h1'>{t("Seem like the content of this page doesn't exist or has not been updated")}</Text>);
   }
@@ -102,4 +102,4 @@ function SettingWindow() {
   );
 }
 
-export default SettingWindow;
+export default memo(SettingWindow);
