@@ -1,5 +1,4 @@
 import { Text } from "@mantine/core";
-import { usePetStore } from "../../hooks/usePetStore";
 import { memo, useEffect } from "react";
 
 function EditPet() {

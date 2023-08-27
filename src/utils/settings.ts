@@ -17,6 +17,7 @@ export function toggleAutoStartUp(isAutoStartUp: boolean) {
     })()
 };
 
+// default will return app settings, if key is provided, will return specific key
 export async function getAppSettings({ configName = "settings.json", key = "app" }: IGetAppSetting) {
     const configPath: string = await invoke("combine_config_path", { config_name: configName });
     const configExists = await exists(configPath);

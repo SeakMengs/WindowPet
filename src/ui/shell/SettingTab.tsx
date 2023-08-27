@@ -1,6 +1,6 @@
 import { ThemeIcon, UnstyledButton, Group, Text } from '@mantine/core';
-import { ISettingTabProps } from '../../types/ISetting';
 import { memo } from 'react';
+import { ISettingTabProps } from '../../types/components/type';
 
 function SettingTab({ icon, color, label, index, handleSetTab }: ISettingTabProps) {
     return (

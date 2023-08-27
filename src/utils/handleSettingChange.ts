@@ -1,5 +1,6 @@
 import { setSettings, toggleAutoStartUp } from "./settings";
-import { IHandleSettingChange, Theme } from "../types/ISetting";
+import { IHandleSettingChange } from "../types/ISetting";
+import { ColorScheme } from "@mantine/core";
 import { useSettingStore } from "../hooks/useSettingStore";
 import { emitReRenderPetsEvent } from "./event";
 
@@ -17,7 +18,7 @@ export const handleSettingChange: IHandleSettingChange = (dispatchType, newValue
             return
         case 'changeAppTheme':
             setSettings({ setKey: "theme", newValue: newValue });
-            setTheme(newValue as Theme);
+            setTheme(newValue as ColorScheme);
             return
         case 'switchAutoWindowStartUp':
             // auto start up doesn't need to be saved in settings.json

@@ -27,11 +27,9 @@ export interface IHandleSettingChange {
     ): void;
 }
 
-export interface ISettingTabComponentInterface {
+export interface ISettingTabComponent {
     [key: number]: MemoExoticComponent<() => JSX.Element>;
 }
-
-export type Theme = 'dark' | 'light';
 
 export interface ISettingsContent {
     parent: {
@@ -44,12 +42,4 @@ export interface ISettingsContent {
         checked: boolean;
         dispatchType: string;
     }[];
-}
-
-export interface ISettingTabProps {
-    icon: React.ReactNode;
-    color: string;
-    label: string;
-    index: number;
-    handleSetTab: (index: number) => void;
 }

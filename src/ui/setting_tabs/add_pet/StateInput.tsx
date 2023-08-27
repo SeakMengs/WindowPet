@@ -4,9 +4,8 @@ import {
 } from "@mantine/core";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
-import { IStateInput } from "../../../types/IPet";
 
-function StateInput({ framesHold, stateHold, state, exclude }: IStateInput) {
+function StateInput({ framesHold, stateHold, state, exclude }: any) {
     const { t } = useTranslation();
 
     return (

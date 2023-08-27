@@ -1,9 +1,5 @@
 import { create } from "zustand";
-
-interface ISettingTabState {
-    page: number;
-    setPage: (page: number) => void;
-}
+import { ISettingTabState } from "../types/hooks/type";
 
 export const useSettingTabStore = create<ISettingTabState>()((set) => ({
     page: 0,

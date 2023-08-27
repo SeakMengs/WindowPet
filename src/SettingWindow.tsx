@@ -20,14 +20,11 @@ import Settings from './ui/setting_tabs/Settings';
 import { useTranslation } from 'react-i18next';
 import { useSettingStore } from './hooks/useSettingStore';
 import { handleSettingChange } from './utils/handleSettingChange';
-import { ISettingTabComponentInterface } from './types/ISetting';
+import { ISettingTabComponent } from './types/ISetting';
 import { useSettingTabStore } from './hooks/useSettingTabStore';
 import { memo, useEffect } from 'react';
 
 function SettingWindow() {
-  // disable right click (context menu) for build version only. uncomment for development
-  // credit: https://github.com/tauri-apps/wry/issues/30
-  document.addEventListener('contextmenu', event => event.preventDefault());
   // get object theme change it name to colorScheme for readability
   const { theme: colorScheme, language } = useSettingStore();
   const { t, i18n } = useTranslation();
@@ -42,7 +39,7 @@ function SettingWindow() {
     if (language != i18n.language) i18n.changeLanguage(language);
   }, [language]);
 
-  const SettingTabComponent: ISettingTabComponentInterface = {
+  const SettingTabComponent: ISettingTabComponent = {
     0: AddPet,
     1: EditPet,
     2: Settings,
