@@ -8,16 +8,19 @@ import { getAppSettings } from "./utils/settings";
 function PhaserWrapper() {
     const [spriteConfig, setSpriteConfig] = useState<ISpriteConfig[]>([]);
 
-    useInit(async () => {
-        let config = await getAppSettings({ configName: "pets.json" });
-        setSpriteConfig(config);
-    });
+    useEffect(() => {
+        (async () => {
+            let config = await getAppSettings({ configName: "pets.json" });
+            setSpriteConfig(config);
+        })()
+    }, []);
 
     useEffect(() => {
         const phaserConfig: Phaser.Types.Core.GameConfig = {
             type: Phaser.AUTO,
             parent: "phaser-container",
-            backgroundColor: '#282c34',
+            // white alpha 0
+            backgroundColor: '#ffffff0',
             transparent: true,
             scale: {
                 mode: Phaser.Scale.ScaleModes.RESIZE,
@@ -27,7 +30,7 @@ function PhaserWrapper() {
             physics: {
                 default: 'arcade',
                 arcade: {
-                    debug: false,
+                    debug: true,
                     gravity: { y: 200 },
                 },
             },

@@ -32,10 +32,9 @@ fn main() {
             window
                 .set_ignore_cursor_events(true)
                 .unwrap_or_else(|err| println!("{:?}", err));
-
+            
             if_app_config_does_not_exist_create_default(app, "settings.json");
             if_app_config_does_not_exist_create_default(app, "pets.json");
-
             Ok(())
         })
         .system_tray(init_system_tray())

@@ -19,16 +19,16 @@ export const useSettingStore = create<ISettingStoreState>()((set) => ({
     setTheme: (newTheme) => {
         set({ theme: newTheme })
     },
-    isPetAboveTaskBar: settings.isPetAboveTaskbar || false,
-    setIsPetAboveTaskbar: (newBoolean) => {
-        set({ isPetAboveTaskBar: newBoolean })
+    allowPetAboveTaskBar: settings.allowPetAboveTaskBar || false,
+    setallowPetAboveTaskBar: (newBoolean) => {
+        set({ allowPetAboveTaskBar: newBoolean })
     },
-    isAutoStartUp: autoStartUpEnabled,
-    setIsAutoStartUp: (newBoolean) => {
-        set({ isAutoStartUp: newBoolean })
+    allowAutoStartUp: autoStartUpEnabled,
+    setallowAutoStartUp: (newBoolean) => {
+        set({ allowAutoStartUp: newBoolean })
     },
-    isAllowHoverOnPet: settings.isAllowHoverOnPet || true,
-    setIsAllowHoverOnPet: (newBoolean) => {
-        set({ isAllowHoverOnPet: newBoolean })
+    allowPetInteraction: settings.allowPetInteraction || true,
+    setallowPetInteraction: (newBoolean) => {
+        set({ allowPetInteraction: newBoolean })
     },
 }));

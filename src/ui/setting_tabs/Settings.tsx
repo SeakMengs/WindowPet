@@ -10,7 +10,7 @@ import { memo } from "react";
 
 function Settings() {
     const { t, i18n } = useTranslation();
-    const { isAutoStartUp, isPetAboveTaskBar, isAllowHoverOnPet } = useSettingStore();
+    const { allowAutoStartUp, allowPetAboveTaskBar, allowPetInteraction } = useSettingStore();
 
     const settings: ISettingsContent = {
         parent: {
@@ -21,20 +21,20 @@ function Settings() {
             {
                 title: t("Auto start-up"),
                 description: t("Automatically open WindowPet every time u start the computer"),
-                checked: isAutoStartUp,
+                checked: allowAutoStartUp,
                 dispatchType: "switchAutoWindowStartUp",
             },
             {
                 title: t("Pet above taskbar"),
                 description: t("Make the pet float above taskbar (For Window User)"),
-                checked: isPetAboveTaskBar,
+                checked: allowPetAboveTaskBar,
                 dispatchType: "switchPetAboveTaskBar",
             },
             {
-                title: t("Allow hover on pet"),
-                description: t("Pets will switch state when u hover on them"),
-                checked: isAllowHoverOnPet,
-                dispatchType: "switchAllowHoverOnPet",
+                title: t("Allow pet interactions"),
+                description: t("If allow pet interaction turn on, user will be able to drag and move the pet around their window"),
+                checked: allowPetInteraction,
+                dispatchType: "switchAllowPetInteraction",
             },
         ]
     }

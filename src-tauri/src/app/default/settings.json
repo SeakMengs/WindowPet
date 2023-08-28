@@ -1,6 +1,6 @@
 {
     "theme": "dark",
     "language": "en",
-    "isPetAboveTaskbar": false,
-    "isAllowHoverOnPet": true
+    "allowPetAboveTaskBar": false,
+    "allowPetInteraction": true
 }

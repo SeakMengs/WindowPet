@@ -9,12 +9,14 @@ interface SettingSwitchProps {
 }
 
 function SettingSwitch({ title, description, checked = false, dispatchType }: SettingSwitchProps) {
+
+
     return (
         <>
             <Group position="apart">
                 <div>
                     <Text >{title}</Text>
-                    <Text fz={"xs"} c={"dimmed"}>
+                    <Text maw={460} fz={"xs"} c={"dimmed"} >
                         {description}
                     </Text>
                 </div>

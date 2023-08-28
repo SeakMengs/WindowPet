@@ -5,12 +5,12 @@ export interface ISettingStoreState {
     setLanguage: (newLanguage: string) => void;
     theme: ColorScheme;
     setTheme: (newTheme: ColorScheme) => void;
-    isPetAboveTaskBar: boolean;
-    setIsPetAboveTaskbar: (newBoolean: boolean) => void;
-    isAutoStartUp: boolean;
-    setIsAutoStartUp: (newBoolean: boolean) => void;
-    isAllowHoverOnPet: boolean;
-    setIsAllowHoverOnPet: (newBoolean: boolean) => void;
+    allowPetAboveTaskBar: boolean;
+    setallowPetAboveTaskBar: (newBoolean: boolean) => void;
+    allowAutoStartUp: boolean;
+    setallowAutoStartUp: (newBoolean: boolean) => void;
+    allowPetInteraction: boolean;
+    setallowPetInteraction: (newBoolean: boolean) => void;
 }
 
 export interface ISettingTabState {

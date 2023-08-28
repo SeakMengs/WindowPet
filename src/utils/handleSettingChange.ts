@@ -9,7 +9,7 @@ export const handleSettingChange: IHandleSettingChange = (dispatchType, newValue
      * Reading/writing state and reacting to changes outside of components, for more detail read  
      * zustand docs here: https://docs.pmnd.rs/zustand/recipes/recipes
      */
-    const { setLanguage, setTheme, setIsAutoStartUp, setIsPetAboveTaskbar, setIsAllowHoverOnPet } = useSettingStore.getState();
+    const { setLanguage, setTheme, setallowAutoStartUp, setallowPetAboveTaskBar, setallowPetInteraction } = useSettingStore.getState();
 
     switch (dispatchType) {
         case 'changeAppLanguage':
@@ -23,16 +23,16 @@ export const handleSettingChange: IHandleSettingChange = (dispatchType, newValue
         case 'switchAutoWindowStartUp':
             // auto start up doesn't need to be saved in settings.json
             toggleAutoStartUp(newValue as boolean);
-            setIsAutoStartUp(newValue as boolean);
+            setallowAutoStartUp(newValue as boolean);
             return
         case 'switchPetAboveTaskBar':
-            setSettings({ setKey: "isPetAboveTaskbar", newValue: newValue });
-            setIsPetAboveTaskbar(newValue as boolean);
+            setSettings({ setKey: "allowPetAboveTaskBar", newValue: newValue });
+            setallowPetAboveTaskBar(newValue as boolean);
             emitReRenderPetsEvent({ dispatchType, newValue });
             return
-        case 'switchAllowHoverOnPet':
-            setSettings({ setKey: "isAllowHoverOnPet", newValue: newValue });
-            setIsAllowHoverOnPet(newValue as boolean);
+        case 'switchAllowPetInteraction':
+            setSettings({ setKey: "allowPetInteraction", newValue: newValue });
+            setallowPetInteraction(newValue as boolean);
             emitReRenderPetsEvent({ dispatchType, newValue });
         default:
             return;

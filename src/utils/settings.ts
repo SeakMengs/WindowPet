@@ -5,11 +5,11 @@ import { invoke } from '@tauri-apps/api/tauri'
 import { readTextFile, exists } from "@tauri-apps/api/fs"
 import { confirm } from "@tauri-apps/api/dialog";
 
-export function toggleAutoStartUp(isAutoStartUp: boolean) {
+export function toggleAutoStartUp(allowAutoStartUp: boolean) {
     (async () => {
         const hasEnabledStartUp = await isEnabled();
 
-        if (isAutoStartUp) {
+        if (allowAutoStartUp) {
             if (!hasEnabledStartUp) await enable();
         } else if (hasEnabledStartUp) {
             await disable();

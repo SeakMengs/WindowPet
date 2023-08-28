@@ -6,7 +6,7 @@ function Logo() {
     <>
       <Group>
         <Avatar
-          src="/media/Logo/WindowPetNewTransparent.png"
+          src="/media/icon.png"
           alt="WindowPet"
         />
         <Text component="h1">

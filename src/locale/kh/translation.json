@@ -26,6 +26,6 @@
     "Animation speed, the smaller the value, the faster the animation": "ល្បឿនចលនា តម្លៃកាន់តែតូច ចលនាកាន់តែលឿន",
     "Attention": "យកចិត្តទុកដាក់",
     "We have already tested and fine-tuned the default pet configuration to provide the best user experience. You only need to change the name of your pet. Making other changes to the configuration may prevent you from seeing your pet after adding it": "យើងបានសាកល្បងនិងកែសម្រួលការកំណត់រចនាសម្ព័ន្ធសត្វចិញ្ចឹមលំនាំដើមរួចហើយដើម្បីផ្តល់នូវបទពិសោធន៍អ្នកប្រើប្រាស់ដ៏ល្អបំផុត។ អ្នកគ្រាន់តែត្រូវប្តូរឈ្មោះសត្វចិញ្ចឹមរបស់អ្នកប៉ុណ្ណោះ។ ការផ្លាស់ប្តូរផ្សេងទៀតចំពោះការកំណត់អាចរារាំងអ្នកមិនឱ្យឃើញសត្វចិញ្ចឹមរបស់អ្នកបន្ទាប់ពីបន្ថែមវា។",
-    "Allow hover on pet": "អនុញ្ញាតឱ្យដាក់លើសត្វចិញ្ចឹម",
-    "Pets will switch state when u hover on them": "សត្វចិញ្ចឹមនឹងប្តូរស្ថានភាពនៅពេលអ្នកដាក់លើពួកវា"
+    "Allow pet interactions": "អនុញ្ញាតឱ្យដាក់លើសត្វចិញ្ចឹម",
+    "If allow pet interaction turn on, user will be able to drag and move the pet around their window": "ប្រសិនបើអនុញ្ញាតឱ្យសត្វចិញ្ចឹមមិនដំណើរការ អ្នកប្រើប្រាស់នឹងអាចអូស និងផ្លាស់ទីសត្វចិញ្ចឹមនៅជុំវិញកុំព្យូទ័ររបស់ពួកគេ"
 }
