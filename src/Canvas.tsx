@@ -1,6 +1,6 @@
 import PhaserWrapper from "./PhaserWrapper";
 
-function Canvas() {
+function Canvas() {  
 
   return (
     <PhaserWrapper key={1} />

@@ -1,7 +1,7 @@
 [package]
 name = "window_pet"
 version = "0.0.0"
-description = "Window pet"
+description = "Window Pet"
 authors = ["SeakMengs"]
 license = ""
 repository = "https://github.com/SeakMengs/WindowPet"

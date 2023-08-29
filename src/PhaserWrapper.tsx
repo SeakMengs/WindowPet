@@ -30,7 +30,7 @@ function PhaserWrapper() {
             physics: {
                 default: 'arcade',
                 arcade: {
-                    debug: false,
+                    debug: true,
                     gravity: { y: 200 },
                 },
             },
