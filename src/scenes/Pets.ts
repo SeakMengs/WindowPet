@@ -10,6 +10,7 @@ export default class Pets extends Phaser.Scene {
     private pets: IPet[] = [];
     private spriteConfig: ISpriteConfig[] = [];
     private isIgnoreCursorEvents: boolean = true;
+    private isFlipped: boolean = false;
     private frameCount: number = 0;
     private allowPetInteraction: boolean = useSettingStore.getState().allowPetInteraction
 
@@ -68,11 +69,6 @@ export default class Pets extends Phaser.Scene {
                 pixelPerfect: true,
             });
 
-            //! debug -------------------------------------------------
-
-            this.input.enableDebug(this.pets[i]);
-            //! ------------------------------------------------------
-
             // set pet to bounce on left and right of the world
             this.pets[i].setCollideWorldBounds(true);
             this.pets[i].setBounce(1, 0);
@@ -85,7 +81,7 @@ export default class Pets extends Phaser.Scene {
                 // set pet vertical position to 0 because the pet doesn't have fall state
                 this.pets[i].setPosition(this.pets[i].x, 0);
             }
-            
+
             i++;
         }
 
@@ -95,8 +91,18 @@ export default class Pets extends Phaser.Scene {
             pet.y = dragY;
             this.switchState(pet, 'drag');
 
-            // if pet is dragged to the left of the drag start position, flip the pet            
-            pet.setFlipX(pet.x > pet.input!.dragStartX);
+            // if current pet x is greater than drag start x, flip the pet to the right
+            if (pet.x > pet.input!.dragStartX) {
+                if (this.isFlipped) {
+                    this.toggleFlipX(pet);
+                    this.isFlipped = false;
+                }
+            } else {
+                if (!this.isFlipped) {
+                    this.toggleFlipX(pet);
+                    this.isFlipped = true;
+                }
+            }
 
             // temporary stop fall 
             // @ts-ignore
@@ -126,7 +132,6 @@ export default class Pets extends Phaser.Scene {
 
         if (this.frameCount >= this.updateDelay) {
             this.frameCount = 0;
-
             for (let pet of this.pets) {
                 this.switchStateAfterPetFall(pet);
             }
@@ -134,10 +139,10 @@ export default class Pets extends Phaser.Scene {
             if (this.allowPetInteraction) {
                 invoke('get_mouse_position').then((event: any) => {
                     if (this.detectMouseOverPet(event.clientX, event.clientY)) {
-                        console.log('mouse over pet');
+                        // console.log('mouse over pet');
                         this.turnOffIgnoreCursorEvents()
                     } else {
-                        console.log('mouse not over pet');
+                        // console.log('mouse not over pet');
                         this.turnOnIgnoreCursorEvents();
                     }
                 });
@@ -155,21 +160,21 @@ export default class Pets extends Phaser.Scene {
 
         switch (state) {
             case 'walk':
-                direction = pet.flipX ? Direction.LEFT : Direction.RIGHT;
+                direction = pet.scaleX === -1 ? Direction.LEFT : Direction.RIGHT;
                 break;
             case 'drag':
                 direction = Direction.UNKNOWN;
                 break;
             case 'fall':
                 // feel like fall state is opposite of walk so every fall, i flip the pet horizontally :)
-                // ! pet.setFlipX(!pet.flipX);
+                this.toggleFlipX(pet);
                 direction = Direction.DOWN;
                 break;
             case 'climb':
                 direction = Direction.UP;
                 break;
             case 'crawl':
-                direction = pet.flipX ? Direction.LEFT : Direction.RIGHT;
+                direction = pet.scaleX === -1 ? Direction.LEFT : Direction.RIGHT;
             default:
                 break;
         }
@@ -218,9 +223,25 @@ export default class Pets extends Phaser.Scene {
         }
     }
 
-    flipXDirection(pet: IPet): void {
+    toggleFlipX(pet: IPet): void {
+        /*
+         * using scale because flipX doesn't flip the hitbox
+         * so i have to flip the hitbox manually
+         * Note: scaleX -1 = direction left, scaleX 1 = direction right
+         */
+        if (pet.scaleX === 1) {
+            // if hitbox is on the right, flip to the left
+            pet.setOffset(pet.width, 0);
+        } else {
+            pet.setOffset(0, 0);
+        }
+
+        pet.setScale(pet.scaleX * -1, pet.scaleY);
+    }
+
+    toggleFlipXThenUpdateDirection(pet: IPet): void {
         pet.toggleFlipX();
-        this.updateDirection(pet, pet.flipX ? Direction.LEFT : Direction.RIGHT);
+        this.updateDirection(pet, pet.scaleX === -1 ? Direction.LEFT : Direction.RIGHT);
     }
 
     getFrameSize(sprite: ISpriteConfig): { frameWidth: number, frameHeight: number } {
@@ -273,8 +294,8 @@ export default class Pets extends Phaser.Scene {
             if (this.isPetOnTheGround(pet)) {
                 const randomState = this.getOneRandomState(this.spriteConfig.find(
                     (sprite: ISpriteConfig) => sprite.name === pet.texture.key)!);
-                // this.switchState(pet, randomState);
-                this.switchState(pet, 'climb');
+                this.switchState(pet, randomState);
+                // this.switchState(pet, 'climb');
             }
         }
     }
@@ -308,9 +329,9 @@ export default class Pets extends Phaser.Scene {
         // return Phaser.Geom.Rectangle.Contains(this.pets[0].getBounds(), clientX, clientY);
         this.input.mousePointer.x = clientX;
         this.input.mousePointer.y = clientY;
-        // this returns an array of all objects that the pointer is currently over,
+
+        // this returns an array of all objects that the pointer is currently over, 
         // if array length > 0, it means the pointer is over some sprite object
-        console.log(this.input.hitTestPointer(this.input.activePointer));
         return this.input.hitTestPointer(this.input.activePointer).length > 0
     }
 
