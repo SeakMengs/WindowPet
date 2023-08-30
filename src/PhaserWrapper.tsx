@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import Phaser from "phaser";
 import Pets from "./scenes/Pets";
 import { ISpriteConfig } from "./types/ISpriteConfig";
-import useInit from "./hooks/useInit";
 import { getAppSettings } from "./utils/settings";
+import { confirm } from "@tauri-apps/api/dialog";
+import { appWindow } from "@tauri-apps/api/window";
 
 function PhaserWrapper() {
     const [spriteConfig, setSpriteConfig] = useState<ISpriteConfig[]>([]);
@@ -11,6 +12,11 @@ function PhaserWrapper() {
     useEffect(() => {
         (async () => {
             let config = await getAppSettings({ configName: "pets.json" });
+            if (config.length === 0) {
+                confirm("Nya~ Oh, dear friend! In this whimsical realm of mine, where magic and wonder intertwine, alas, there are no delightful pets to be found. But fret not! Fear not! For you hold the power to change this tale. Simply venture into the enchanting settings and add a touch of furry companionship to make our world even more adorable and divine! Onegai~", { title: "WindowPet Dialog", type: 'info' }).then((ok) => {
+                    appWindow.close();
+                });
+            }
             setSpriteConfig(config);
         })()
     }, []);
@@ -30,7 +36,7 @@ function PhaserWrapper() {
             physics: {
                 default: 'arcade',
                 arcade: {
-                    debug: true,
+                    debug: false,
                     gravity: { y: 200 },
                 },
             },

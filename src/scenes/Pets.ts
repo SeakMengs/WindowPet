@@ -4,7 +4,7 @@ import { ISpriteConfig } from "../types/ISpriteConfig";
 import { useSettingStore } from "../hooks/useSettingStore";
 import { listen } from "@tauri-apps/api/event";
 import { TRenderEventListener } from "../types/IEvents";
-import { IPet, Direction } from "../types/IPet";
+import { IPet, Direction, IWorldBounding, ISwitchStateOptions } from "../types/IPet";
 
 export default class Pets extends Phaser.Scene {
     private pets: IPet[] = [];
@@ -20,8 +20,8 @@ export default class Pets extends Phaser.Scene {
     readonly frameRate: number = 15;
     // -1 means repeat forever
     readonly repeat: number = -1;
-    readonly forbiddenRandomState: string[] = ['fall', 'climb', 'drag', 'crawl'];
-    readonly movementState: string[] = ['walk', 'fall', 'climb', 'crawl', 'drag'];
+    readonly forbiddenRandomState: string[] = ['fall', 'climb', 'drag', 'crawl', 'drag'];
+    readonly movementState: string[] = ['walk', 'fall', 'climb', 'crawl'];
     readonly updateDelay: number = 1000 / this.frameRate;
     // velocity will depend on frameRate
     readonly moveVelocity: number = this.frameRate * 2;
@@ -32,6 +32,7 @@ export default class Pets extends Phaser.Scene {
 
     preload(): void {
         this.spriteConfig = this.game.registry.get('spriteConfig');
+
         let registeredName: string[] = [];
         for (let sprite of this.spriteConfig) {
             // avoid duplicate key
@@ -54,37 +55,27 @@ export default class Pets extends Phaser.Scene {
     }
 
     create(): void {
-        this.physics.world.setBoundsCollision(false, false, false, true);
-
-        // register state animations
-        for (const sprite of this.spriteConfig) {
-            for (const animationConfig of this.getAnimationConfigPerSprite(sprite)) {
-                this.anims.create(animationConfig);
-            }
-        }
-
+        this.physics.world.setBoundsCollision(true, true, true, true);
+        this.updatePetAboveTaskBar();
+        
         let i = 0;
         // create pets
         for (const sprite of this.spriteConfig) {
-            const randomX = Phaser.Math.Between(0, window.innerWidth);
-            const randomY = Phaser.Math.Between(0, window.innerHeight);
+            // register state animations
+            for (const animationConfig of this.getAnimationConfigPerSprite(sprite)) {
+                this.anims.create(animationConfig);
+            }
+
+            const randomX = Phaser.Math.Between(100, this.physics.world.bounds.width - 100);
+            const randomY = Phaser.Math.Between(100, this.physics.world.bounds.height);
             this.pets[i] = this.physics.add.sprite(randomX, randomY, sprite.name).setInteractive({
                 draggable: true,
                 pixelPerfect: true,
             }) as IPet;
             this.pets[i].setCollideWorldBounds(true, 0, 0, true);
-
+            // store available states to pet (it actual name, not modified name)
             this.pets[i].availableStates = Object.keys(sprite.states);
-            // store available states to pet (it's actual name, not modified name)
-            if (this.pets[i].availableStates.includes('fall')) {
-                this.switchState(this.pets[i], 'fall');
-            } else {
-                // play random state
-                this.switchState(this.pets[i], this.getOneRandomState(this.pets[i]));
-                // set pet vertical position to 0 because the pet doesn't have fall state
-                this.pets[i].setPosition(this.pets[i].x, 0);
-            }
-
+            this.petFallOrSpawnOnTheGround(this.pets[i]);
             i++;
         }
 
@@ -94,46 +85,81 @@ export default class Pets extends Phaser.Scene {
             pet.y = dragY;
             this.switchState(pet, 'drag');
 
-            // if current pet x is greater than drag start x, flip the pet to the right
-            // if (pet.x > pet.input!.dragStartX) {
-            //     if (this.isFlipped) {
-            //         this.toggleFlipX(pet);
-            //         this.isFlipped = false;
-            //     }
-            // } else {
-            //     if (!this.isFlipped) {
-            //         this.toggleFlipX(pet);
-            //         this.isFlipped = true;
-            //     }
-            // }
-
-            // temporary stop fall 
+            // disable world bounds when dragging so that pet can go beyond screen
             // @ts-ignore
-            pet.body.setAllowGravity(false);
+            pet.body!.enable = false;
+
+            // if current pet x is greater than drag start x, flip the pet to the right
+            if (pet.x > pet.input!.dragStartX) {
+                if (this.isFlipped) {
+                    this.toggleFlipX(pet);
+                    this.isFlipped = false;
+                }
+            } else {
+                if (!this.isFlipped) {
+                    this.toggleFlipX(pet);
+                    this.isFlipped = true;
+                }
+            }
         });
 
         this.input.on('dragend', (pointer: any, pet: IPet) => {
-            // @ts-ignore
-            pet.body!.setAllowGravity(true);
+            // enable collision when dragging end so that collision will work again and pet go back to the screen
+            pet.body!.enable = true;
+            this.petBeyondScreenSwitchClimb(pet, {
+                up: this.getPetBoundTop(pet),
+                down: this.getPetBoundDown(pet),
+                left: this.getPetBoundLeft(pet),
+                right: this.getPetBoundRight(pet)
+            });
 
-            // if pet go out of screen, reset pet position to most left or most right
-            
-            if (pet.anims.getName() === `drag-${pet.texture.key}`) {
-                // if pet go out of screen, reset pet position to most left or most right
-                // if (this.isPetOnTheLeft(pet)) {
-                //     console.log('left');
-                //     pet.setPosition(pet.width * pet.scaleX * pet.originX, pet.y);
-                // } else {
-                //     console.log('right');
-                //     pet.setPosition(this.physics.world.bounds.width - pet.width * pet.scaleX * pet.originX, pet.y);
-                //     this.toggleFlipX(pet);
-                // }
-            }
-
-            this.switchState(pet, 'fall');
+            // not sure why when enabling body, velocity become 0, and need to take a while to update velocity
+            setTimeout(() => {
+                switch (pet.anims.getName()) {
+                    case `climb-${pet.texture.key}`:
+                        this.updateDirection(pet, Direction.UP);
+                        break;
+                    case `crawl-${pet.texture.key}`:
+                        this.updateDirection(pet, pet.scaleX === -1 ? Direction.UPSIDELEFT : Direction.UPSIDERIGHT);
+                        break;
+                    default:
+                        return;
+                }
+            }, 50);
         });
 
-        this.updatePetAboveTaskBar();
+        this.physics.world.on('worldbounds', (body: Phaser.Physics.Arcade.Body, up: boolean, down: boolean, left: boolean, right: boolean) => {
+            const pet = body.gameObject as IPet;
+
+            // if crawl to world bounds, we make the pet fall or spawn on the ground
+            if (pet.anims.getName() === `crawl-${pet.texture.key}`) {
+                if (left || right) {
+                    this.petFallOrSpawnOnTheGround(pet);
+                }
+                return;
+            }
+
+            if (up) {
+                if (pet.availableStates.includes('crawl')) {
+                    this.switchState(pet, 'crawl')
+                    return;
+                }
+                this.petFallOrSpawnOnTheGround(pet);
+            } else if (down) {
+                this.switchStateAfterPetFall(pet);
+            }
+
+            /*
+             * this will check on the ground and mid air if pet is beyond screen
+             * and change pet state accordingly
+             */
+            this.petBeyondScreenSwitchClimb(pet, {
+                up: up,
+                down: down,
+                left: left,
+                right: right
+            });
+        });
 
         // listen to setting change from setting window and update settings
         listen<any>('render', (event: TRenderEventListener) => {
@@ -155,37 +181,12 @@ export default class Pets extends Phaser.Scene {
 
         if (this.frameCount >= this.updateDelay) {
             this.frameCount = 0;
-            this.pets.forEach(pet => {
-                console.log(pet.x);
-                // top
-                if (this.isPetOnTheTop(pet)) {
-                    this.switchState(pet, 'fall');
-                    // down
-                } else if (this.isPetOnTheGround(pet)) {
-                    this.switchStateAfterPetFall(pet);
-                    this.playRandomState(pet);
-
-                    if (this.isPetOnTheLeft(pet) || this.isPetOnTheRight(pet)) {
-                        this.petClimbOrFlip(pet);
-                    }
-                    // left or right
-                } else if (this.isPetOnTheLeft(pet) || this.isPetOnTheRight(pet)) {
-                    if (pet.availableStates.includes('climb')) {
-                        this.switchState(pet, 'climb');
-                    } else {
-                        this.switchState(pet, 'fall');
-                    }
-                }
-
-            });
 
             if (this.allowPetInteraction) {
                 invoke('get_mouse_position').then((event: any) => {
                     if (this.detectMouseOverPet(event.clientX, event.clientY)) {
-                        // console.log('mouse over pet');
                         this.turnOffIgnoreCursorEvents()
                     } else {
-                        // console.log('mouse not over pet');
                         this.turnOnIgnoreCursorEvents();
                     }
                 });
@@ -199,14 +200,11 @@ export default class Pets extends Phaser.Scene {
     }
 
     updateStateDirection(pet: IPet, state: string): void {
-        let direction: Direction | undefined;
+        let direction = Direction.UNKNOWN;
 
         switch (state) {
             case 'walk':
                 direction = pet.scaleX === -1 ? Direction.LEFT : Direction.RIGHT;
-                break;
-            case 'drag':
-                direction = Direction.UNKNOWN;
                 break;
             case 'fall':
                 // feel like fall state is opposite of walk so every fall, i flip the pet horizontally :)
@@ -217,8 +215,10 @@ export default class Pets extends Phaser.Scene {
                 direction = Direction.UP;
                 break;
             case 'crawl':
-                direction = pet.scaleX === -1 ? Direction.LEFT : Direction.RIGHT;
+                pet.scaleX === 1 ? direction = Direction.UPSIDELEFT : direction = Direction.UPSIDERIGHT;
+                break;
             default:
+                direction = Direction.UNKNOWN;
                 break;
         }
 
@@ -232,40 +232,81 @@ export default class Pets extends Phaser.Scene {
         switch (pet.direction) {
             case Direction.RIGHT:
                 pet.setVelocityX(this.moveVelocity);
+                this.setPetLookToTheLeft(pet, false);
                 break;
             case Direction.LEFT:
                 pet.setVelocityX(-this.moveVelocity);
+                this.setPetLookToTheLeft(pet, true);
                 break;
             case Direction.UP:
-                pet.setVelocityY(this.moveVelocity);
+                pet.setVelocityY(-this.moveVelocity);
                 break;
             case Direction.DOWN:
                 pet.setVelocityY(this.moveVelocity / 2);
+                break;
+            case Direction.UPSIDELEFT:
+                pet.setVelocity(-this.moveVelocity);
+                this.setPetLookToTheLeft(pet, true);
+                break;
+            case Direction.UPSIDERIGHT:
+                pet.setVelocityX(this.moveVelocity);
+                pet.setVelocityY(-this.moveVelocity);
+                this.setPetLookToTheLeft(pet, false);
                 break;
             case Direction.UNKNOWN:
                 pet.setVelocity(0);
                 break;
             default:
-                pet.setVelocityX(0);
+                pet.setVelocity(0);
                 break;
         }
+
+        // if pet is going up, we disable gravity, if pet is going down, we enable gravity
+        const isMovingUp = [Direction.UP, Direction.UPSIDELEFT, Direction.UPSIDERIGHT].includes(pet.direction as Direction);
+
+        // Set the gravity according to the direction
+        // @ts-ignore
+        pet.body!.setAllowGravity(!isMovingUp);
+
+        // Set the horizontal velocityX to zero if the direction is up
+        if (pet.direction === Direction.UP) pet.setVelocityX(0);
     }
 
-    switchState(pet: IPet, state: string, delay: number = 0): void {
+    switchState(pet: IPet, state: string, options: ISwitchStateOptions = {
+        repeat: -1,
+        delay: 0,
+        repeatDelay: 0,
+    }): void {
+        const animationKey = `${state}-${pet.texture.key}`;
         // if current state is the same as the new state, do nothing
-        if (pet.anims.getName() === `${state}-${pet.texture.key}`) {
-            return;
-        }
+        if (pet.anims.getName() === animationKey) return;
 
         pet.anims.play({
-            key: `${state}-${pet.texture.key}`,
-            delay: delay,
+            key: animationKey,
+            repeat: options.repeat,
+            delay: options.delay,
+            repeatDelay: options.repeatDelay,
         });
 
         if (this.movementState.includes(state.toLowerCase())) {
             this.updateStateDirection(pet, state);
-        } else {
-            this.updateDirection(pet, Direction.UNKNOWN);
+            return;
+        }
+
+        this.updateDirection(pet, Direction.UNKNOWN);
+    }
+
+    // if lookToTheLeft is true, pet will look to the left, if false, pet will look to the right
+    setPetLookToTheLeft(pet: IPet, lookToTheLeft: boolean): void {
+        if (lookToTheLeft) {
+            if (pet.scaleX === 1) {
+                this.toggleFlipX(pet);
+            }
+            return
+        }
+
+        if (pet.scaleX === -1) {
+            this.toggleFlipX(pet);
         }
     }
 
@@ -275,13 +316,8 @@ export default class Pets extends Phaser.Scene {
          * so i have to flip the hitbox manually
          * Note: scaleX -1 = direction left, scaleX 1 = direction right
          */
-        if (pet.scaleX === 1) {
-            // if hitbox is on the right, flip to the left
-            pet.setOffset(pet.width, 0);
-        } else {
-            pet.setOffset(0, 0);
-        }
-
+        // if hitbox is on the right, flip to the left
+        pet.scaleX === 1 ? pet.setOffset(pet.width, 0) : pet.setOffset(0, 0);
         pet.setScale(pet.scaleX * -1, pet.scaleY);
     }
 
@@ -305,8 +341,7 @@ export default class Pets extends Phaser.Scene {
         let animationConfig = [];
         for (const state in sprite.states) {
             // -1 because phaser frame start from 0
-            const frame = (sprite.states[state].spriteLine - 1) * sprite.highestFrameMax;
-            const start = frame;
+            const start = (sprite.states[state].spriteLine - 1) * sprite.highestFrameMax;
             const end = start + sprite.states[state].frameMax - 1;
             animationConfig.push({
                 // avoid duplicate key
@@ -338,45 +373,46 @@ export default class Pets extends Phaser.Scene {
     }
 
     playRandomState(pet: IPet): void {
-        if (pet.anims.getName() === `drag-${pet.texture.key}`) {
-            return;
-        }
-
-        // this.switchState(pet, this.getOneRandomStateByPet(pet));
+        this.switchState(pet, this.getOneRandomState(pet));
     }
 
     // this function is for when pet fall to the ground, it will call every time pet hit the ground
     switchStateAfterPetFall(pet: IPet): void {
-        if (pet.anims.getName() === `fall-${pet.texture.key}`) {
-            this.switchState(pet, this.getOneRandomStateByPet(pet));
-        }
+        if (pet.anims.getName() !== `fall-${pet.texture.key}`) return;
+        this.playRandomState(pet);
     }
 
-    petClimbOrFlip(pet: IPet): void {
-        // if the pet state has climb we make the pet climb the wall
-        if (pet.availableStates.includes('climb')) {
-            this.switchState(pet, 'climb');
-            return
-        }
-
-        this.toggleFlipXThenUpdateDirection(pet);
+    getPetGroundPosition(pet: IPet): number {
+        return this.physics.world.bounds.height - pet.height * Math.abs(pet.scaleY) * pet.originY;
     }
 
-    isPetOnTheGround(pet: IPet): boolean {
+    getPetTopPosition(pet: IPet): number {
+        return pet.height * Math.abs(pet.scaleY) * pet.originY;
+    }
+
+    getPetLeftPosition(pet: IPet): number {
+        return pet.width * Math.abs(pet.scaleX) * pet.originX;
+    }
+
+    getPetRightPosition(pet: IPet): number {
+        return this.physics.world.bounds.width - pet.width * Math.abs(pet.scaleX) * pet.originX;
+    }
+
+    getPetBoundDown(pet: IPet): boolean {
         // we have to check * with scaleY because sometimes user scale the pet
-        return pet.y >= this.physics.world.bounds.height - pet.height * pet.scaleY * pet.originY;
+        return pet.y >= this.getPetGroundPosition(pet);
     }
 
-    isPetOnTheLeft(pet: IPet): boolean {
-        return pet.x <= pet.width * pet.scaleX * pet.originX;
+    getPetBoundLeft(pet: IPet): boolean {
+        return pet.x <= this.getPetLeftPosition(pet);
     }
 
-    isPetOnTheRight(pet: IPet): boolean {
-        return pet.x >= this.physics.world.bounds.width - pet.width * pet.scaleX * pet.originX;
+    getPetBoundRight(pet: IPet): boolean {
+        return pet.x >= this.getPetRightPosition(pet);
     }
 
-    isPetOnTheTop(pet: IPet): boolean {
-        return pet.y <= pet.height * pet.scaleY * pet.originY;
+    getPetBoundTop(pet: IPet): boolean {
+        return pet.y <= this.getPetTopPosition(pet);
     }
 
     turnOnIgnoreCursorEvents(): void {
@@ -405,8 +441,68 @@ export default class Pets extends Phaser.Scene {
 
             // update world bounds to include task bar
             this.physics.world.setBounds(0, 0, window.innerWidth, window.innerHeight - taskbarHeight);
+            return;
+        }
+
+        this.physics.world.setBounds(0, 0, window.innerWidth, window.innerHeight);
+    }
+
+    petFallOrSpawnOnTheGround(pet: IPet): void {
+        if (pet.availableStates.includes('fall')) {
+            this.switchState(pet, 'fall');
+            return
+        }
+
+        // play random state
+        this.switchState(pet, this.getOneRandomState(pet));
+        // set pet vertical position to 0 because the pet doesn't have fall state
+        pet.setPosition(pet.x, 0);
+    }
+
+    petBeyondScreenSwitchClimb(pet: IPet, worldBounding: IWorldBounding): void {
+        // if pet is climb and crawl, we don't want to switch state again
+        switch (pet.anims.getName()) {
+            case `climb-${pet.texture.key}`:
+                return;
+            case `crawl-${pet.texture.key}`:
+                return;
+        }
+
+        // ? debug only
+        // pet.availableStates = pet.availableStates.filter(state => state !== 'climb');
+
+        if (worldBounding.left || worldBounding.right) {
+            if (pet.availableStates.includes('climb')) {
+                this.switchState(pet, 'climb');
+
+                if (worldBounding.left) {
+                    pet.setPosition(this.getPetLeftPosition(pet), pet.y);
+                    this.setPetLookToTheLeft(pet, true);
+                } else {
+                    pet.setPosition(this.getPetRightPosition(pet), pet.y);
+                    this.setPetLookToTheLeft(pet, false);
+                }
+            }
+            else {
+                if (worldBounding.down) {
+                    // if pet on the ground and beyond screen and doesn't have climb state, we flip the pet
+                    this.toggleFlipXThenUpdateDirection(pet);
+
+                } else {
+                    // if pet bounding left or right and not on the ground, we make the pet fall or spawn on the ground
+                    this.petFallOrSpawnOnTheGround(pet);
+                }
+            }
         } else {
-            this.physics.world.setBounds(0, 0, window.innerWidth, window.innerHeight);
+            if (worldBounding.down) {
+                // if pet is on the ground and they are not bounding left or right, we play random state
+                if (pet.anims.getName() === `drag-${pet.texture.key}`) {
+                    this.switchState(pet, this.getOneRandomState(pet));
+                }
+            } else {
+                // if pet is not on the ground and they are not bounding left or right, we make the pet fall or spawn on the ground
+                this.petFallOrSpawnOnTheGround(pet);
+            }
         }
     }
 
