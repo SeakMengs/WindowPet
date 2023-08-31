@@ -58,7 +58,7 @@ export default class Pets extends Phaser.Scene {
 
     create(): void {
         this.physics.world.setBoundsCollision(true, true, true, true);
-        this.updatePetAboveTaskBar();
+        this.updatePetAboveTaskBar();            
 
         let i = 0;
         // create pets
@@ -85,11 +85,16 @@ export default class Pets extends Phaser.Scene {
         this.input.on('drag', (pointer: any, pet: IPet, dragX: number, dragY: number) => {
             pet.x = dragX;
             pet.y = dragY;
-            this.switchState(pet, 'drag');
+
+            if (pet.anims && pet.anims.getName() !== `drag-${pet.texture.key}`) {
+                this.switchState(pet, 'drag');
+            }
 
             // disable world bounds when dragging so that pet can go beyond screen
             // @ts-ignore
-            pet.body!.enable = false;
+            if (pet.body!.enable) {
+                pet.body!.enable = false;
+            }
 
             // if current pet x is greater than drag start x, flip the pet to the right
             if (pet.x > pet.input!.dragStartX) {
@@ -106,34 +111,48 @@ export default class Pets extends Phaser.Scene {
         });
 
         this.input.on('dragend', (pointer: any, pet: IPet) => {
-            // enable collision when dragging end so that collision will work again and pet go back to the screen
-            pet.body!.enable = true;
+            // add tween effect when drag end for smooth throw effect
+            this.tweens.add({
+                targets: pet,
+                // x and y is the position of the pet when drag end
+                x: pet.x + pointer.velocity.x * 3.5,
+                y: pet.y + pointer.velocity.y * 3.5,
+                duration: 600,
+                ease: 'Power2',
+                onComplete: () => {
+                    // enable collision when dragging end so that collision will work again and pet go back to the screen
+                    if (!pet.body!.enable) {
+                        pet.body!.enable = true;
+
+                        // not sure why when enabling body, velocity become 0, and need to take a while to update velocity
+                        setTimeout(() => {
+                            switch (pet.anims.getName()) {
+                                case `climb-${pet.texture.key}`:
+                                    this.updateDirection(pet, Direction.UP);
+                                    break;
+                                case `crawl-${pet.texture.key}`:
+                                    this.updateDirection(pet, pet.scaleX === -1 ? Direction.UPSIDELEFT : Direction.UPSIDERIGHT);
+                                    break;
+                                default:
+                                    return;
+                            }
+                        }, 50);
+                    }
+                }
+            });
+
             this.petBeyondScreenSwitchClimb(pet, {
                 up: this.getPetBoundTop(pet),
                 down: this.getPetBoundDown(pet),
                 left: this.getPetBoundLeft(pet),
                 right: this.getPetBoundRight(pet)
             });
-
-            // not sure why when enabling body, velocity become 0, and need to take a while to update velocity
-            setTimeout(() => {
-                switch (pet.anims.getName()) {
-                    case `climb-${pet.texture.key}`:
-                        this.updateDirection(pet, Direction.UP);
-                        break;
-                    case `crawl-${pet.texture.key}`:
-                        this.updateDirection(pet, pet.scaleX === -1 ? Direction.UPSIDELEFT : Direction.UPSIDERIGHT);
-                        break;
-                    default:
-                        return;
-                }
-            }, 50);
         });
 
         this.physics.world.on('worldbounds', (body: Phaser.Physics.Arcade.Body, up: boolean, down: boolean, left: boolean, right: boolean) => {
             const pet = body.gameObject as IPet;
             // if crawl to world bounds, we make the pet fall or spawn on the ground
-            if (pet.anims.getName() === `crawl-${pet.texture.key}`) {
+            if (pet.anims && pet.anims.getName() === `crawl-${pet.texture.key}`) {
                 if (left || right) {
                     this.petFallOrSpawnOnTheGround(pet);
                 }
@@ -147,6 +166,7 @@ export default class Pets extends Phaser.Scene {
                 }
                 this.petFallOrSpawnOnTheGround(pet);
             } else if (down) {
+                this.switchStateAfterPetFall(pet);
                 this.petOnTheGroundPlayRandomState(pet);
             }
 
@@ -182,7 +202,6 @@ export default class Pets extends Phaser.Scene {
 
         if (this.frameCount >= this.updateDelay) {
             this.frameCount = 0;
-
             if (this.allowPetInteraction) {
                 invoke('get_mouse_position').then((event: any) => {
                     if (this.detectMouseOverPet(event.clientX, event.clientY)) {
@@ -282,7 +301,7 @@ export default class Pets extends Phaser.Scene {
         try {
             const animationKey = `${state}-${pet.texture.key}`;
             // if current state is the same as the new state, do nothing
-            if (pet.anims.getName() === animationKey) return;
+            if (pet.anims && pet.anims.getName() === animationKey) return;
             if (!pet.availableStates.includes(state)) return;
 
             pet.anims.play({
@@ -409,7 +428,7 @@ export default class Pets extends Phaser.Scene {
 
     // this function is for when pet fall to the ground, it will call every time pet hit the ground
     switchStateAfterPetFall(pet: IPet): void {
-        if (pet.anims.getName() !== `fall-${pet.texture.key}`) return;
+        if (pet.anims && pet.anims.getName() !== `fall-${pet.texture.key}`) return;
         this.playRandomState(pet);
     }
 
@@ -499,20 +518,27 @@ export default class Pets extends Phaser.Scene {
             case `drag-${pet.texture.key}`:
                 return;
             case `fall-${pet.texture.key}`:
-                this.playRandomState(pet);
                 return;
         }
 
         const random = Phaser.Math.Between(0, 2000);
-        if (pet.anims.getName() === `walk-${pet.texture.key}`) {
-            if (random >= 0 && random <= 2) {
+        if (pet.anims && pet.anims.getName() === `walk-${pet.texture.key}`) {
+            if (random >= 0 && random <= 5) {
                 this.switchState(pet, 'idle');
                 setTimeout(() => {
+                    if (pet.anims && pet.anims.getName() !== `idle-${pet.texture.key}`) return
                     this.switchState(pet, 'walk');
                 }, Phaser.Math.Between(3000, 6000));
+                return;
             }
-            return;
+        } else {
+            // enhance random state if pet is not walk
+            if (random >= 777 && random <= 800) {
+                this.playRandomState(pet);
+                return
+            }
         }
+
         // just some random number to play random state
         if (random >= 888 && random <= 890) {
             this.toggleFlipXThenUpdateDirection(pet);
@@ -528,13 +554,51 @@ export default class Pets extends Phaser.Scene {
 
         for (const index of this.petClimbAndCrawlIndex) {
             const pet = this.pets[index];
-            const random = Phaser.Math.Between(0, 500);
 
-            if (pet.anims.getName() === `climb-${pet.texture.key}`) {
+            switch (pet.anims.getName()) {
+                case `drag-${pet.texture.key}`:
+                    return;
+                case `fall-${pet.texture.key}`:
+                    return;
+            }
+
+            const random = Phaser.Math.Between(0, 500);
+            if (pet.anims && pet.anims.getName() === `climb-${pet.texture.key}`) {
+                // add random pause when climb
+                if (random >= 0 && random <= 5) {
+                    pet.anims.pause();
+                    this.updateDirection(pet, Direction.UNKNOWN);
+                    // @ts-ignore
+                    pet.body!.allowGravity = false;
+                    setTimeout(() => {
+                        if (pet.anims && !pet.anims.isPlaying) {
+                            pet.anims.resume();
+                            this.updateDirection(pet, Direction.UP);
+                        }
+                    }, Phaser.Math.Between(3000, 6000));
+                    return;
+                }
+
                 if (random === 77) {
                     this.switchState(pet, 'fall');
                 }
-            } else if (pet.anims.getName() === `crawl-${pet.texture.key}`) {
+
+            } else if (pet.anims && pet.anims.getName() === `crawl-${pet.texture.key}`) {
+                // add random pause when climb
+                if (random >= 0 && random <= 5) {
+                    pet.anims.pause();
+                    this.updateDirection(pet, Direction.UNKNOWN);
+                    // @ts-ignore
+                    pet.body!.allowGravity = false;
+                    setTimeout(() => {
+                        if (pet.anims && !pet.anims.isPlaying) {
+                            pet.anims.resume();
+                            this.updateDirection(pet, pet.scaleX === -1 ? Direction.UPSIDELEFT : Direction.UPSIDERIGHT);
+                        }
+                    }, Phaser.Math.Between(3000, 6000));
+                    return;
+                }
+
                 if (random === 88) {
                     this.switchState(pet, 'fall');
                 }
@@ -558,17 +622,26 @@ export default class Pets extends Phaser.Scene {
             if (pet.availableStates.includes('climb')) {
                 this.switchState(pet, 'climb');
 
+                const lastPetX = pet.x;
                 if (worldBounding.left) {
-                    pet.setPosition(this.getPetLeftPosition(pet), pet.y);
+                    /*
+                     * not quite sure if this is correct, but after a lot of experiment
+                     * i found out that the pet will be stuck at the left side of the screen
+                     * which will result in pet.x = negative number. Because we disable and enable
+                     * pet body when drag, the pet will go back with absolute value of pet.x
+                     * so i get lastPetX to minus with petLeftPosition to get the correct position
+                     */
+                    pet.setPosition(lastPetX - this.getPetLeftPosition(pet), pet.y);
                     this.setPetLookToTheLeft(pet, true);
                 } else {
-                    pet.setPosition(this.getPetRightPosition(pet), pet.y);
+                    pet.setPosition(lastPetX + this.getPetRightPosition(pet), pet.y);
                     this.setPetLookToTheLeft(pet, false);
                 }
             }
             else {
                 if (worldBounding.down) {
                     // if pet on the ground and beyond screen and doesn't have climb state, we flip the pet
+
                     this.toggleFlipXThenUpdateDirection(pet);
 
                 } else {
@@ -579,7 +652,7 @@ export default class Pets extends Phaser.Scene {
         } else {
             if (worldBounding.down) {
                 // if pet is on the ground and they are not bounding left or right, we play random state
-                if (pet.anims.getName() === `drag-${pet.texture.key}`) {
+                if (pet.anims && pet.anims.getName() === `drag-${pet.texture.key}`) {
                     this.switchState(pet, this.getOneRandomState(pet));
                 }
             } else {
