@@ -1,5 +1,5 @@
 import { ColorScheme } from "@mantine/core";
-import { MemoExoticComponent } from "react";
+import { LazyExoticComponent, MemoExoticComponent } from "react";
 
 export interface IGetAppSetting {
     configName?: string,
@@ -28,7 +28,7 @@ export interface IHandleSettingChange {
 }
 
 export interface ISettingTabComponent {
-    [key: number]: MemoExoticComponent<() => JSX.Element>;
+    [key: number]: LazyExoticComponent<MemoExoticComponent<() => JSX.Element>> | MemoExoticComponent<() => JSX.Element>;
 }
 
 export interface ISettingsContent {

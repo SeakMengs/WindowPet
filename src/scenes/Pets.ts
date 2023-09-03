@@ -1,10 +1,11 @@
 import { invoke } from "@tauri-apps/api";
 import { appWindow } from "@tauri-apps/api/window";
+import { exists } from "@tauri-apps/api/fs"
 import { ISpriteConfig } from "../types/ISpriteConfig";
 import { useSettingStore } from "../hooks/useSettingStore";
 import { listen } from "@tauri-apps/api/event";
 import { TRenderEventListener } from "../types/IEvents";
-import { IPet, Direction, IWorldBounding, ISwitchStateOptions } from "../types/IPet";
+import { IPet, Direction, IWorldBounding, ISwitchStateOptions, Ease } from "../types/IPet";
 
 export default class Pets extends Phaser.Scene {
     private pets: IPet[] = [];
@@ -14,7 +15,7 @@ export default class Pets extends Phaser.Scene {
     private frameCount: number = 0;
     private allowPetInteraction: boolean = useSettingStore.getState().allowPetInteraction
     private allowPetAboveTaskBar: boolean = useSettingStore.getState().allowPetAboveTaskBar
-    // use this array to store index of pet that is currently climb and crawl to optimize performance
+    // use this array to store index of pet that is currently climb and crawl
     private petClimbAndCrawlIndex: number[] = [];
 
     // delay ms to set ignore cursor events
@@ -27,6 +28,8 @@ export default class Pets extends Phaser.Scene {
     readonly updateDelay: number = 1000 / this.frameRate;
     // velocity will depend on frameRate
     readonly moveVelocity: number = this.frameRate * 6;
+    readonly moveAcceleration: number = this.moveVelocity * 2;
+    readonly tweenAcceleration: number = this.frameRate / 1.5;
 
     constructor() {
         super({ key: 'Pets' });
@@ -46,6 +49,9 @@ export default class Pets extends Phaser.Scene {
                 } while (registeredName.includes(sprite.name));
             }
 
+            // if pet sprite is not valid, we skip it to avoid error
+            if (!this.validatePetSprite(sprite)) continue;
+
             this.load.spritesheet({
                 key: sprite.name,
                 url: sprite.imageSrc,
@@ -58,7 +64,7 @@ export default class Pets extends Phaser.Scene {
 
     create(): void {
         this.physics.world.setBoundsCollision(true, true, true, true);
-        this.updatePetAboveTaskBar();            
+        this.updatePetAboveTaskBar();
 
         let i = 0;
         // create pets
@@ -92,9 +98,7 @@ export default class Pets extends Phaser.Scene {
 
             // disable world bounds when dragging so that pet can go beyond screen
             // @ts-ignore
-            if (pet.body!.enable) {
-                pet.body!.enable = false;
-            }
+            if (pet.body!.enable) pet.body!.enable = false;
 
             // if current pet x is greater than drag start x, flip the pet to the right
             if (pet.x > pet.input!.dragStartX) {
@@ -115,10 +119,10 @@ export default class Pets extends Phaser.Scene {
             this.tweens.add({
                 targets: pet,
                 // x and y is the position of the pet when drag end
-                x: pet.x + pointer.velocity.x * 3.5,
-                y: pet.y + pointer.velocity.y * 3.5,
+                x: pet.x + pointer.velocity.x * this.tweenAcceleration,
+                y: pet.y + pointer.velocity.y * this.tweenAcceleration,
                 duration: 600,
-                ease: 'Power2',
+                ease: Ease.QuartEaseOut,
                 onComplete: () => {
                     // enable collision when dragging end so that collision will work again and pet go back to the screen
                     if (!pet.body!.enable) {
@@ -254,31 +258,39 @@ export default class Pets extends Phaser.Scene {
         switch (pet.direction) {
             case Direction.RIGHT:
                 pet.setVelocity(this.moveVelocity, 0);
+                pet.setAcceleration(0);
                 this.setPetLookToTheLeft(pet, false);
                 break;
             case Direction.LEFT:
                 pet.setVelocity(-this.moveVelocity, 0);
+                pet.setAcceleration(0);
                 this.setPetLookToTheLeft(pet, true);
                 break;
             case Direction.UP:
                 pet.setVelocity(0, -this.moveVelocity);
+                pet.setAcceleration(0);
                 break;
             case Direction.DOWN:
-                pet.setVelocity(0, this.moveVelocity / 2);
+                pet.setVelocity(0, this.moveVelocity);
+                pet.setAcceleration(0, this.moveAcceleration);
                 break;
             case Direction.UPSIDELEFT:
                 pet.setVelocity(-this.moveVelocity);
+                pet.setAcceleration(0)
                 this.setPetLookToTheLeft(pet, true);
                 break;
             case Direction.UPSIDERIGHT:
                 pet.setVelocity(this.moveVelocity, -this.moveVelocity);
+                pet.setAcceleration(0);
                 this.setPetLookToTheLeft(pet, false);
                 break;
             case Direction.UNKNOWN:
                 pet.setVelocity(0);
+                pet.setAcceleration(0);
                 break;
             default:
                 pet.setVelocity(0);
+                pet.setAcceleration(0);
                 break;
         }
 
@@ -377,9 +389,46 @@ export default class Pets extends Phaser.Scene {
     }
 
     getFrameSize(sprite: ISpriteConfig): { frameWidth: number, frameHeight: number } {
-        const frameWidth = sprite.width / sprite.highestFrameMax;
-        const frameHeight = sprite.height / sprite.totalSpriteLine;
+        if (sprite.frameSize) {
+            return {
+                frameWidth: sprite.frameSize,
+                frameHeight: sprite.frameSize
+            };
+        };
+
+        const frameWidth = sprite.width! / sprite.highestFrameMax!;
+        const frameHeight = sprite.height! / sprite.totalSpriteLine!;
         return { frameWidth, frameHeight };
+    }
+
+    getHighestFrameMax(sprite: ISpriteConfig): number {
+        if (sprite.highestFrameMax) return sprite.highestFrameMax;
+
+        let highestFrameMax = 0;
+        for (const state in sprite.states) {
+            highestFrameMax = Math.max(highestFrameMax, sprite.states[state].frameMax);
+        }
+
+        return highestFrameMax;
+    }
+
+    validatePetSprite(sprite: ISpriteConfig): boolean {
+        if (!sprite.name || !sprite.imageSrc || !sprite.states) {
+            return false;
+        }
+
+        // technically we accept two type of size, user can either only provide frameSize, or width, height, highestFrameMax, totalSpriteLine for us to calculate frameSize
+        if (!sprite.frameSize &&
+            (!sprite.width || !sprite.height || !sprite.highestFrameMax || !sprite.totalSpriteLine)
+        ) {
+            return false;
+        }
+
+        for (const state in sprite.states) {
+            if (!sprite.states[state].spriteLine || !sprite.states[state].frameMax) return false;
+        }
+
+        return true;
     }
 
     getAnimationConfigPerSprite(sprite: ISpriteConfig): {
@@ -391,7 +440,7 @@ export default class Pets extends Phaser.Scene {
         let animationConfig = [];
         for (const state in sprite.states) {
             // -1 because phaser frame start from 0
-            const start = (sprite.states[state].spriteLine - 1) * sprite.highestFrameMax;
+            const start = (sprite.states[state].spriteLine - 1) * this.getHighestFrameMax(sprite);
             const end = start + sprite.states[state].frameMax - 1;
             animationConfig.push({
                 // avoid duplicate key
@@ -563,9 +612,37 @@ export default class Pets extends Phaser.Scene {
             }
 
             const random = Phaser.Math.Between(0, 500);
-            if (pet.anims && pet.anims.getName() === `climb-${pet.texture.key}`) {
-                // add random pause when climb
-                if (random >= 0 && random <= 5) {
+
+            if (random === 78) {
+                let newPetx = pet.x;
+                // if pet climb, I want the pet to have some opposite x direction when fall
+                if (pet.anims && pet.anims.getName() === `climb-${pet.texture.key}`) {
+                    newPetx = pet.scaleX === -1 ? Phaser.Math.Between(pet.x, 500) : Phaser.Math.Between(pet.x, this.physics.world.bounds.width - 500);
+                }
+
+                // disable body to prevent shaking when fall
+                if (pet.body!.enable) pet.body!.enable = false;
+                this.switchState(pet, 'fall');
+                // use tween animation to make fall more smooth
+                this.tweens.add({
+                    targets: pet,
+                    x: newPetx,
+                    y: this.getPetGroundPosition(pet),
+                    duration: 3000,
+                    ease: Ease.QuadEaseOut,
+                    onComplete: () => {
+                        if (!pet.body!.enable) {
+                            pet.body!.enable = true;
+                            this.switchStateAfterPetFall(pet);
+                        }
+                    }
+                });
+                return
+            }
+
+            // add random pause when climb
+            if (random >= 0 && random <= 5) {
+                if (pet.anims && pet.anims.getName() === `climb-${pet.texture.key}`) {
                     pet.anims.pause();
                     this.updateDirection(pet, Direction.UNKNOWN);
                     // @ts-ignore
@@ -577,15 +654,8 @@ export default class Pets extends Phaser.Scene {
                         }
                     }, Phaser.Math.Between(3000, 6000));
                     return;
-                }
-
-                if (random === 77) {
-                    this.switchState(pet, 'fall');
-                }
-
-            } else if (pet.anims && pet.anims.getName() === `crawl-${pet.texture.key}`) {
-                // add random pause when climb
-                if (random >= 0 && random <= 5) {
+                } else if (pet.anims && pet.anims.getName() === `crawl-${pet.texture.key}`) {
+                    // add random pause when crawl
                     pet.anims.pause();
                     this.updateDirection(pet, Direction.UNKNOWN);
                     // @ts-ignore
@@ -597,10 +667,6 @@ export default class Pets extends Phaser.Scene {
                         }
                     }, Phaser.Math.Between(3000, 6000));
                     return;
-                }
-
-                if (random === 88) {
-                    this.switchState(pet, 'fall');
                 }
             }
         }
@@ -641,7 +707,6 @@ export default class Pets extends Phaser.Scene {
             else {
                 if (worldBounding.down) {
                     // if pet on the ground and beyond screen and doesn't have climb state, we flip the pet
-
                     this.toggleFlipXThenUpdateDirection(pet);
 
                 } else {

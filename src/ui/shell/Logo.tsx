@@ -4,15 +4,15 @@ function Logo() {
 
   return (
     <>
-      <Group>
+      {/* <Group> */}
         <Avatar
           src="/media/icon.png"
           alt="WindowPet"
         />
-        <Text component="h1">
+        {/* <Text component="h1">
           WindowPet
-        </Text>
-      </Group>
+        </Text> */}
+      {/* </Group> */}
     </>
   );
 }

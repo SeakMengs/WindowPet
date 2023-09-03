@@ -1,9 +1,7 @@
 import { Text } from "@mantine/core";
-import { memo, useEffect } from "react";
+import { memo } from "react";
 
 function EditPet() {
-
-    console.log("EditPet render time");
 
     return (
         <>

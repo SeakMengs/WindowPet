@@ -1,30 +1,29 @@
 import {
   IconCat,
-  IconAdjustmentsHorizontal,
   IconPawFilled,
   IconInfoCircle,
+  IconSettings,
 } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import SettingTab from './SettingTab';
-import { useSettingTabStore } from '../../hooks/useSettingTabStore';
 import { memo, useMemo } from 'react';
+import { ISettingTabsProps } from '../../types/components/type';
 
-function SettingTabs() {
-  const { setPage } = useSettingTabStore();
+function SettingTabs({ setActiveTab, activeTab }: ISettingTabsProps) {
   const { t } = useTranslation();
 
   const tabs = useMemo(() => {
     return [
-      { icon: <IconCat size="1rem" />, color: 'blue', label: t('Add Pet') },
-      { icon: <IconPawFilled size="1rem" />, color: 'teal', label: t('Edit Pet') },
-      { icon: <IconAdjustmentsHorizontal size="1rem" />, color: 'violet', label: t('Settings') },
-      { icon: <IconInfoCircle size="1rem" />, color: 'grape', label: t('About') },
+      { Icon: <IconCat size="1rem" />, label: t('Add Pet') },
+      { Icon: <IconPawFilled size="1rem" />, label: t('Edit Pet') },
+      { Icon: <IconSettings size="1rem" />, label: t('Settings') },
+      { Icon: <IconInfoCircle size="1rem" />, label: t('About') },
     ]
   }, [t]);
 
-  const sections = tabs.map((link, index) => <SettingTab {...link} key={link.label} index={index} handleSetTab={setPage} />);
+  const sections = tabs.map((tab, index) => <SettingTab {...tab} key={tab.label} active={index === activeTab} handleSetTab={() => setActiveTab(index)} />);
 
-  return <div>{sections}</div>;
+  return <>{sections}</>;
 }
 
 export default memo(SettingTabs);

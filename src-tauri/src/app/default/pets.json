@@ -3,6 +3,7 @@
         "name": "Ganyu",
         "width": 1664,
         "height": 1152,
+        "frameSize": 128,
         "highestFrameMax": 13,
         "totalSpriteLine": 9,
         "imageSrc": "media/Ganyu-xll.png",
@@ -47,10 +48,7 @@
     },
     {
         "name": "SpiderMan",
-        "width": 1024,
-        "height": 1152,
-        "highestFrameMax": 8,
-        "totalSpriteLine": 9,
+        "frameSize": 128,
         "imageSrc": "media/HOBIE shimeji.png",
         "states": {
             "idle": {
@@ -93,10 +91,7 @@
     },
     {
         "name": "SpiderMan",
-        "width": 1024,
-        "height": 1152,
-        "highestFrameMax": 8,
-        "totalSpriteLine": 9,
+        "frameSize": 128,
         "imageSrc": "media/Ayaka.png",
         "states": {
             "stand": {

@@ -43,7 +43,7 @@ function PhaserWrapper() {
             fps: {
                 target: 144,
                 min: 30,
-                // smoothStep: true,
+                smoothStep: true,
             },
             scene: [Pets],
             callbacks: {

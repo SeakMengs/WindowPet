@@ -1,7 +1,11 @@
 export interface ISettingTabProps {
-    icon: React.ReactNode;
-    color: string;
+    Icon: React.ReactNode;
     label: string;
-    index: number;
-    handleSetTab: (index: number) => void;
+    active: boolean;
+    handleSetTab: () => void;
+}
+
+export interface ISettingTabsProps {
+    activeTab: number;
+    setActiveTab: (tab: number) => void;
 }
