@@ -22,6 +22,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^13.0.3",
+    "react-query": "^3.39.3",
     "react-router-dom": "^6.14.2",
     "tauri-plugin-autostart-api": "github:tauri-apps/tauri-plugin-autostart#v1",
     "tauri-plugin-store-api": "github:tauri-apps/tauri-plugin-store#v1",

@@ -1,7 +1,7 @@
-import { Box, Button, Card, Group, Image, Select } from "@mantine/core";
+import { Box, Button, Image, Select } from "@mantine/core";
 import { memo } from "react";
 
-function PetCard() {
+function PetCard({ btnLabel} : { btnLabel: string}) {
 
     return (
         <>
@@ -45,7 +45,7 @@ function PetCard() {
                         ]}
                     />
                     <Button variant="light" fullWidth radius="md">
-                        Remove
+                        {btnLabel}
                     </Button>
                 </Box>
             </Box>

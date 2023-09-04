@@ -15,5 +15,7 @@
     "Make the pet float above taskbar (For Window User)": "Make the pet float above taskbar (For Window User)",
     "Pet above taskbar": "Pet above taskbar",
     "Allow pet interactions": "Allow pet interactions",
-    "If allow pet interaction turn on, user will be able to drag and move the pet around their window": "If allow pet interaction turn on, user will be able to drag and move the pet around their window"
+    "If allow pet interaction turn on, user will be able to drag and move the pet around their window": "If allow pet interaction turn on, user will be able to drag and move the pet around their window",
+    "Acquire": "Acquire",
+    "Remove": "Remove"
 }

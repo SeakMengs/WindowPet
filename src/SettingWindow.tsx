@@ -2,7 +2,6 @@ import {
   AppShell,
   Navbar,
   Box,
-  Text,
   ActionIcon,
   MantineProvider,
   ColorSchemeProvider,
@@ -18,14 +17,16 @@ import { useTranslation } from 'react-i18next';
 import { useSettingStore } from './hooks/useSettingStore';
 import { handleSettingChange } from './utils/handleSettingChange';
 import { ISettingTabComponent } from './types/ISetting';
-import { memo, useEffect } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import MyPets from './ui/setting_tabs/MyPets';
 import PetShop from './ui/setting_tabs/PetShop';
 import Settings from './ui/setting_tabs/Settings';
 import { useSettingTabStore } from './hooks/useSettingTabStore';
 import Title from './ui/components/Title';
+import { primaryColor } from './utils';
 
 function SettingWindow() {
+  const viewport = useRef<HTMLDivElement>(null);
   const { theme: colorScheme, language } = useSettingStore();
   const { t, i18n } = useTranslation();
   const { activeTab } = useSettingTabStore();
@@ -34,6 +35,7 @@ function SettingWindow() {
     const newTheme = value || (colorScheme === 'dark' ? 'light' : 'dark');
     handleSettingChange('changeAppTheme', newTheme);
   }
+  const scrollToTop = useCallback(() => viewport!.current!.scrollTo({ top: 0, behavior: 'smooth' }), []);
 
   useEffect(() => {
     if (language != i18n.language) i18n.changeLanguage(language);
@@ -84,7 +86,7 @@ function SettingWindow() {
             "#101113",
           ],
         },
-        primaryColor: 'pink',
+        primaryColor: primaryColor,
       }} withGlobalStyles withNormalizeCSS>
         <AppShell
           padding={0}
@@ -105,7 +107,7 @@ function SettingWindow() {
                 </Stack>
                 <Navbar.Section>
                   <Stack justify="center" align={"center"} spacing={0}>
-                    <ActionIcon variant="default" onClick={() => toggleColorScheme()} size={30}>
+                    <ActionIcon variant="default" onClick={() => toggleColorScheme()} size={30} >
                       {colorScheme === 'dark' ? <IconSun size="1rem" /> : <IconMoonStars size="1rem" />}
                     </ActionIcon>
                   </Stack>
@@ -113,12 +115,10 @@ function SettingWindow() {
               </Flex>
             </Navbar>
           }>
-          <ScrollArea style={{
-            height: "100vh",
-          }}>
+          <ScrollArea h={"100vh"} viewportRef={viewport}>
             <Box m={"sm"}>
               <Title title={SettingTabComponent[activeTab].title} description={SettingTabComponent[activeTab].description} />
-              <CurrentSettingTab />
+              <CurrentSettingTab scrollToTop={scrollToTop} />
             </Box>
           </ScrollArea>
         </AppShell>

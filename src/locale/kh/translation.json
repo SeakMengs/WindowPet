@@ -15,5 +15,7 @@
     "Make the pet float above taskbar (For Window User)": "ធ្វើឱ្យសត្វចិញ្ចឹមអណ្តែតពីលើរ taskbar (សម្រាប់អ្នកប្រើប្រាស់វីនដូ)",
     "Pet above taskbar": "សត្វលើរ taskbar",
     "Allow pet interactions": "អនុញ្ញាតឱ្យលេងសត្វចិញ្ចឹម",
-    "If allow pet interaction turn on, user will be able to drag and move the pet around their window": "ប្រសិនបើអនុញ្ញាតឱ្យលេងសត្វចិញ្ចឹម អ្នកប្រើប្រាស់នឹងអាចអូស និងផ្លាស់ទីសត្វចិញ្ចឹមនៅជុំវិញកុំព្យូទ័ររបស់ពួកគេ"
+    "If allow pet interaction turn on, user will be able to drag and move the pet around their window": "ប្រសិនបើអនុញ្ញាតឱ្យលេងសត្វចិញ្ចឹម អ្នកប្រើប្រាស់នឹងអាចអូស និងផ្លាស់ទីសត្វចិញ្ចឹមនៅជុំវិញកុំព្យូទ័ររបស់ពួកគេ",
+    "Acquire": "ចិញ្ចឹម",
+    "Remove": "ដកចេញ"
 }

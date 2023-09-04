@@ -28,7 +28,7 @@ export interface IHandleSettingChange {
 }
 
 export interface ISettingTabComponent {
-    component: LazyExoticComponent<MemoExoticComponent<() => JSX.Element>> | MemoExoticComponent<() => JSX.Element>,
+    component: MemoExoticComponent<({ scrollToTop }: { scrollToTop: () => void }) => JSX.Element>,
     title: string,
     description: string,
 }
