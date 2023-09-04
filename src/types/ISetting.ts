@@ -28,18 +28,14 @@ export interface IHandleSettingChange {
 }
 
 export interface ISettingTabComponent {
-    [key: number]: LazyExoticComponent<MemoExoticComponent<() => JSX.Element>> | MemoExoticComponent<() => JSX.Element>;
+    component: LazyExoticComponent<MemoExoticComponent<() => JSX.Element>> | MemoExoticComponent<() => JSX.Element>,
+    title: string,
+    description: string,
 }
 
 export interface ISettingsContent {
-    parent: {
-        title: string;
-        description: string;
-    };
-    child: {
-        title: string;
-        description: string;
-        checked: boolean;
-        dispatchType: string;
-    }[];
+    title: string;
+    description: string;
+    checked: boolean;
+    dispatchType: string;
 }

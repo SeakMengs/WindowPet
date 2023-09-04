@@ -1,6 +1,5 @@
 import { invoke } from "@tauri-apps/api";
 import { appWindow } from "@tauri-apps/api/window";
-import { exists } from "@tauri-apps/api/fs"
 import { ISpriteConfig } from "../types/ISpriteConfig";
 import { useSettingStore } from "../hooks/useSettingStore";
 import { listen } from "@tauri-apps/api/event";
@@ -81,6 +80,7 @@ export default class Pets extends Phaser.Scene {
                 pixelPerfect: true,
             }) as IPet;
             this.pets[i].setCollideWorldBounds(true, 0, 0, true);
+            // this.pets[i].setScale(-2, 2);
             // store available states to pet (it actual name, not modified name)
             this.pets[i].availableStates = Object.keys(sprite.states);
             this.petFallOrSpawnOnTheGround(this.pets[i]);
@@ -689,6 +689,7 @@ export default class Pets extends Phaser.Scene {
                 this.switchState(pet, 'climb');
 
                 const lastPetX = pet.x;
+                // const lastPetX = pet.x + pet.width * Math.abs(pet.scaleX) * pet.originX;
                 if (worldBounding.left) {
                     /*
                      * not quite sure if this is correct, but after a lot of experiment

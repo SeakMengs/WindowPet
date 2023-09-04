@@ -4,8 +4,11 @@ export interface ISettingTabProps {
     active: boolean;
     handleSetTab: () => void;
 }
-
 export interface ISettingTabsProps {
     activeTab: number;
-    setActiveTab: (tab: number) => void;
+}
+
+export interface ITitleProps {
+    title: string;
+    description: string;
 }

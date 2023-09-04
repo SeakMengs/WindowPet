@@ -3,19 +3,22 @@ import {
   IconPawFilled,
   IconInfoCircle,
   IconSettings,
+  IconBuildingStore,
 } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import SettingTab from './SettingTab';
 import { memo, useMemo } from 'react';
 import { ISettingTabsProps } from '../../types/components/type';
+import { useSettingTabStore } from '../../hooks/useSettingTabStore';
 
-function SettingTabs({ setActiveTab, activeTab }: ISettingTabsProps) {
+function SettingTabs({ activeTab }: ISettingTabsProps) {
+  const { setActiveTab } = useSettingTabStore();
   const { t } = useTranslation();
 
   const tabs = useMemo(() => {
     return [
-      { Icon: <IconCat size="1rem" />, label: t('Add Pet') },
-      { Icon: <IconPawFilled size="1rem" />, label: t('Edit Pet') },
+      { Icon: <IconCat size="1rem" />, label: t('My Pets') },
+      { Icon: <IconBuildingStore size="1rem" />, label: t('Pet Shop') },
       { Icon: <IconSettings size="1rem" />, label: t('Settings') },
       { Icon: <IconInfoCircle size="1rem" />, label: t('About') },
     ]

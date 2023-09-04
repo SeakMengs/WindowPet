@@ -1,13 +1,13 @@
 import { Text } from "@mantine/core";
 import { memo } from "react";
 
-function EditPet() {
+function PetShop() {
 
     return (
         <>
-            <Text>Edit Pet</Text>
+            <Text>Pet Shop</Text>
         </>
     )
 }
 
-export default memo(EditPet);
+export default memo(PetShop);

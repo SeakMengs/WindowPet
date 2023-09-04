@@ -12,43 +12,33 @@ function Settings() {
     const { t, i18n } = useTranslation();
     const { allowAutoStartUp, allowPetAboveTaskBar, allowPetInteraction } = useSettingStore();
 
-    const settings: ISettingsContent = {
-        parent: {
-            title: t("Setting preferences"),
-            description: t("Choose what u desire, do what u love")
+    const settings: ISettingsContent[] = [
+        {
+            title: t("Auto start-up"),
+            description: t("Automatically open WindowPet every time u start the computer"),
+            checked: allowAutoStartUp,
+            dispatchType: "switchAutoWindowStartUp",
         },
-        child: [
-            {
-                title: t("Auto start-up"),
-                description: t("Automatically open WindowPet every time u start the computer"),
-                checked: allowAutoStartUp,
-                dispatchType: "switchAutoWindowStartUp",
-            },
-            {
-                title: t("Pet above taskbar"),
-                description: t("Make the pet float above taskbar (For Window User)"),
-                checked: allowPetAboveTaskBar,
-                dispatchType: "switchPetAboveTaskBar",
-            },
-            {
-                title: t("Allow pet interactions"),
-                description: t("If allow pet interaction turn on, user will be able to drag and move the pet around their window"),
-                checked: allowPetInteraction,
-                dispatchType: "switchAllowPetInteraction",
-            },
-        ]
-    }
+        {
+            title: t("Pet above taskbar"),
+            description: t("Make the pet float above taskbar (For Window User)"),
+            checked: allowPetAboveTaskBar,
+            dispatchType: "switchPetAboveTaskBar",
+        },
+        {
+            title: t("Allow pet interactions"),
+            description: t("If allow pet interaction turn on, user will be able to drag and move the pet around their window"),
+            checked: allowPetInteraction,
+            dispatchType: "switchAllowPetInteraction",
+        },
+    ];
 
-    const SettingSwitches = settings.child.map((setting, index) => {
+    const SettingSwitches = settings.map((setting, index) => {
         return <SettingSwitch {...setting} key={index} />
     })
 
     return (
         <>
-            <Text fz={"lg"} fw={500}>{settings.parent.title}</Text>
-            <Text fz={"xs"} c={"dimmed"} mt={3} mb={"xl"}>
-                {settings.parent.description}
-            </Text>
             {SettingSwitches}
             <Select
                 my={"sm"}
@@ -60,7 +50,7 @@ function Settings() {
                 value={i18n.language}
                 onChange={(value) => handleSettingChange("changeAppLanguage", value as string)}
             />
-    </>
+        </>
     )
 }
 
