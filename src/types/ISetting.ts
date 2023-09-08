@@ -14,7 +14,7 @@ export interface ISetSetting extends IGetAppSetting {
 }
 
 export type TAppSetting = {
-    allowPetAboveTaskBar: boolean,
+    allowPetAboveTaskbar: boolean,
     allowPetInteraction: boolean,
     language: string,
     theme: ColorScheme

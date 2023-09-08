@@ -1,9 +1,50 @@
 // use serde_json::json;
+use serde::Deserialize;
 use serde_json::json;
 use std::path::{Path, PathBuf};
 use tauri::api::path;
 use tauri::App;
 use tauri_plugin_store::StoreBuilder;
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SettingConfig {
+    pub theme: String,
+    pub language: String,
+    pub allow_pet_above_taskbar: bool,
+    pub allow_pet_interaction: bool,
+}
+
+impl SettingConfig {
+    pub fn new() -> SettingConfig{
+        let setting_path: String = combine_config_path("settings.json", None).unwrap();
+        match std::fs::read_to_string(setting_path) {
+            Ok(value) => {
+                let json: serde_json::Value = serde_json::from_str(&value).unwrap();
+                SettingConfig {
+                    theme: json["app"]["theme"].as_str().unwrap().to_string(),
+                    language: json["app"]["language"].as_str().unwrap().to_string(),
+                    allow_pet_above_taskbar: json["app"]["allowPetAboveTaskbar"].as_bool().unwrap(),
+                    allow_pet_interaction: json["app"]["allowPetInteraction"].as_bool().unwrap(),
+                }
+            }
+            Err(err) => {
+                // println!("error reading settings.json");
+                println!("Error: {}", err);
+                SettingConfig {
+                    theme: "dark".to_string(),
+                    language: "en".to_string(),
+                    allow_pet_above_taskbar: false,
+                    allow_pet_interaction: true,
+                }
+            }
+        }
+    }
+
+    pub fn get_theme(&self) -> &str {
+        self.theme.as_str()
+    }
+}
 
 #[tauri::command(rename_all = "snake_case")]
 pub fn convert_path(path_str: &str) -> Option<String> {
@@ -28,8 +69,8 @@ pub fn combine_config_path(config_name: &str, folder_name: Option<String>) -> Op
 }
 
 pub fn if_app_config_does_not_exist_create_default(app: &mut App, config_name: &str) {
-    let setting_config_path = combine_config_path(config_name, None).unwrap();
-    if Path::new(&setting_config_path).exists() {
+    let setting_path = combine_config_path(config_name, None).unwrap();
+    if Path::new(&setting_path).exists() {
         return;
     }
 
@@ -40,7 +81,7 @@ pub fn if_app_config_does_not_exist_create_default(app: &mut App, config_name: &
         _ => return,
     };
     let json_data: serde_json::Value = serde_json::from_str(default_config).unwrap();
-    let mut store = StoreBuilder::new(app.handle(), PathBuf::from(setting_config_path)).build();
+    let mut store = StoreBuilder::new(app.handle(), PathBuf::from(setting_path)).build();
 
     // note that values must be serd_json::Value to be compatible with JS
     store

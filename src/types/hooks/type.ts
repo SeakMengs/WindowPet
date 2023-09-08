@@ -8,12 +8,12 @@ export interface ISettingStoreState {
     setTheme: (newTheme: ColorScheme) => void;
     pets: ISpriteConfig[];
     setPets: (newPets: ISpriteConfig[]) => void;
-    allowPetAboveTaskBar: boolean;
-    setallowPetAboveTaskBar: (newBoolean: boolean) => void;
+    allowPetAboveTaskbar: boolean;
+    setAllowPetAboveTaskbar: (newBoolean: boolean) => void;
     allowAutoStartUp: boolean;
-    setallowAutoStartUp: (newBoolean: boolean) => void;
+    setAllowAutoStartUp: (newBoolean: boolean) => void;
     allowPetInteraction: boolean;
-    setallowPetInteraction: (newBoolean: boolean) => void;
+    setAllowPetInteraction: (newBoolean: boolean) => void;
 }
 
 export interface ISettingTabState {

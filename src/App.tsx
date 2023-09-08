@@ -4,15 +4,25 @@ import Loading from "./Loading";
 import { useSettings } from "./hooks/useSettings";
 import { appWindow } from "@tauri-apps/api/window";
 import { usePets } from "./hooks/usePets";
+import { confirm } from "@tauri-apps/api/dialog";
 
 const PhaserWrapper = React.lazy(() => import("./PhaserWrapper"));
 const SettingWindow = React.lazy(() => import("./SettingWindow"));
 
 function App() {
   useSettings();
-  const { isError } = usePets();
+  const { isError, error } = usePets();
 
-  if (isError) return appWindow.close();
+  if (isError) {
+    confirm(`Error: ${error.message}`, {
+      title: 'WindowPet Dialog',
+      type: 'error',
+    }).then((ok) => {
+      if (ok !== undefined) {
+        appWindow.close();
+      }
+    });
+  }
 
   return (
     <Router>
@@ -20,7 +30,7 @@ function App() {
         <Route path="/" element={<PhaserWrapper />} />
         <Route path="/setting" element={
           <Suspense fallback={<Loading />}>
-          <SettingWindow />
+            <SettingWindow />
           </Suspense>
         } />
       </Routes>

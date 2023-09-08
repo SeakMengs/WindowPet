@@ -1,7 +1,10 @@
-import { Box, Button, Image, Select } from "@mantine/core";
+import { Box, Button, Image, Select, Title } from "@mantine/core";
 import { memo } from "react";
+import { IPetCardProps } from "../../types/components/type";
+import { primaryColor } from "../../utils";
 
-function PetCard({ btnLabel} : { btnLabel: string}) {
+
+function PetCard({ btnLabel, pet, btnFunction } : IPetCardProps ) {
 
     return (
         <>
@@ -19,32 +22,24 @@ function PetCard({ btnLabel} : { btnLabel: string}) {
                     src={"https://freepngimg.com/save/125360-anime-free-transparent-image-hq/500x500"}
                     height={'14rem'}
                     width={'14rem'}
-                    alt="Norway"
+                    alt="Pet Image"
                 />
                 <Box sx={(theme) => ({
                     padding: theme.spacing.lg,
                 })}>
-
+                    <Title order={4} align="center">{pet.name}</Title>
                     <Select
                         my={"md"}
                         maxDropdownHeight={210}
                         placeholder="Pick one"
-                        defaultValue={'react'}
-                        // dropdownPosition="top"
-                        data={[
-                            { value: 'react', label: 'React' },
-                            { value: 'ng', label: 'Angular' },
-                            { value: 'svelte', label: 'Svelte' },
-                            { value: 'vue', label: 'Vue' },
-                            { value: 'riot', label: 'Riot' },
-                            { value: 'ember', label: 'Ember' },
-                            { value: 'aurelia', label: 'Aurelia' },
-                            { value: 'meteor', label: 'Meteor' },
-                            { value: 'backbone', label: 'Backbone' },
-                            { value: 'preact', label: 'Preact' },
-                        ]}
+                        // make default value idle, if idle doesn't exist choose state at index 0
+                        defaultValue={
+                            pet.states['idle'] ? 'idle' : Object.keys(pet.states)[0]
+                        }
+                        data={Object.keys(pet.states).map(state => ({value: state, label: state,})
+                        )}
                     />
-                    <Button variant="light" fullWidth radius="md">
+                    <Button variant="light" fullWidth radius="md" onClick={btnFunction}>
                         {btnLabel}
                     </Button>
                 </Box>

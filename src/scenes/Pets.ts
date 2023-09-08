@@ -13,7 +13,7 @@ export default class Pets extends Phaser.Scene {
     private isFlipped: boolean = false;
     private frameCount: number = 0;
     private allowPetInteraction: boolean = useSettingStore.getState().allowPetInteraction
-    private allowPetAboveTaskBar: boolean = useSettingStore.getState().allowPetAboveTaskBar
+    private allowPetAboveTaskbar: boolean = useSettingStore.getState().allowPetAboveTaskbar
     // use this array to store index of pet that is currently climb and crawl
     private petClimbAndCrawlIndex: number[] = [];
 
@@ -62,8 +62,9 @@ export default class Pets extends Phaser.Scene {
     }
 
     create(): void {
+        this.turnOnIgnoreCursorEvents();
         this.physics.world.setBoundsCollision(true, true, true, true);
-        this.updatePetAboveTaskBar();
+        this.updatePetAboveTaskbar();
 
         let i = 0;
         // create pets
@@ -79,8 +80,11 @@ export default class Pets extends Phaser.Scene {
                 draggable: true,
                 pixelPerfect: true,
             }) as IPet;
+
+            //! scale the pet in the future might be allow user to scale, don't delete
+            // this.pets[i].setScale(this.pets[i].scaleX * 2, this.pets[i].scaleY * 2);
+
             this.pets[i].setCollideWorldBounds(true, 0, 0, true);
-            // this.pets[i].setScale(-2, 2);
             // store available states to pet (it actual name, not modified name)
             this.pets[i].availableStates = Object.keys(sprite.states);
             this.petFallOrSpawnOnTheGround(this.pets[i]);
@@ -192,9 +196,9 @@ export default class Pets extends Phaser.Scene {
                 case 'switchAllowPetInteraction':
                     this.allowPetInteraction = event.payload!.value as boolean;
                     break;
-                case 'switchPetAboveTaskBar':
-                    this.allowPetAboveTaskBar = event.payload!.value as boolean;
-                    this.updatePetAboveTaskBar();
+                case 'switchPetAboveTaskbar':
+                    this.allowPetAboveTaskbar = event.payload!.value as boolean;
+                    this.updatePetAboveTaskbar();
                 default:
                     break;
             }
@@ -230,7 +234,8 @@ export default class Pets extends Phaser.Scene {
 
         switch (state) {
             case 'walk':
-                direction = pet.scaleX === -1 ? Direction.LEFT : Direction.RIGHT;
+                // if pet.scaleX is negative, it means pet is facing left, so we set direction to left, else right
+                direction = pet.scaleX < 0 ? Direction.LEFT : Direction.RIGHT;
                 break;
             case 'fall':
                 // feel like fall state is opposite of walk so every fall, i flip the pet horizontally :)
@@ -241,7 +246,7 @@ export default class Pets extends Phaser.Scene {
                 direction = Direction.UP;
                 break;
             case 'crawl':
-                pet.scaleX === 1 ? direction = Direction.UPSIDELEFT : direction = Direction.UPSIDERIGHT;
+                pet.scaleX > 0 ? direction = Direction.UPSIDELEFT : direction = Direction.UPSIDERIGHT;
                 break;
             default:
                 direction = Direction.UNKNOWN;
@@ -345,13 +350,13 @@ export default class Pets extends Phaser.Scene {
     // if lookToTheLeft is true, pet will look to the left, if false, pet will look to the right
     setPetLookToTheLeft(pet: IPet, lookToTheLeft: boolean): void {
         if (lookToTheLeft) {
-            if (pet.scaleX === 1) {
+            if (pet.scaleX > 0) {
                 this.toggleFlipX(pet);
             }
             return
         }
 
-        if (pet.scaleX === -1) {
+        if (pet.scaleX < 0) {
             this.toggleFlipX(pet);
         }
     }
@@ -360,10 +365,10 @@ export default class Pets extends Phaser.Scene {
         /*
          * using scale because flipX doesn't flip the hitbox
          * so i have to flip the hitbox manually
-         * Note: scaleX -1 = direction left, scaleX 1 = direction right
+         * Note: scaleX negative (- value) = direction left, scaleX positive (+ value) = direction right
          */
         // if hitbox is on the right, flip to the left
-        pet.scaleX === 1 ? pet.setOffset(pet.width, 0) : pet.setOffset(0, 0);
+        pet.scaleX > 0 ? pet.setOffset(pet.width, 0) : pet.setOffset(0, 0);
         pet.setScale(pet.scaleX * -1, pet.scaleY);
     }
 
@@ -533,8 +538,8 @@ export default class Pets extends Phaser.Scene {
         }
     }
 
-    updatePetAboveTaskBar(): void {
-        if (this.allowPetAboveTaskBar) {
+    updatePetAboveTaskbar(): void {
+        if (this.allowPetAboveTaskbar) {
             // get taskbar height
             const taskbarHeight = window.innerHeight - screen.availHeight
 
@@ -617,7 +622,8 @@ export default class Pets extends Phaser.Scene {
                 let newPetx = pet.x;
                 // if pet climb, I want the pet to have some opposite x direction when fall
                 if (pet.anims && pet.anims.getName() === `climb-${pet.texture.key}`) {
-                    newPetx = pet.scaleX === -1 ? Phaser.Math.Between(pet.x, 500) : Phaser.Math.Between(pet.x, this.physics.world.bounds.width - 500);
+                    // if pet.scaleX is negative, it means pet is facing left, vice versa
+                    newPetx = pet.scaleX < 0 ? Phaser.Math.Between(pet.x, 500) : Phaser.Math.Between(pet.x, this.physics.world.bounds.width - 500);
                 }
 
                 // disable body to prevent shaking when fall
@@ -663,7 +669,8 @@ export default class Pets extends Phaser.Scene {
                     setTimeout(() => {
                         if (pet.anims && !pet.anims.isPlaying) {
                             pet.anims.resume();
-                            this.updateDirection(pet, pet.scaleX === -1 ? Direction.UPSIDELEFT : Direction.UPSIDERIGHT);
+                            // if pet.scaleX is negative, it means pet is facing up side left, vice versa
+                            this.updateDirection(pet, pet.scaleX < 0 ? Direction.UPSIDELEFT : Direction.UPSIDERIGHT);
                         }
                     }, Phaser.Math.Between(3000, 6000));
                     return;

@@ -17,5 +17,9 @@
     "Allow pet interactions": "Allow pet interactions",
     "If allow pet interaction turn on, user will be able to drag and move the pet around their window": "If allow pet interaction turn on, user will be able to drag and move the pet around their window",
     "Acquire": "Acquire",
-    "Remove": "Remove"
+    "Remove": "Remove",
+    "pet name has been added to your realm": "{{name}} has been added to your realm",
+    "pet name has been removed": "{{name}} has been removed",
+    "Pet Added": "Pet Added",
+    "Pet Removed": "Pet Removed"
 }

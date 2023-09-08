@@ -17,5 +17,9 @@
     "Allow pet interactions": "អនុញ្ញាតឱ្យលេងសត្វចិញ្ចឹម",
     "If allow pet interaction turn on, user will be able to drag and move the pet around their window": "ប្រសិនបើអនុញ្ញាតឱ្យលេងសត្វចិញ្ចឹម អ្នកប្រើប្រាស់នឹងអាចអូស និងផ្លាស់ទីសត្វចិញ្ចឹមនៅជុំវិញកុំព្យូទ័ររបស់ពួកគេ",
     "Acquire": "ចិញ្ចឹម",
-    "Remove": "ដកចេញ"
+    "Remove": "ដកចេញ",
+    "pet name has been added to your realm": "{{name}} ត្រូវបានបញ្ចូលទៅក្នុងកុំព្យូទ័ររបស់អ្នក",
+    "pet name has been removed": "{{name}} ត្រូវបានដកចេញពីកុំព្យូទ័ររបស់អ្នក",
+    "Pet Added": "សត្វចិញ្ចឹមបានបន្ថែម",
+    "Pet Removed": "សត្វចិញ្ចឹមត្រូវបានដកចេញ"
 }

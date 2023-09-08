@@ -24,6 +24,7 @@ import Settings from './ui/setting_tabs/Settings';
 import { useSettingTabStore } from './hooks/useSettingTabStore';
 import Title from './ui/components/Title';
 import { primaryColor } from './utils';
+import { Notifications } from '@mantine/notifications';
 
 function SettingWindow() {
   const viewport = useRef<HTMLDivElement>(null);
@@ -36,10 +37,6 @@ function SettingWindow() {
     handleSettingChange('changeAppTheme', newTheme);
   }
   const scrollToTop = useCallback(() => viewport!.current!.scrollTo({ top: 0, behavior: 'smooth' }), []);
-
-  useEffect(() => {
-    if (language != i18n.language) i18n.changeLanguage(language);
-  }, [language]);
 
   const SettingTabComponent: ISettingTabComponent[] = [
     {
@@ -88,6 +85,7 @@ function SettingWindow() {
         },
         primaryColor: primaryColor,
       }} withGlobalStyles withNormalizeCSS>
+        <Notifications />
         <AppShell
           padding={0}
           navbar={

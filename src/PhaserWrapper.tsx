@@ -2,11 +2,15 @@ import { useEffect } from "react";
 import Phaser from "phaser";
 import Pets from "./scenes/Pets";
 import { useSettingStore } from "./hooks/useSettingStore";
+import { appWindow } from "@tauri-apps/api/window";
 
 function PhaserWrapper() {
     const { pets } = useSettingStore();
 
     useEffect(() => {
+        // ensure that if component remount user will still be able to touch their screen
+        appWindow.setIgnoreCursorEvents(true);
+
         const phaserConfig: Phaser.Types.Core.GameConfig = {
             type: Phaser.AUTO,
             parent: "phaser-container",

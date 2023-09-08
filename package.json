@@ -11,11 +11,10 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@mantine/carousel": "^6.0.19",
     "@mantine/core": "^6.0.17",
+    "@mantine/notifications": "^6.0.20",
     "@tabler/icons-react": "^2.30.0",
     "@tauri-apps/api": "^1.4.0",
-    "embla-carousel-react": "^7.1.0",
     "i18next": "^23.4.3",
     "jsdom": "^22.1.0",
     "phaser": "^3.60.0",

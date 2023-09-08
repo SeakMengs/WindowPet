@@ -7,12 +7,13 @@ import { handleSettingChange } from "../../utils/handleSettingChange";
 import { ISettingsContent } from "../../types/ISetting";
 import { useSettingStore } from "../../hooks/useSettingStore";
 import { memo } from "react";
+import { IconFlag, IconLanguage } from "@tabler/icons-react";
 
 function Settings() {
     const { t, i18n } = useTranslation();
-    const { allowAutoStartUp, allowPetAboveTaskBar, allowPetInteraction } = useSettingStore();
+    const { allowAutoStartUp, allowPetAboveTaskbar, allowPetInteraction } = useSettingStore();
 
-    const settings: ISettingsContent[] = [
+    const settingSwitches: ISettingsContent[] = [
         {
             title: t("Auto start-up"),
             description: t("Automatically open WindowPet every time u start the computer"),
@@ -22,8 +23,8 @@ function Settings() {
         {
             title: t("Pet above taskbar"),
             description: t("Make the pet float above taskbar (For Window User)"),
-            checked: allowPetAboveTaskBar,
-            dispatchType: "switchPetAboveTaskBar",
+            checked: allowPetAboveTaskbar,
+            dispatchType: "switchPetAboveTaskbar",
         },
         {
             title: t("Allow pet interactions"),
@@ -33,7 +34,7 @@ function Settings() {
         },
     ];
 
-    const SettingSwitches = settings.map((setting, index) => {
+    const SettingSwitches = settingSwitches.map((setting, index) => {
         return <SettingSwitch {...setting} key={index} />
     })
 
@@ -41,6 +42,7 @@ function Settings() {
         <>
             {SettingSwitches}
             <Select
+                icon={<IconLanguage />}
                 my={"sm"}
                 label={t("Language")}
                 placeholder="Pick one"

@@ -3,19 +3,21 @@ import { useSettingStore } from "./useSettingStore";
 import { getAppSettings } from "../utils/settings";
 import { TAppSetting } from "../types/ISetting";
 import { isEnabled } from "tauri-plugin-autostart-api";
+import i18next from "i18next";
 
-const { setLanguage, setTheme, setallowAutoStartUp, setallowPetAboveTaskBar, setallowPetInteraction, } = useSettingStore.getState();
+const { setLanguage, setTheme, setAllowAutoStartUp, setAllowPetAboveTaskbar, setAllowPetInteraction, } = useSettingStore.getState();
 
 const getSettings = async () => {
     let setting: TAppSetting = await getAppSettings({ configName: "settings.json" });
     if (setting === undefined) {
         return [];
     }
+    if (i18next.language !== setting.language) i18next.changeLanguage(setting.language);
     setLanguage(setting.language);
     setTheme(setting.theme);
-    setallowAutoStartUp(await isEnabled());
-    setallowPetAboveTaskBar(setting.allowPetAboveTaskBar);
-    setallowPetInteraction(setting.allowPetInteraction);
+    setAllowAutoStartUp(await isEnabled());
+    setAllowPetAboveTaskbar(setting.allowPetAboveTaskbar);
+    setAllowPetInteraction(setting.allowPetInteraction);
 };
 
 export function useSettings() {

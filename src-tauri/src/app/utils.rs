@@ -1,5 +1,5 @@
-use tauri::AppHandle;
-// use tauri::Theme;
+use super::conf::SettingConfig;
+use tauri::{AppHandle, Theme};
 
 pub fn reopen_main_window(app: &AppHandle) {
     let window = tauri::WindowBuilder::new(app, "main", tauri::WindowUrl::App("/".into()))
@@ -19,11 +19,17 @@ pub fn reopen_main_window(app: &AppHandle) {
 }
 
 pub fn open_setting_window(app: &AppHandle) {
+    let settings = SettingConfig::new();
     let _window =
         tauri::WindowBuilder::new(app, "setting", tauri::WindowUrl::App("/setting".into()))
             .title("WindowPet Setting")
-            .min_inner_size(920.0, 650.0)
-            // .theme(Some(Theme::Light))
+            .inner_size(1000.0, 650.0)
+            // .min_inner_size(1280.0, 650.0)
+            .theme(if settings.get_theme() == "dark" {
+                Some(Theme::Dark)
+            } else {
+                Some(Theme::Light)
+            })
             .build()
             .unwrap();
 }
