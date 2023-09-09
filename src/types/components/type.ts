@@ -20,3 +20,22 @@ export interface IPetCardProps {
     pet: ISpriteConfig,
     btnFunction: () => void,
 }
+
+export interface SettingSwitchProps {
+    title: string,
+    description: string,
+    checked: boolean,
+    dispatchType: string;
+}
+
+export interface SettingButtonProps {
+    title: string,
+    description: string,
+    btnLabel: string,
+    btnFunction: () => void,
+}
+
+export interface PhaserCanvasProps {
+    pet: ISpriteConfig,
+    playState: string,
+}

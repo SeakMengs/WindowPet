@@ -1,5 +1,5 @@
 {
-    "My Pets": "My Pets",
+    "My Pets": "My Pets | {{totalPets}}",
     "Meet your furry friend, a loyal companion who loves to play and cuddle": "Meet your furry friend, a loyal companion who loves to play and cuddle",
     "Pet Shop": "Pet Shop",
     "Settings": "Settings",
@@ -21,5 +21,9 @@
     "pet name has been added to your realm": "{{name}} has been added to your realm",
     "pet name has been removed": "{{name}} has been removed",
     "Pet Added": "Pet Added",
-    "Pet Removed": "Pet Removed"
+    "Pet Removed": "Pet Removed",
+    "Open": "Open",
+    "The location path of where the app store your config such as settings, pets, etc": "The location path of where the app store your config such as settings, pets, etc",
+    "App Config Path" : "App Config Path",
+    "Browse wide selection of adorable pets, find your perfect companion today!": "Browse wide selection of adorable pets, find your perfect companion today!"
 }

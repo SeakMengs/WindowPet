@@ -2,11 +2,13 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod app;
-use app::cmd::get_mouse_position;
+use app::cmd::{get_mouse_position, open_folder};
 use app::conf::{combine_config_path, convert_path, if_app_config_does_not_exist_create_default};
 use app::tray::{handle_tray_event, init_system_tray};
+use log::info;
 use tauri::Manager;
 use tauri_plugin_autostart::MacosLauncher;
+use tauri_plugin_log::LogTarget;
 
 #[derive(Clone, serde::Serialize)]
 struct Payload {
@@ -21,6 +23,12 @@ fn main() {
             Some(vec!["--flag1", "--flag2"]), /* arbitrary number of args to pass to your app */
         ))
         .plugin(tauri_plugin_store::Builder::default().build())
+        .plugin(tauri_plugin_log::Builder::default().targets([
+            // LogTarget::LogDir,
+            LogTarget::Folder(app::conf::app_root()),
+            LogTarget::Stdout,
+            LogTarget::Webview,
+        ]).build())
         .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
             println!("{}, {argv:?}, {cwd}", app.package_info().name);
 
@@ -35,6 +43,7 @@ fn main() {
             
             if_app_config_does_not_exist_create_default(app, "settings.json");
             if_app_config_does_not_exist_create_default(app, "pets.json");
+            info!("app started");
             Ok(())
         })
         .system_tray(init_system_tray())
@@ -42,7 +51,8 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             convert_path,
             combine_config_path,
-            get_mouse_position
+            get_mouse_position,
+            open_folder,
         ])
         .build(tauri::generate_context!())
         .expect("error while running tauri application")

@@ -17,37 +17,39 @@ import { useTranslation } from 'react-i18next';
 import { useSettingStore } from './hooks/useSettingStore';
 import { handleSettingChange } from './utils/handleSettingChange';
 import { ISettingTabComponent } from './types/ISetting';
-import { memo, useCallback, useEffect, useRef } from 'react';
+import { memo, useCallback, useMemo, useRef } from 'react';
 import MyPets from './ui/setting_tabs/MyPets';
 import PetShop from './ui/setting_tabs/PetShop';
 import Settings from './ui/setting_tabs/Settings';
 import { useSettingTabStore } from './hooks/useSettingTabStore';
 import Title from './ui/components/Title';
-import { primaryColor } from './utils';
+import { PrimaryColor } from './utils';
 import { Notifications } from '@mantine/notifications';
+import About from './ui/setting_tabs/About';
 
 function SettingWindow() {
   const viewport = useRef<HTMLDivElement>(null);
-  const { theme: colorScheme, language } = useSettingStore();
-  const { t, i18n } = useTranslation();
+  const { theme: colorScheme, language, pets } = useSettingStore();
+  const { t } = useTranslation();
   const { activeTab } = useSettingTabStore();
 
   const toggleColorScheme = (value?: ColorScheme) => {
     const newTheme = value || (colorScheme === 'dark' ? 'light' : 'dark');
     handleSettingChange('changeAppTheme', newTheme);
   }
+
   const scrollToTop = useCallback(() => viewport!.current!.scrollTo({ top: 0, behavior: 'smooth' }), []);
 
-  const SettingTabComponent: ISettingTabComponent[] = [
+  const SettingTabComponent: ISettingTabComponent[] = useMemo(() => ([
     {
       component: MyPets,
-      title: t("My Pets"),
+      title: t("My Pets", { totalPets: pets.length }),
       description: t("Meet your furry friend, a loyal companion who loves to play and cuddle"),
     },
     {
       component: PetShop,
       title: t("Pet Shop"),
-      description: t("Meet your furry friend, a loyal companion who loves to play and cuddle"),
+      description: t("Browse wide selection of adorable pets, find your perfect companion today!"),
     },
     {
       component: Settings,
@@ -55,11 +57,11 @@ function SettingWindow() {
       description: t("Choose what u desire, do what u love")
     },
     {
-      component: Settings,
+      component: About,
       title: t("Setting Preferences"),
       description: t("Choose what u desire, do what u love")
     },
-  ]
+  ]), [language]);
   let CurrentSettingTab = SettingTabComponent[activeTab]?.component;
 
   return (
@@ -83,7 +85,7 @@ function SettingWindow() {
             "#101113",
           ],
         },
-        primaryColor: primaryColor,
+        primaryColor: PrimaryColor,
       }} withGlobalStyles withNormalizeCSS>
         <Notifications />
         <AppShell

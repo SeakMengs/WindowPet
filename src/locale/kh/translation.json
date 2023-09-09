@@ -1,5 +1,5 @@
 {
-    "My Pets": "សត្វ​ចិញ្ចឹម​របស់ខ្ញុំ",
+    "My Pets": "សត្វ​ចិញ្ចឹម​របស់ខ្ញុំ | {{totalPets}}",
     "Meet your furry friend, a loyal companion who loves to play and cuddle": "ជួបជាមួយសត្វ​សម្លាញ់របស់អ្នក ដែលជាដៃគូដ៏ស្មោះត្រង់ដែលចូលចិត្តលេង និងថើប",
     "Pet Shop": "ហាង​លក់​សត្វ​ចិញ្ចឹម",
     "Settings": "ការកំណត់",
@@ -21,5 +21,9 @@
     "pet name has been added to your realm": "{{name}} ត្រូវបានបញ្ចូលទៅក្នុងកុំព្យូទ័ររបស់អ្នក",
     "pet name has been removed": "{{name}} ត្រូវបានដកចេញពីកុំព្យូទ័ររបស់អ្នក",
     "Pet Added": "សត្វចិញ្ចឹមបានបន្ថែម",
-    "Pet Removed": "សត្វចិញ្ចឹមត្រូវបានដកចេញ"
+    "Pet Removed": "សត្វចិញ្ចឹមត្រូវបានដកចេញ",
+    "Open": "បើក",
+    "The location path of where the app store your config such as settings, pets, etc": "ទីតាំងនៃកន្លែងដែលកម្មវិធីរក្សាទុកការកំណត់របស់អ្នក ដូចជាការកំណត់ សត្វចិញ្ចឹមជាដើម",
+    "App Config Path" : "ទីតាំងនៃកន្លែងដែលកម្មវិធីរក្សាទុកការកំណត់",
+    "Browse wide selection of adorable pets, find your perfect companion today!": "រកមើលជម្រើសដ៏ធំទូលាយនៃសត្វចិញ្ចឹមគួរឱ្យស្រឡាញ់ ស្វែងរកដៃគូដ៏ល្អឥតខ្ចោះរបស់អ្នកនៅថ្ងៃនេះ!"
 }

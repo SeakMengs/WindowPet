@@ -1,29 +1,32 @@
-import { Box, Button, Image, Select, Title } from "@mantine/core";
-import { memo } from "react";
+import { Box, Button, Select, Title } from "@mantine/core";
+import { memo, useState } from "react";
 import { IPetCardProps } from "../../types/components/type";
-import { primaryColor } from "../../utils";
+import PhaserCanvas from "./PhaserCanvas";
+import { useInView } from "react-intersection-observer";
+import { CanvasSize } from "../../utils";
 
-
-function PetCard({ btnLabel, pet, btnFunction } : IPetCardProps ) {
+function PetCard({ btnLabel, pet, btnFunction }: IPetCardProps) {
+    const [playState, setPlayState] = useState<string>(pet.states['idle'] ? 'idle' : Object.keys(pet.states)[0]);
+    const { ref, inView } = useInView();
 
     return (
         <>
-            <Box sx={(theme) => ({
+            <Box ref={ref} sx={(theme) => ({
                 backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.white,
                 maxWidth: '14rem',
                 borderRadius: theme.radius.md,
                 boxShadow: theme.shadows.md,
                 border: `0.0625rem solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
             })}>
-                <Image
-                    sx={(theme) => ({
-                        borderRadius: theme.radius.md,
-                    })}
-                    src={"https://freepngimg.com/save/125360-anime-free-transparent-image-hq/500x500"}
-                    height={'14rem'}
-                    width={'14rem'}
-                    alt="Pet Image"
-                />
+                {/* if the pet is currently in user viewport, show it, otherwise destroy it dom because it take a lot of resource */}
+                {inView ?
+                    <PhaserCanvas pet={pet} playState={playState} /> :
+                    <div className="" style={{
+                        height: CanvasSize,
+                        width: CanvasSize,
+                    }}>
+                    </div>
+                }
                 <Box sx={(theme) => ({
                     padding: theme.spacing.lg,
                 })}>
@@ -32,14 +35,12 @@ function PetCard({ btnLabel, pet, btnFunction } : IPetCardProps ) {
                         my={"md"}
                         maxDropdownHeight={210}
                         placeholder="Pick one"
-                        // make default value idle, if idle doesn't exist choose state at index 0
-                        defaultValue={
-                            pet.states['idle'] ? 'idle' : Object.keys(pet.states)[0]
-                        }
-                        data={Object.keys(pet.states).map(state => ({value: state, label: state,})
+                        defaultValue={playState}
+                        data={Object.keys(pet.states).map(state => ({ value: state, label: state, })
                         )}
+                        onChange={setPlayState as any}
                     />
-                    <Button variant="light" fullWidth radius="md" onClick={btnFunction}>
+                    <Button variant="outline" fullWidth onClick={btnFunction}>
                         {btnLabel}
                     </Button>
                 </Box>

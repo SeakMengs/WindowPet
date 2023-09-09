@@ -1,7 +1,7 @@
 import { UnstyledButton, createStyles, rem, Tooltip } from '@mantine/core';
 import { memo } from 'react';
 import { ISettingTabProps } from '../../types/components/type';
-import { primaryColor } from '../../utils';
+import { PrimaryColor } from '../../utils';
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -31,7 +31,7 @@ function SettingTab({ Icon, label, active, handleSetTab }: ISettingTabProps) {
   const { classes, cx } = useStyles();
 
   return (
-    <Tooltip label={label} position="right" transitionProps={{ transition: "fade", duration: 200 }}  withArrow color={primaryColor}>
+    <Tooltip label={label} position="right" transitionProps={{ transition: "fade", duration: 200 }}  withArrow color={PrimaryColor}>
       <UnstyledButton onClick={handleSetTab} className={cx(classes.link, { [classes.active]: active })}>
         {Icon}
       </UnstyledButton>

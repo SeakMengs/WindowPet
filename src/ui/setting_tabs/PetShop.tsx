@@ -1,5 +1,5 @@
 import { Box } from "@mantine/core";
-import { memo, useCallback } from "react";
+import { memo, useCallback, useMemo } from "react";
 import PetCard from "../components/PetCard";
 import { useTranslation } from "react-i18next";
 import defaultPetConfig from "../../config/pet_config.json";
@@ -9,7 +9,7 @@ import { invoke } from "@tauri-apps/api";
 import { Store } from "tauri-plugin-store-api";
 import { notifications } from "@mantine/notifications";
 import { IconCheck } from "@tabler/icons-react";
-import { primaryColor } from "../../utils";
+import { PrimaryColor } from "../../utils";
 
 function PetShop() {
     const pets = JSON.parse(JSON.stringify(defaultPetConfig));
@@ -27,7 +27,7 @@ function PetShop() {
         notifications.show({
             message: t("pet name has been added to your realm", { name: pets[index].name }),
             title: t("Pet Added"),
-            color: primaryColor,
+            color: PrimaryColor,
             icon: <IconCheck size="1rem" />,
             withBorder: true,
             sx: (theme) => ({
@@ -35,6 +35,12 @@ function PetShop() {
             })
         })
     }, []);
+
+    const PetCards = useMemo(() => {
+        return pets.map((pet: ISpriteConfig, index: number) => {
+            return <PetCard key={index} pet={pet} btnLabel={t("Acquire")} btnFunction={() => addPetToConfig(index)} />
+        })
+    }, [pets, addPetToConfig, t]);
 
     return (
         <>
@@ -44,11 +50,7 @@ function PetShop() {
                 gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
                 gridGap: "1rem",
             }}>
-                {
-                    pets.map((pet: ISpriteConfig, index: number) => {
-                        return <PetCard key={index} pet={pet} btnLabel={t("Acquire")} btnFunction={() => addPetToConfig(index)} />
-                    })
-                }
+                {PetCards}
             </Box>
         </>
     )

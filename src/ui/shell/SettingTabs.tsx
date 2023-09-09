@@ -1,13 +1,12 @@
 import {
   IconCat,
-  IconPawFilled,
   IconInfoCircle,
   IconSettings,
   IconBuildingStore,
 } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import SettingTab from './SettingTab';
-import { memo, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { ISettingTabsProps } from '../../types/components/type';
 import { useSettingTabStore } from '../../hooks/useSettingTabStore';
 
@@ -24,7 +23,11 @@ function SettingTabs({ activeTab }: ISettingTabsProps) {
     ]
   }, [t]);
 
-  const sections = tabs.map((tab, index) => <SettingTab {...tab} key={tab.label} active={index === activeTab} handleSetTab={() => setActiveTab(index)} />);
+  const handleSetTab = useCallback((index: number) => {
+    setActiveTab(index);
+  }, [setActiveTab]);
+
+  const sections = tabs.map((tab, index) => <SettingTab {...tab} key={tab.label} active={index === activeTab} handleSetTab={() => handleSetTab(index)} />);
 
   return <>{sections}</>;
 }

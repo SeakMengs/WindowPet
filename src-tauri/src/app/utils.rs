@@ -1,4 +1,5 @@
-use super::conf::SettingConfig;
+use super::conf::AppConfig;
+use log::info;
 use tauri::{AppHandle, Theme};
 
 pub fn reopen_main_window(app: &AppHandle) {
@@ -16,10 +17,11 @@ pub fn reopen_main_window(app: &AppHandle) {
     window
         .set_ignore_cursor_events(true)
         .unwrap_or_else(|err| println!("{:?}", err));
+    info!("reopen main window");
 }
 
 pub fn open_setting_window(app: &AppHandle) {
-    let settings = SettingConfig::new();
+    let settings = AppConfig::new();
     let _window =
         tauri::WindowBuilder::new(app, "setting", tauri::WindowUrl::App("/setting".into()))
             .title("WindowPet Setting")
@@ -32,4 +34,5 @@ pub fn open_setting_window(app: &AppHandle) {
             })
             .build()
             .unwrap();
+    info!("open setting window");
 }

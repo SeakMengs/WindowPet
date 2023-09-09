@@ -1,4 +1,5 @@
 use super::utils::{open_setting_window, reopen_main_window};
+use log::info;
 use tauri::{
     AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu,
     SystemTrayMenuItem,
@@ -53,9 +54,11 @@ pub fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                 }
             },
             "restart" => {
+                info!("Restart WindowPet");
                 app.restart();
             }
             "quit" => {
+                info!("Quit WindowPet");
                 app.exit(0);
             }
             _ => {}

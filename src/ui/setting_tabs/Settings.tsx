@@ -1,4 +1,4 @@
-import { Select, Button, Group, Text } from "@mantine/core";
+import { Select } from "@mantine/core";
 import { SelectItem } from "./settings/SelectItem";
 import languages from "../../locale/languages";
 import SettingSwitch from "./settings/SettingSwitch";
@@ -6,8 +6,10 @@ import { useTranslation } from "react-i18next";
 import { handleSettingChange } from "../../utils/handleSettingChange";
 import { ISettingsContent } from "../../types/ISetting";
 import { useSettingStore } from "../../hooks/useSettingStore";
-import { memo } from "react";
-import { IconFlag, IconLanguage } from "@tabler/icons-react";
+import { memo, useCallback } from "react";
+import { IconLanguage } from "@tabler/icons-react";
+import { invoke } from "@tauri-apps/api/tauri";
+import SettingButton from "./settings/SettingButton";
 
 function Settings() {
     const { t, i18n } = useTranslation();
@@ -38,9 +40,15 @@ function Settings() {
         return <SettingSwitch {...setting} key={index} />
     })
 
+    const openConfigFolder = useCallback(async () => {
+        const configPath: string = await invoke("combine_config_path", { config_name: "" });
+        await invoke("open_folder", { path: configPath });
+    }, []);
+
     return (
         <>
             {SettingSwitches}
+            <SettingButton title={t("App Config Path")} description={t(`The location path of where the app store your config such as settings, pets, etc`)} btnLabel={t("Open")} btnFunction={openConfigFolder} />
             <Select
                 icon={<IconLanguage />}
                 my={"sm"}

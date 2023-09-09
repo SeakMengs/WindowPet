@@ -1,4 +1,4 @@
-import { memo, useCallback } from "react";
+import { memo, useCallback, useMemo } from "react";
 import PetCard from "../components/PetCard";
 import { Box } from "@mantine/core";
 import AddCard from "./my_pets/AddCard";
@@ -10,7 +10,7 @@ import { invoke } from "@tauri-apps/api";
 import { Store } from "tauri-plugin-store-api";
 import { usePets } from "../../hooks/usePets";
 import { notifications } from "@mantine/notifications";
-import { primaryColor } from "../../utils";
+import { PrimaryColor } from "../../utils";
 import { IconCheck } from "@tabler/icons-react";
 
 function MyPets({ scrollToTop }: { scrollToTop: () => void }) {
@@ -32,7 +32,7 @@ function MyPets({ scrollToTop }: { scrollToTop: () => void }) {
         notifications.show({
             message: t("pet name has been removed", { name: pets[index].name }),
             title: t("Pet Removed"),
-            color: primaryColor,
+            color: PrimaryColor,
             icon: <IconCheck size="1rem" />,
             withBorder: true,
             sx: (theme) => ({
@@ -40,27 +40,29 @@ function MyPets({ scrollToTop }: { scrollToTop: () => void }) {
             })
         })
 
-    }, [pets, refetch]);
+    }, [pets]);
 
-    return (
-        <>
-            <Box sx={{
-                display: "grid",
-                placeItems: "center",
-                gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-                gridGap: "1rem",
-            }}>
-                {
-                    pets.map((pet: ISpriteConfig, index: number) => {
-                        return (
-                            <PetCard key={index} pet={pet} btnLabel={t("Remove")} btnFunction={() => removePet(index)} />
-                        )
-                    })
-                }
-                <AddCard scrollToTop={scrollToTop} />
-            </Box>
-        </>
-    )
-}
+    const PetCards = useMemo(() => {
+        return pets.map((pet: ISpriteConfig, index: number) => {
+            return (
+                <PetCard key={index} pet={pet} btnLabel={t("Remove")} btnFunction={() => removePet(index)} />
+            )
+        })
+    }, [pets, removePet, t]);
+
+        return (
+            <>
+                <Box sx={{
+                    display: "grid",
+                    placeItems: "center",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+                    gridGap: "1rem",
+                }}>
+                    {PetCards}
+                    <AddCard scrollToTop={scrollToTop} />
+                </Box>
+            </>
+        )
+    }
 
 export default memo(MyPets);

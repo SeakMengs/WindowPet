@@ -1,3 +1,4 @@
+use log::{error, info};
 use mouse_position::mouse_position::Mouse;
 use serde_json::json;
 
@@ -16,8 +17,17 @@ pub fn get_mouse_position() -> serde_json::Value {
             })
         }
         Mouse::Error => {
+            error!("Error getting mouse position");
             println!("Error getting mouse position");
             json!(null)
         }
+    }
+}
+
+#[tauri::command]
+pub fn open_folder(path: &str) {
+    match open::that(path) {
+        Ok(()) => info!("Open folder: {}", path),
+        Err(err) => error!("An error occurred when opening '{}': {}", path, err),
     }
 }
