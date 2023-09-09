@@ -16,7 +16,7 @@ function SettingTabs({ activeTab }: ISettingTabsProps) {
 
   const tabs = useMemo(() => {
     return [
-      { Icon: <IconCat size="1rem" />, label: t('My Pets') },
+      { Icon: <IconCat size="1rem" />, label: t('My Pet') },
       { Icon: <IconBuildingStore size="1rem" />, label: t('Pet Shop') },
       { Icon: <IconSettings size="1rem" />, label: t('Settings') },
       { Icon: <IconInfoCircle size="1rem" />, label: t('About') },

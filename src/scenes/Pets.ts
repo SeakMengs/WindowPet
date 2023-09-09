@@ -82,7 +82,7 @@ export default class Pets extends Phaser.Scene {
             }) as IPet;
 
             //! scale the pet in the future might be allow user to scale, don't delete
-            // this.pets[i].setScale(this.pets[i].scaleX * 2, this.pets[i].scaleY * 2);
+            // this.pets[i].setScale(this.pets[i].scaleX * 0.8, this.pets[i].scaleY * 0.8);
 
             this.pets[i].setCollideWorldBounds(true, 0, 0, true);
             // store available states to pet (it actual name, not modified name)
