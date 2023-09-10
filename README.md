@@ -3,9 +3,10 @@
   <h1 align="center">WindowPet</h1>
   <p align="center">WindowPet is a free open source overlay app built with tauri and react that lets you have adorable companion such as pets, anime characters on your screen. Available on Windows, MacOS, and Linux.
   </p>
-  <img src="https://github.com/SeakMengs/WindowPet/actions/workflows/release.yml/badge.svg" alt="release">
+  <img src="https://github.com/SeakMengs/WindowPet/actions/workflows/release.yml/badge.svg?event=push" alt="release">
   <img src="https://img.shields.io/github/v/release/seakmengs/windowpet" alt="release-version">
   <img src="https://img.shields.io/github/downloads/seakmengs/windowpet/total" alt="downloads">
+  <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2FSeakMengs%2FWindowPet&countColor=%23263759&style=flat" alt="visitors">
   <img src="https://img.shields.io/github/license/seakmengs/windowpet" alt="license">
 </div>
 
