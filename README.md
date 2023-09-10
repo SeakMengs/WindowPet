@@ -12,7 +12,6 @@
 
 ## ✨ Features
 ![image](https://github.com/SeakMengs/WindowPet/assets/54373229/42ecd3ea-5999-462e-8630-7904a1a3075f)
-https://github.com/SeakMengs/WindowPet/assets/54373229/155ec82d-5998-467d-ba06-a64944d22515
 - Add pets
 - Remove pets
 - Drag pets on your screen
@@ -24,6 +23,9 @@ https://github.com/SeakMengs/WindowPet/assets/54373229/155ec82d-5998-467d-ba06-a
 - Settings window
 - Dark mode and light mode (settings window)
 - Allow user to select state to see pet animation
+
+## ✨ Demo
+https://github.com/SeakMengs/WindowPet/assets/54373229/0b4c6ab3-539c-4b0a-8221-ca7113bf0fcf
 
 ## ✨ Inspiration
 
