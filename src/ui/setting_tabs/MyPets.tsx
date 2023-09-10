@@ -13,7 +13,7 @@ import { notifications } from "@mantine/notifications";
 import { PrimaryColor } from "../../utils";
 import { IconCheck } from "@tabler/icons-react";
 
-function MyPets({ scrollToTop }: { scrollToTop: () => void }) {
+export function MyPets({ scrollToTop }: { scrollToTop: () => void; }) {
     const { t } = useTranslation();
     const { pets } = useSettingStore();
     const { refetch } = usePets();
@@ -38,7 +38,7 @@ function MyPets({ scrollToTop }: { scrollToTop: () => void }) {
             sx: (theme) => ({
                 backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[0],
             })
-        })
+        });
 
     }, [pets]);
 
@@ -46,23 +46,23 @@ function MyPets({ scrollToTop }: { scrollToTop: () => void }) {
         return pets.map((pet: ISpriteConfig, index: number) => {
             return (
                 <PetCard key={index} pet={pet} btnLabel={t("Remove")} btnFunction={() => removePet(index)} />
-            )
-        })
+            );
+        });
     }, [pets, removePet, t]);
 
-        return (
-            <>
-                <Box sx={{
-                    display: "grid",
-                    placeItems: "center",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-                    gridGap: "1rem",
-                }}>
-                    {PetCards}
-                    <AddCard scrollToTop={scrollToTop} />
-                </Box>
-            </>
-        )
-    }
+    return (
+        <>
+            <Box sx={{
+                display: "grid",
+                placeItems: "center",
+                gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+                gridGap: "1rem",
+            }}>
+                {PetCards}
+                <AddCard scrollToTop={scrollToTop} />
+            </Box>
+        </>
+    );
+}
 
 export default memo(MyPets);

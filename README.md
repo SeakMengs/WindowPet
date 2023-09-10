@@ -1,9 +1,14 @@
-<p align="center">
+<div align="center">
   <img width="180" src="./public/media/icon.png" alt="WindowPet">
   <h1 align="center">WindowPet</h1>
-  <p align="center">WindowPet is an overlay app that lets you have adorable companion such as pets, anime characters on your screen. You can choose your favorite pet, move them around your screen, it also feature auto start up every time you open your computer. Available on Windows, MacOS, and Linux. 🐶🐱🐰
+  <p align="center">WindowPet is a free open source overlay app built with tauri and react that lets you have adorable companion such as pets, anime characters on your screen. You can choose your favorite pet, move them around your screen, it also feature auto start up every time you open your computer. Available on Windows, MacOS, and Linux. 🐶🐱🐰
   </p>
-</p>
+  <img src="https://github.com/SeakMengs/WindowPet/actions/workflows/release.yml/badge.svg" alt="release">
+  <img src="https://img.shields.io/github/v/release/seakmengs/windowpet" alt="release-version">
+  <img src="https://img.shields.io/github/downloads/seakmengs/windowpet/total" alt="downloads">
+  <img src="https://img.shields.io/github/license/seakmengs/windowpet
+  " alt="license">
+</div>
 
 ## ✨ Features
 ![image](https://github.com/SeakMengs/WindowPet/assets/54373229/42ecd3ea-5999-462e-8630-7904a1a3075f)
