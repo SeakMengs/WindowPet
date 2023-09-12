@@ -31,6 +31,9 @@ function PhaserCanvas({ pet, playState }: PhaserCanvasProps) {
                 smoothStep: true,
             },
             scene: [Pet],
+            audio: {
+                noAudio: true,
+            },
             callbacks: {
                 preBoot: (game) => {
                     game.registry.set('spriteConfig', pet);

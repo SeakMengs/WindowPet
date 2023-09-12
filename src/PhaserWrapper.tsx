@@ -3,10 +3,13 @@ import Phaser from "phaser";
 import Pets from "./scenes/Pets";
 import { useSettingStore } from "./hooks/useSettingStore";
 import { appWindow } from "@tauri-apps/api/window";
+import defaultPetConfig from "./config/pet_config.json";
+
 
 function PhaserWrapper() {
     const phaserDom = useRef<HTMLDivElement>(null);
     const { pets } = useSettingStore();
+    const defaultPets = JSON.parse(JSON.stringify(defaultPetConfig));
 
     useEffect(() => {
         if (!phaserDom.current) return;
@@ -37,9 +40,13 @@ function PhaserWrapper() {
                 smoothStep: true,
             },
             scene: [Pets],
+            audio: {
+                noAudio: true,
+            },
             callbacks: {
                 preBoot: (game) => {
                     game.registry.set('spriteConfig', pets);
+                    game.registry.set('defaultPets', defaultPets);
                 }
             }
         }

@@ -8,15 +8,15 @@ import { ISpriteConfig } from "../../types/ISpriteConfig";
 import { getAppSettings } from "../../utils/settings";
 import { invoke } from "@tauri-apps/api";
 import { Store } from "tauri-plugin-store-api";
-import { usePets } from "../../hooks/usePets";
 import { notifications } from "@mantine/notifications";
-import { PrimaryColor } from "../../utils";
+import { PrimaryColor, noPetDialog } from "../../utils";
 import { IconCheck } from "@tabler/icons-react";
+import { handleSettingChange } from "../../utils/handleSettingChange";
+import { PetCardType } from "../../types/components/type";
 
 export function MyPets({ scrollToTop }: { scrollToTop: () => void; }) {
     const { t } = useTranslation();
-    const { pets } = useSettingStore();
-    const { refetch } = usePets();
+    const { pets, setPets } = useSettingStore();
 
     const removePet = useCallback(async (index: number) => {
         const userPetConfig = await getAppSettings({ configName: "pets.json" });
@@ -27,7 +27,11 @@ export function MyPets({ scrollToTop }: { scrollToTop: () => void; }) {
         const store = new Store(configPath);
         await store.set('app', userPetConfig);
         await store.save();
-        refetch();
+
+        // update pets state
+        setPets(userPetConfig);
+
+        if (userPetConfig.length === 0) noPetDialog();
 
         notifications.show({
             message: t("pet name has been removed", { name: pets[index].name }),
@@ -35,17 +39,20 @@ export function MyPets({ scrollToTop }: { scrollToTop: () => void; }) {
             color: PrimaryColor,
             icon: <IconCheck size="1rem" />,
             withBorder: true,
+            autoClose: 800,
             sx: (theme) => ({
                 backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[0],
             })
         });
 
+        // update pet window to show new pet
+        handleSettingChange('removePet', index);
     }, [pets]);
 
     const PetCards = useMemo(() => {
         return pets.map((pet: ISpriteConfig, index: number) => {
             return (
-                <PetCard key={index} pet={pet} btnLabel={t("Remove")} btnFunction={() => removePet(index)} />
+                <PetCard key={index} pet={pet} btnLabel={t("Remove")} type={PetCardType.Remove} btnFunction={() => removePet(index)} />
             );
         });
     }, [pets, removePet, t]);

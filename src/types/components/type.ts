@@ -15,10 +15,16 @@ export interface ITitleProps {
     description: string;
 }
 
+export enum PetCardType {
+    Add = "add",
+    Remove = "remove",
+}
+
 export interface IPetCardProps {
     btnLabel: string,
     pet: ISpriteConfig,
     btnFunction: () => void,
+    type: PetCardType,
 }
 
 export interface SettingSwitchProps {

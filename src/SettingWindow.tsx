@@ -32,7 +32,7 @@ function SettingWindow() {
   const { theme: colorScheme, language, pets } = useSettingStore();
   const { t } = useTranslation();
   const { activeTab } = useSettingTabStore();
-
+  
   const toggleColorScheme = (value?: ColorScheme) => {
     const newTheme = value || (colorScheme === 'dark' ? 'light' : 'dark');
     handleSettingChange('changeAppTheme', newTheme);
@@ -61,7 +61,7 @@ function SettingWindow() {
       title: t("Setting Preferences"),
       description: t("Choose what u desire, do what u love")
     },
-  ]), [language]);
+  ]), [language, pets.length]);
   let CurrentSettingTab = SettingTabComponent[activeTab]?.component;
 
   return (
@@ -87,7 +87,7 @@ function SettingWindow() {
         },
         primaryColor: PrimaryColor,
       }} withGlobalStyles withNormalizeCSS>
-        <Notifications />
+        <Notifications limit={3} />
         <AppShell
           padding={0}
           navbar={

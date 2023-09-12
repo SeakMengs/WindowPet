@@ -1,7 +1,7 @@
 <div align="center">
   <img width="180" src="./public/media/icon.png" alt="WindowPet">
   <h1 align="center">WindowPet</h1>
-  <p align="center">WindowPet is a free open source overlay app built with tauri and react that lets you have adorable companion such as pets, anime characters on your screen. Available on Windows, MacOS, and Linux.
+  <p align="center">Pet overlay app built with tauri and react that lets you have adorable companion such as pets, anime characters on your screen. Available on Windows, MacOS, and Linux.
   </p>
   <img src="https://github.com/SeakMengs/WindowPet/actions/workflows/release.yml/badge.svg?event=push" alt="release">
   <img src="https://img.shields.io/github/v/release/seakmengs/windowpet" alt="release-version">
@@ -18,21 +18,33 @@
 - Click through pets
 - Auto start up
 - Pet above taskbar
-- Language support: English and Khmer
 - Settings window
-- Dark mode and light mode (settings window)
-- Allow user to select state to see pet animation
+  - Language support: English and Khmer
+  - Dark mode and light mode (settings window)
+  - Allow user to select state to see pet animation
 
 ## ✨ Demo
 https://github.com/SeakMengs/WindowPet/assets/54373229/0b4c6ab3-539c-4b0a-8221-ca7113bf0fcf
 
-## ✨ Inspiration
+## ✨ Download
+- Download the latest version [here](https://github.com/SeakMengs/WindowPet/releases/latest)
+  - Windows: .exe, .msi
+  - MacOS: .dmg
+  - Linux: .AppImage, .deb
 
+## ✨ Development
+- Clone the repo
+- Install rust and tauri refer to this [link](https://tauri.app/v1/guides/getting-started/prerequisites)
+- Install dependencies
+```sh
+npm install
+```
+
+## ✨ Inspiration
 - My friend [Blizzard4E](https://github.com/Blizzard4E) for suggesting me this project idea
 - [vscode-pets](https://marketplace.visualstudio.com/items?itemName=tonybaloney.vscode-pets)
 - [Shimeji-ee Desktop Pet](https://kilkakon.com/shimeji/)
 - [DPET : Desktop Pet Engine](https://store.steampowered.com/app/1980920/DPET__Desktop_Pet_Engine/)
 
 ## ✨ License
-
 MIT License Copyright (c) 2023 Yato

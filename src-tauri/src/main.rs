@@ -17,6 +17,10 @@ struct Payload {
 }
 
 fn main() {
+    // Enable gpu hardware acceleration on Windows
+    //refer to this issue: https://github.com/tauri-apps/tauri/issues/4891
+    std::env::set_var("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS", "--ignore-gpu-blocklist");
+
     tauri::Builder::default()
         .plugin(tauri_plugin_autostart::init(
             MacosLauncher::LaunchAgent,

@@ -2,7 +2,7 @@ import { setSettings, toggleAutoStartUp } from "./settings";
 import { IHandleSettingChange } from "../types/ISetting";
 import { ColorScheme } from "@mantine/core";
 import { useSettingStore } from "../hooks/useSettingStore";
-import { emitReRenderPetsEvent } from "./event";
+import { emitUpdatePetsEvent } from "./event";
 import i18next from "i18next";
 
 export const handleSettingChange: IHandleSettingChange = (dispatchType, newValue) => {
@@ -28,12 +28,18 @@ export const handleSettingChange: IHandleSettingChange = (dispatchType, newValue
         case 'switchPetAboveTaskbar':
             setSettings({ setKey: "allowPetAboveTaskbar", newValue: newValue });
             setAllowPetAboveTaskbar(newValue as boolean);
-            emitReRenderPetsEvent({ dispatchType, newValue });
+            emitUpdatePetsEvent({ dispatchType, newValue });
             return
         case 'switchAllowPetInteraction':
             setSettings({ setKey: "allowPetInteraction", newValue: newValue });
             setAllowPetInteraction(newValue as boolean);
-            emitReRenderPetsEvent({ dispatchType, newValue });
+            emitUpdatePetsEvent({ dispatchType, newValue });
+        case 'addPet':
+            emitUpdatePetsEvent({ dispatchType, newValue });
+            return
+        case 'removePet':
+            emitUpdatePetsEvent({ dispatchType, newValue });
+            return
         default:
             return;
     }

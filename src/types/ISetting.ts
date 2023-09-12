@@ -1,5 +1,6 @@
 import { ColorScheme } from "@mantine/core";
 import { LazyExoticComponent, MemoExoticComponent } from "react";
+import { ISpriteConfig } from "./ISpriteConfig";
 
 export interface IGetAppSetting {
     configName?: string,
@@ -23,7 +24,7 @@ export type TAppSetting = {
 export interface IHandleSettingChange {
     (
         dispatchType: string,
-        newValue: string | boolean,
+        newValue: string | boolean | ISpriteConfig | number,
     ): void;
 }
 

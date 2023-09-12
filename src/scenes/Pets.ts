@@ -16,6 +16,7 @@ export default class Pets extends Phaser.Scene {
     private allowPetAboveTaskbar: boolean = useSettingStore.getState().allowPetAboveTaskbar
     // use this array to store index of pet that is currently climb and crawl
     private petClimbAndCrawlIndex: number[] = [];
+    private registeredName: string[] = [];
 
     // delay ms to set ignore cursor events
     readonly setIgnoreCursorEventsDelay: number = 50;
@@ -25,10 +26,9 @@ export default class Pets extends Phaser.Scene {
     readonly forbiddenRandomState: string[] = ['fall', 'climb', 'drag', 'crawl', 'drag'];
     readonly movementState: string[] = ['walk', 'fall', 'climb', 'crawl'];
     readonly updateDelay: number = 1000 / this.frameRate;
-    // velocity will depend on frameRate
     readonly moveVelocity: number = this.frameRate * 6;
     readonly moveAcceleration: number = this.moveVelocity * 2;
-    readonly tweenAcceleration: number = this.frameRate / 1.5;
+    readonly tweenAcceleration: number = this.frameRate;
 
     constructor() {
         super({ key: 'Pets' });
@@ -36,18 +36,26 @@ export default class Pets extends Phaser.Scene {
 
     preload(): void {
         this.spriteConfig = this.game.registry.get('spriteConfig');
+        const defaultPets = this.game.registry.get('defaultPets');
 
-        let registeredName: string[] = [];
+        // preload all sprite that the app has
+        for (let sprite of defaultPets) {
+            // if sprite name is duplicate, we skip it because we can use the same key for different sprite object
+            if (this.checkDuplicateName(sprite.name)) continue;
+            // if pet sprite is not valid, we skip it to avoid error
+            if (!this.validatePetSprite(sprite)) continue;
+            
+            this.load.spritesheet({
+                key: sprite.name,
+                url: sprite.imageSrc,
+                frameConfig: this.getFrameSize(sprite)
+            });
+        }
+
+        // preload the sprite of the user, if it has already loaded above, we skip it
         for (let sprite of this.spriteConfig) {
-            // avoid duplicate key
-            if (registeredName.includes(sprite.name)) {
-                let i = 0;
-                do {
-                    sprite.name = `${sprite.name}-${i}`;
-                    i++;
-                } while (registeredName.includes(sprite.name));
-            }
-
+            // if sprite name is duplicate, we skip it because we can use the same key for different sprite object
+            if (this.checkDuplicateName(sprite.name)) continue;
             // if pet sprite is not valid, we skip it to avoid error
             if (!this.validatePetSprite(sprite)) continue;
 
@@ -56,8 +64,6 @@ export default class Pets extends Phaser.Scene {
                 url: sprite.imageSrc,
                 frameConfig: this.getFrameSize(sprite)
             });
-
-            registeredName.push(sprite.name);
         }
     }
 
@@ -66,28 +72,13 @@ export default class Pets extends Phaser.Scene {
         this.physics.world.setBoundsCollision(true, true, true, true);
         this.updatePetAboveTaskbar();
 
+        // check all loaded sprite (debug only)
+        // console.log(this.textures.list);
+
         let i = 0;
         // create pets
         for (const sprite of this.spriteConfig) {
-            // register state animations
-            for (const animationConfig of this.getAnimationConfigPerSprite(sprite)) {
-                this.anims.create(animationConfig);
-            }
-
-            const randomX = Phaser.Math.Between(100, this.physics.world.bounds.width - 100);
-            const randomY = Phaser.Math.Between(100, this.physics.world.bounds.height);
-            this.pets[i] = this.physics.add.sprite(randomX, randomY, sprite.name).setInteractive({
-                draggable: true,
-                pixelPerfect: true,
-            }) as IPet;
-
-            //! scale the pet in the future might be allow user to scale, don't delete
-            // this.pets[i].setScale(this.pets[i].scaleX * 0.8, this.pets[i].scaleY * 0.8);
-
-            this.pets[i].setCollideWorldBounds(true, 0, 0, true);
-            // store available states to pet (it actual name, not modified name)
-            this.pets[i].availableStates = Object.keys(sprite.states);
-            this.petFallOrSpawnOnTheGround(this.pets[i]);
+            this.addPet(sprite, i);
             i++;
         }
 
@@ -96,7 +87,7 @@ export default class Pets extends Phaser.Scene {
             pet.x = dragX;
             pet.y = dragY;
 
-            if (pet.anims && pet.anims.getName() !== `drag-${pet.texture.key}`) {
+            if (pet.anims && pet.anims.getName() !== this.getStateName('drag', pet)) {
                 this.switchState(pet, 'drag');
             }
 
@@ -135,10 +126,10 @@ export default class Pets extends Phaser.Scene {
                         // not sure why when enabling body, velocity become 0, and need to take a while to update velocity
                         setTimeout(() => {
                             switch (pet.anims.getName()) {
-                                case `climb-${pet.texture.key}`:
+                                case this.getStateName('climb', pet):
                                     this.updateDirection(pet, Direction.UP);
                                     break;
-                                case `crawl-${pet.texture.key}`:
+                                case this.getStateName('crawl', pet):
                                     this.updateDirection(pet, pet.scaleX === -1 ? Direction.UPSIDELEFT : Direction.UPSIDERIGHT);
                                     break;
                                 default:
@@ -160,9 +151,9 @@ export default class Pets extends Phaser.Scene {
         this.physics.world.on('worldbounds', (body: Phaser.Physics.Arcade.Body, up: boolean, down: boolean, left: boolean, right: boolean) => {
             const pet = body.gameObject as IPet;
             // if crawl to world bounds, we make the pet fall or spawn on the ground
-            if (pet.anims && pet.anims.getName() === `crawl-${pet.texture.key}`) {
+            if (pet.anims && pet.anims.getName() === this.getStateName('crawl', pet)) {
                 if (left || right) {
-                    this.petFallOrSpawnOnTheGround(pet);
+                    this.petFallOrPlayRandomState(pet);
                 }
                 return;
             }
@@ -172,7 +163,7 @@ export default class Pets extends Phaser.Scene {
                     this.switchState(pet, 'crawl')
                     return;
                 }
-                this.petFallOrSpawnOnTheGround(pet);
+                this.petFallOrPlayRandomState(pet);
             } else if (down) {
                 this.switchStateAfterPetFall(pet);
                 this.petOnTheGroundPlayRandomState(pet);
@@ -191,7 +182,7 @@ export default class Pets extends Phaser.Scene {
         });
 
         // listen to setting change from setting window and update settings
-        listen<any>('render', (event: TRenderEventListener) => {
+        listen<any>('settingToMain', (event: TRenderEventListener) => {
             switch (event.payload.dispatchType) {
                 case 'switchAllowPetInteraction':
                     this.allowPetInteraction = event.payload!.value as boolean;
@@ -199,6 +190,18 @@ export default class Pets extends Phaser.Scene {
                 case 'switchPetAboveTaskbar':
                     this.allowPetAboveTaskbar = event.payload!.value as boolean;
                     this.updatePetAboveTaskbar();
+                    break;
+                case 'addPet':
+                    this.addPet(event.payload!.value as ISpriteConfig, this.pets.length);
+                    break;
+                case 'removePet':
+                    const index = event.payload.value as number;
+                    if (this.pets[index]) {
+                        this.pets[index].destroy();
+                        // 2nd parameter means remove one item only
+                        this.pets.splice(index, 1);
+                    }
+                    break;
                 default:
                     break;
             }
@@ -222,6 +225,41 @@ export default class Pets extends Phaser.Scene {
 
             this.randomFallIfPetClimbAndCrawl();
         }
+    }
+
+    checkDuplicateName(name: string): boolean {
+        if (this.registeredName.includes(name)) return true;
+
+        this.registeredName.push(name);
+        return false;
+    }
+
+    addPet(sprite: ISpriteConfig, index: number): void {
+        // avoid showing broken sprite
+        if (!this.validatePetSprite(sprite)) return;
+
+        // register state animations
+        for (const animationConfig of this.getAnimationConfigPerSprite(sprite)) {
+            if (this.anims.exists(animationConfig.key)) continue;
+
+            this.anims.create(animationConfig);
+        }
+
+        const randomX = Phaser.Math.Between(100, this.physics.world.bounds.width - 100);
+        // make the pet fall from the top of the screen
+        const petY = 0 + this.getFrameSize(sprite).frameHeight;
+        this.pets[index] = this.physics.add.sprite(randomX, petY, sprite.name).setInteractive({
+            draggable: true,
+            pixelPerfect: true,
+        }) as IPet;
+
+        //! scale the pet in the future might be allow user to scale, don't delete
+        // this.pets[index].setScale(this.pets[index].scaleX * 0.8, this.pets[index].scaleY * 0.8);
+
+        this.pets[index].setCollideWorldBounds(true, 0, 0, true);
+        // store available states to pet (it actual name, not modified name)
+        this.pets[index].availableStates = Object.keys(sprite.states);
+        this.petFallOrPlayRandomState(this.pets[index]);
     }
 
     updateDirection(pet: IPet, direction: Direction): void {
@@ -316,7 +354,10 @@ export default class Pets extends Phaser.Scene {
         repeatDelay: 0,
     }): void {
         try {
-            const animationKey = `${state}-${pet.texture.key}`;
+            // when pet is destroyed, pet.anims will be undefined, there is a chance that this function get called because of setTimeout
+            if (!pet.anims) return;
+
+            const animationKey = this.getStateName(state, pet);
             // if current state is the same as the new state, do nothing
             if (pet.anims && pet.anims.getName() === animationKey) return;
             if (!pet.availableStates.includes(state)) return;
@@ -345,7 +386,6 @@ export default class Pets extends Phaser.Scene {
             console.log(error);
         }
     }
-
 
     // if lookToTheLeft is true, pet will look to the left, if false, pet will look to the right
     setPetLookToTheLeft(pet: IPet, lookToTheLeft: boolean): void {
@@ -462,6 +502,10 @@ export default class Pets extends Phaser.Scene {
         return animationConfig;
     }
 
+    getStateName(state: string, pet: IPet): string {
+        return `${state}-${pet.texture.key}`;
+    }
+
     getOneRandomState(pet: IPet): string {
         let randomState;
 
@@ -482,7 +526,8 @@ export default class Pets extends Phaser.Scene {
 
     // this function is for when pet fall to the ground, it will call every time pet hit the ground
     switchStateAfterPetFall(pet: IPet): void {
-        if (pet.anims && pet.anims.getName() !== `fall-${pet.texture.key}`) return;
+        if (!pet) return;
+        if (pet.anims && pet.anims.getName() !== this.getStateName('fall', pet)) return;
         this.playRandomState(pet);
     }
 
@@ -551,7 +596,9 @@ export default class Pets extends Phaser.Scene {
         this.physics.world.setBounds(0, 0, window.innerWidth, window.innerHeight);
     }
 
-    petFallOrSpawnOnTheGround(pet: IPet): void {
+    petFallOrPlayRandomState(pet: IPet): void {
+        if (!pet) return;
+
         if (pet.availableStates.includes('fall')) {
             this.switchState(pet, 'fall');
             return
@@ -559,28 +606,28 @@ export default class Pets extends Phaser.Scene {
 
         // play random state
         this.switchState(pet, this.getOneRandomState(pet));
-        // set pet vertical position to 0 because the pet doesn't have fall state
-        pet.setPosition(pet.x, 0);
     }
 
     petOnTheGroundPlayRandomState(pet: IPet): void {
+        if (!pet) return;
+
         switch (pet.anims.getName()) {
-            case `climb-${pet.texture.key}`:
+            case this.getStateName('climb', pet):
                 return;
-            case `crawl-${pet.texture.key}`:
+            case this.getStateName('crawl', pet):
                 return;
-            case `drag-${pet.texture.key}`:
+            case this.getStateName('drag', pet):
                 return;
-            case `fall-${pet.texture.key}`:
+            case this.getStateName('fall', pet):
                 return;
         }
 
         const random = Phaser.Math.Between(0, 2000);
-        if (pet.anims && pet.anims.getName() === `walk-${pet.texture.key}`) {
+        if (pet.anims && pet.anims.getName() === this.getStateName('walk', pet)) {
             if (random >= 0 && random <= 5) {
                 this.switchState(pet, 'idle');
                 setTimeout(() => {
-                    if (pet.anims && pet.anims.getName() !== `idle-${pet.texture.key}`) return
+                    if (pet.anims && pet.anims.getName() !== this.getStateName('idle', pet)) return
                     this.switchState(pet, 'walk');
                 }, Phaser.Math.Between(3000, 6000));
                 return;
@@ -608,12 +655,13 @@ export default class Pets extends Phaser.Scene {
 
         for (const index of this.petClimbAndCrawlIndex) {
             const pet = this.pets[index];
+            if (!pet) continue;
 
             switch (pet.anims.getName()) {
-                case `drag-${pet.texture.key}`:
-                    return;
-                case `fall-${pet.texture.key}`:
-                    return;
+                case this.getStateName('drag', pet):
+                    continue;
+                case this.getStateName('fall', pet):
+                    continue;
             }
 
             const random = Phaser.Math.Between(0, 500);
@@ -621,7 +669,7 @@ export default class Pets extends Phaser.Scene {
             if (random === 78) {
                 let newPetx = pet.x;
                 // if pet climb, I want the pet to have some opposite x direction when fall
-                if (pet.anims && pet.anims.getName() === `climb-${pet.texture.key}`) {
+                if (pet.anims && pet.anims.getName() === this.getStateName('climb', pet)) {
                     // if pet.scaleX is negative, it means pet is facing left, vice versa
                     newPetx = pet.scaleX < 0 ? Phaser.Math.Between(pet.x, 500) : Phaser.Math.Between(pet.x, this.physics.world.bounds.width - 500);
                 }
@@ -648,7 +696,7 @@ export default class Pets extends Phaser.Scene {
 
             // add random pause when climb
             if (random >= 0 && random <= 5) {
-                if (pet.anims && pet.anims.getName() === `climb-${pet.texture.key}`) {
+                if (pet.anims && pet.anims.getName() === this.getStateName('climb', pet)) {
                     pet.anims.pause();
                     this.updateDirection(pet, Direction.UNKNOWN);
                     // @ts-ignore
@@ -660,7 +708,7 @@ export default class Pets extends Phaser.Scene {
                         }
                     }, Phaser.Math.Between(3000, 6000));
                     return;
-                } else if (pet.anims && pet.anims.getName() === `crawl-${pet.texture.key}`) {
+                } else if (pet.anims && pet.anims.getName() === this.getStateName('crawl', pet)) {
                     // add random pause when crawl
                     pet.anims.pause();
                     this.updateDirection(pet, Direction.UNKNOWN);
@@ -680,11 +728,13 @@ export default class Pets extends Phaser.Scene {
     }
 
     petBeyondScreenSwitchClimb(pet: IPet, worldBounding: IWorldBounding): void {
+        if (!pet) return;
+
         // if pet is climb and crawl, we don't want to switch state again
         switch (pet.anims.getName()) {
-            case `climb-${pet.texture.key}`:
+            case this.getStateName('climb', pet):
                 return;
-            case `crawl-${pet.texture.key}`:
+            case this.getStateName('crawl', pet):
                 return;
         }
 
@@ -719,18 +769,18 @@ export default class Pets extends Phaser.Scene {
 
                 } else {
                     // if pet bounding left or right and not on the ground, we make the pet fall or spawn on the ground
-                    this.petFallOrSpawnOnTheGround(pet);
+                    this.petFallOrPlayRandomState(pet);
                 }
             }
         } else {
             if (worldBounding.down) {
                 // if pet is on the ground and they are not bounding left or right, we play random state
-                if (pet.anims && pet.anims.getName() === `drag-${pet.texture.key}`) {
+                if (pet.anims && pet.anims.getName() === this.getStateName('drag', pet)) {
                     this.switchState(pet, this.getOneRandomState(pet));
                 }
             } else {
                 // if pet is not on the ground and they are not bounding left or right, we make the pet fall or spawn on the ground
-                this.petFallOrSpawnOnTheGround(pet);
+                this.petFallOrPlayRandomState(pet);
             }
         }
     }
