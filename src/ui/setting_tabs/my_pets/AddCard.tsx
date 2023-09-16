@@ -1,6 +1,6 @@
 import { Box, createStyles } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
-import { useSettingTabStore } from "../../../hooks/useSettingTabStore";
+import { useSearchParams } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
     plus: {
@@ -12,13 +12,14 @@ const useStyles = createStyles((theme) => ({
 }));
 
 function AddCard({ scrollToTop }: { scrollToTop: () => void }) {
-    const { setActiveTab } = useSettingTabStore();
+    const [searchParams, setSearchParams] = useSearchParams();
     const { classes } = useStyles();
 
     return (
         // tab index 1 is Pet Store
         <Box onClick={() => {
-            setActiveTab(1);
+            searchParams.set('tab', '1');
+            setSearchParams(searchParams);
             scrollToTop();
         }}
             sx={(theme) => ({

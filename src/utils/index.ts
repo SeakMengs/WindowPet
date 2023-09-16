@@ -3,6 +3,7 @@ import { confirm } from "@tauri-apps/api/dialog";
 import i18next from 'i18next';
 
 export const PrimaryColor = 'pink';
+export const ButtonVariant = 'outline';
 export const CanvasSize = 224;
 
 export const noPetDialog = () => {

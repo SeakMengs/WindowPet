@@ -11,7 +11,7 @@ import {
   Flex,
 } from '@mantine/core';
 import { IconSun, IconMoonStars } from '@tabler/icons-react';
-import Logo from './ui/shell/Logo';
+import Logo from './ui/components/Logo';
 import SettingTabs from './ui/shell/SettingTabs';
 import { useTranslation } from 'react-i18next';
 import { useSettingStore } from './hooks/useSettingStore';
@@ -26,12 +26,14 @@ import Title from './ui/components/Title';
 import { PrimaryColor } from './utils';
 import { Notifications } from '@mantine/notifications';
 import About from './ui/setting_tabs/About';
+import useQueryParams from './hooks/useQueryParams';
 
 function SettingWindow() {
   const viewport = useRef<HTMLDivElement>(null);
   const { theme: colorScheme, language, pets } = useSettingStore();
   const { t } = useTranslation();
-  const { activeTab } = useSettingTabStore();
+  const queryParams = useQueryParams();
+  const { activeTab, setActiveTab } = useSettingTabStore();
   
   const toggleColorScheme = (value?: ColorScheme) => {
     const newTheme = value || (colorScheme === 'dark' ? 'light' : 'dark');
@@ -39,6 +41,11 @@ function SettingWindow() {
   }
 
   const scrollToTop = useCallback(() => viewport!.current!.scrollTo({ top: 0, behavior: 'smooth' }), []);
+  
+  // set active tab from url search params, by doing this user can refresh the page and still get the same tab
+  if (queryParams.has('tab') && Number(queryParams.get('tab')) !== activeTab) {
+    setActiveTab(Number(queryParams.get('tab')));
+  }
 
   const SettingTabComponent: ISettingTabComponent[] = useMemo(() => ([
     {
@@ -58,8 +65,8 @@ function SettingWindow() {
     },
     {
       component: About,
-      title: t("Setting Preferences"),
-      description: t("Choose what u desire, do what u love")
+      title: t("About"),
+      description: t("Know more about WindowPet")
     },
   ]), [language, pets.length]);
   let CurrentSettingTab = SettingTabComponent[activeTab]?.component;

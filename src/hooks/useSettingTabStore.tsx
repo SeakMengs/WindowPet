@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import useQueryParams from "./useQueryParams";
 
 interface ISettingTabState {
     activeTab: number;

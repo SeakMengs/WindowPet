@@ -7,7 +7,6 @@ function Loading() {
 
     return (
         <>
-            {/* <img style={style} src="media/cat-what.gif" alt="loading" /> */}
             <div style={style}>
             </div>
         </>

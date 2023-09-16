@@ -9,8 +9,10 @@ import SettingTab from './SettingTab';
 import { memo, useCallback, useMemo } from 'react';
 import { ISettingTabsProps } from '../../types/components/type';
 import { useSettingTabStore } from '../../hooks/useSettingTabStore';
+import { useSearchParams } from 'react-router-dom';
 
 function SettingTabs({ activeTab }: ISettingTabsProps) {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { setActiveTab } = useSettingTabStore();
   const { t } = useTranslation();
 
@@ -25,6 +27,10 @@ function SettingTabs({ activeTab }: ISettingTabsProps) {
 
   const handleSetTab = useCallback((index: number) => {
     setActiveTab(index);
+
+    // update url search params
+    searchParams.set('tab', index.toString());
+    setSearchParams(searchParams);
   }, [setActiveTab]);
 
   const sections = tabs.map((tab, index) => <SettingTab {...tab} key={tab.label} active={index === activeTab} handleSetTab={() => handleSetTab(index)} />);

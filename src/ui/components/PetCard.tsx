@@ -3,7 +3,7 @@ import { memo, useState } from "react";
 import { IPetCardProps, PetCardType } from "../../types/components/type";
 import PhaserCanvas from "./PhaserCanvas";
 import { useInView } from "react-intersection-observer";
-import { CanvasSize } from "../../utils";
+import { ButtonVariant, CanvasSize } from "../../utils";
 
 function PetCard({ btnLabel, pet, btnFunction, type }: IPetCardProps) {
     const [playState, setPlayState] = useState<string>(pet.states['idle'] ? 'idle' : Object.keys(pet.states)[0]);
@@ -40,7 +40,7 @@ function PetCard({ btnLabel, pet, btnFunction, type }: IPetCardProps) {
                         )}
                         onChange={setPlayState as any}
                     />
-                    <Button variant="outline" fullWidth onClick={btnFunction}>
+                    <Button variant={ButtonVariant} fullWidth onClick={btnFunction}>
                         {btnLabel}
                     </Button>
                 </Box>

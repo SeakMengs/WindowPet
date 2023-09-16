@@ -1,5 +1,6 @@
 import { Group, Text, Divider, Button } from "@mantine/core";
 import { SettingButtonProps } from "../../../types/components/type";
+import { ButtonVariant } from "../../../utils";
 
 function SettingButton({ title, description, btnLabel, btnFunction}: SettingButtonProps) {
     return (
@@ -11,7 +12,7 @@ function SettingButton({ title, description, btnLabel, btnFunction}: SettingButt
                         {description}
                     </Text>
                 </div>
-                <Button variant="outline" onClick={btnFunction}>{btnLabel}</Button>
+                <Button variant={ButtonVariant} onClick={btnFunction}>{btnLabel}</Button>
             </Group>
             <Divider my={"sm"} />
         </>
