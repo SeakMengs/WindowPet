@@ -70,3 +70,22 @@ jobs:
             See the assets to download this version and install.
           releaseDraft: true
           prerelease: false
+update:
+  needs: release
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Node.js setup
+        uses: actions/setup-node@v3
+        # NOTE: enterprise developers may hard code a version
+        with:
+          node-version: latest
+      
+      - run: npm install
+
+      - name: Create Update Json
+        run: npm update
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

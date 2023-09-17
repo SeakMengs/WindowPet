@@ -18,7 +18,7 @@ function PhaserWrapper() {
         appWindow.setIgnoreCursorEvents(true);
 
         const phaserConfig: Phaser.Types.Core.GameConfig = {
-            type: Phaser.AUTO,
+            type: Phaser.CANVAS,
             parent: phaserDom.current,
             backgroundColor: '#ffffff0',
             transparent: true,

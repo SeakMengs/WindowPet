@@ -23,6 +23,7 @@ function About() {
                 w={128}
                 h={128}
             />
+            <Text fw={700}>WindowPet</Text>
             <Text display={"flex"}>{t("Version", { version: appVersion })}
                 <Anchor mx={"xs"} onClick={() => open(`https://github.com/SeakMengs/WindowPet/releases/tag/v${appVersion}`)}>{t("(release note)")}</Anchor>
             </Text>
@@ -35,6 +36,9 @@ function About() {
             </Text>
             <Text display={"flex"}>{t("Source code:")}
                 <Anchor mx={"xs"} onClick={() => open("https://github.com/SeakMengs/WindowPet")}>@SeakMengs/WindowPet</Anchor>
+            </Text>
+            <Text display={"flex"}>{t("Buy me a coffee:")}
+                <Anchor mx={"xs"} onClick={() => open("https://www.buymeacoffee.com/seakmeng")}>BuyMeACoffee/@Seakmeng</Anchor>
             </Text>
         </Flex>
     )

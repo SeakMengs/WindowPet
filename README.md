@@ -8,6 +8,8 @@
   <img src="https://img.shields.io/github/downloads/seakmengs/windowpet/total" alt="downloads">
   <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2FSeakMengs%2FWindowPet&countColor=%23263759&style=flat" alt="visitors">
   <img src="https://img.shields.io/github/license/seakmengs/windowpet" alt="license">
+  <br>
+  <a href="https://www.buymeacoffee.com/seakmeng" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 145px !important;" ></a>
 </div>
 
 ## ✨ Features
@@ -40,6 +42,18 @@ https://github.com/SeakMengs/WindowPet/assets/54373229/0b4c6ab3-539c-4b0a-8221-c
 npm install
 ```
 
+## ✨ Run & Build
+- Run the project
+```
+ npm run tauri dev
+```
+- Build the project
+```
+ npm run tauri build
+``` 
+- Notice: 
+  - for build we use github actions to build the project and upload the build to github release. You can check the build [here](https://github.com/SeakMengs/WindowPet/releases/latest)
+
 ## ✨ Inspiration
 - My friend [Blizzard4E](https://github.com/Blizzard4E) for suggesting me this project idea
 - [vscode-pets](https://marketplace.visualstudio.com/items?itemName=tonybaloney.vscode-pets)
@@ -47,4 +61,4 @@ npm install
 - [DPET : Desktop Pet Engine](https://store.steampowered.com/app/1980920/DPET__Desktop_Pet_Engine/)
 
 ## ✨ License
-MIT License Copyright (c) 2023 Yato
+MIT License Copyright (c) 2023 Seakmeng
