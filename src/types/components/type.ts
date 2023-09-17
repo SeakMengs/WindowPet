@@ -1,3 +1,4 @@
+import { UpdateManifest } from "@tauri-apps/api/updater";
 import { ISpriteConfig } from "../ISpriteConfig";
 
 export interface ISettingTabProps {
@@ -44,4 +45,9 @@ export interface SettingButtonProps {
 export interface PhaserCanvasProps {
     pet: ISpriteConfig,
     playState: string,
+}
+
+export interface UpdaterPopupProps {
+    shouldUpdate: boolean,
+    manifest: UpdateManifest | undefined,
 }

@@ -31,9 +31,15 @@
     "Version": "ជំនាន់ {{version}}",
     "(release note)": "(កំណត់ចំណាំចេញផ្សាយ)",
     "You have the latest version": "អ្នកមានកំណែចុងក្រោយបំផុត {{lastCheck}}",
+    "There is a new version available": "មានកំណែថ្មីសម្រាប់ទាញយក {{lastCheck}}",
     "Check for updates": "ពិនិត្យមើលបច្ចុប្បន្នភាព",
     "Developed by:": "បាន​បង្កើត​ឡើង​ដោយ:",
     "Source code:": "កូដនៃកម្មវិធីនេះ:",
     "Know more about WindowPet": "ស្វែងយល់បន្ថែមអំពី WindowPet",
-    "Buy me a coffee:": "ទិញកាហ្វេឱ្យខ្ញុំ:"
+    "Buy me a coffee:": "ទិញកាហ្វេឱ្យខ្ញុំ:",
+    "Checking for updates": "កំពុងពិនិត្យមើលបច្ចុប្បន្នភាព",
+    "Update available": "មានកំណែថ្មីសម្រាប់ទាញយក",
+    "WindowPet v available, do you want to install the update?": "មាន WindowPet v{{version}}, តើអ្នកចង់ដំឡើងបច្ចុប្បន្នភាពទេ?",
+    "Yes": "យល់ព្រម",
+    "No": "ទេ"
 }

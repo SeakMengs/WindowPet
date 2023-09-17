@@ -31,9 +31,15 @@
     "Version": "Version {{version}}",
     "(release note)": "(release note)",
     "You have the latest version": "You have the latest version {{lastCheck}}",
+    "There is a new version available": "There is a new version available {{lastCheck}}",
     "Check for updates": "Check for updates",
     "Developed by:": "Developed by: ",
     "Source code:": "Source code:",
     "Know more about WindowPet": "Know more about WindowPet",
-    "Buy me a coffee:": "Buy me a coffee:"
+    "Buy me a coffee:": "Buy me a coffee:",
+    "Checking for updates": "Checking for updates",
+    "WindowPet v available, do you want to install the update?": "WindowPet v{{version}} available, do you want to install the update?",
+    "Update available": "Update available",
+    "Yes": "Yes",
+    "No": "No"
 }

@@ -27,6 +27,9 @@ import { PrimaryColor } from './utils';
 import { Notifications } from '@mantine/notifications';
 import About from './ui/setting_tabs/About';
 import useQueryParams from './hooks/useQueryParams';
+import { ModalsProvider } from '@mantine/modals';
+import useInit from './hooks/useInit';
+import { checkForUpdate } from './utils/update';
 
 function SettingWindow() {
   const viewport = useRef<HTMLDivElement>(null);
@@ -34,14 +37,19 @@ function SettingWindow() {
   const { t } = useTranslation();
   const queryParams = useQueryParams();
   const { activeTab, setActiveTab } = useSettingTabStore();
-  
+
+  // check for update when open settings window
+  useInit(() => {
+    checkForUpdate();
+  });
+
   const toggleColorScheme = (value?: ColorScheme) => {
     const newTheme = value || (colorScheme === 'dark' ? 'light' : 'dark');
     handleSettingChange('changeAppTheme', newTheme);
   }
 
   const scrollToTop = useCallback(() => viewport!.current!.scrollTo({ top: 0, behavior: 'smooth' }), []);
-  
+
   // set active tab from url search params, by doing this user can refresh the page and still get the same tab
   if (queryParams.has('tab') && Number(queryParams.get('tab')) !== activeTab) {
     setActiveTab(Number(queryParams.get('tab')));
@@ -94,41 +102,43 @@ function SettingWindow() {
         },
         primaryColor: PrimaryColor,
       }} withGlobalStyles withNormalizeCSS>
-        <Notifications limit={3} />
-        <AppShell
-          padding={0}
-          navbar={
-            <Navbar width={{ base: 80 }} p="md">
-              <Flex style={{
-                height: "100%"
-              }} direction={"column"} justify={'space-between'} align={"center"}>
-                <Stack justify="center" align={"center"} spacing={0}>
-                  <Logo />
-                  <Navbar.Section
-                    mt={50}
-                  >
+        <ModalsProvider>
+          <Notifications limit={3} />
+          <AppShell
+            padding={0}
+            navbar={
+              <Navbar width={{ base: 80 }} p="md">
+                <Flex style={{
+                  height: "100%"
+                }} direction={"column"} justify={'space-between'} align={"center"}>
+                  <Stack justify="center" align={"center"} spacing={0}>
+                    <Logo />
+                    <Navbar.Section
+                      mt={50}
+                    >
+                      <Stack justify="center" align={"center"} spacing={0}>
+                        <SettingTabs activeTab={activeTab} />
+                      </Stack>
+                    </Navbar.Section>
+                  </Stack>
+                  <Navbar.Section>
                     <Stack justify="center" align={"center"} spacing={0}>
-                      <SettingTabs activeTab={activeTab} />
+                      <ActionIcon variant="default" onClick={() => toggleColorScheme()} size={30} >
+                        {colorScheme === 'dark' ? <IconSun size="1rem" /> : <IconMoonStars size="1rem" />}
+                      </ActionIcon>
                     </Stack>
                   </Navbar.Section>
-                </Stack>
-                <Navbar.Section>
-                  <Stack justify="center" align={"center"} spacing={0}>
-                    <ActionIcon variant="default" onClick={() => toggleColorScheme()} size={30} >
-                      {colorScheme === 'dark' ? <IconSun size="1rem" /> : <IconMoonStars size="1rem" />}
-                    </ActionIcon>
-                  </Stack>
-                </Navbar.Section>
-              </Flex>
-            </Navbar>
-          }>
-          <ScrollArea h={"100vh"} viewportRef={viewport}>
-            <Box m={"sm"}>
-              <Title title={SettingTabComponent[activeTab].title} description={SettingTabComponent[activeTab].description} />
-              <CurrentSettingTab scrollToTop={scrollToTop} />
-            </Box>
-          </ScrollArea>
-        </AppShell>
+                </Flex>
+              </Navbar>
+            }>
+            <ScrollArea h={"100vh"} viewportRef={viewport}>
+              <Box m={"sm"}>
+                <Title title={SettingTabComponent[activeTab].title} description={SettingTabComponent[activeTab].description} />
+                <CurrentSettingTab scrollToTop={scrollToTop} />
+              </Box>
+            </ScrollArea>
+          </AppShell>
+        </ModalsProvider>
       </MantineProvider>
     </ColorSchemeProvider>
   );
