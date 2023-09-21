@@ -5,6 +5,7 @@ import { useSettingStore } from "../hooks/useSettingStore";
 import { listen } from "@tauri-apps/api/event";
 import { TRenderEventListener } from "../types/IEvents";
 import { IPet, Direction, IWorldBounding, ISwitchStateOptions, Ease } from "../types/IPet";
+import { info, error } from "tauri-plugin-log-api";
 
 export default class Pets extends Phaser.Scene {
     private pets: IPet[] = [];
@@ -44,7 +45,7 @@ export default class Pets extends Phaser.Scene {
             if (this.checkDuplicateName(sprite.name)) continue;
             // if pet sprite is not valid, we skip it to avoid error
             if (!this.validatePetSprite(sprite)) continue;
-            
+
             this.load.spritesheet({
                 key: sprite.name,
                 url: sprite.imageSrc,
@@ -238,6 +239,14 @@ export default class Pets extends Phaser.Scene {
         // avoid showing broken sprite
         if (!this.validatePetSprite(sprite)) return;
 
+        // convert sprite states to lowercase because it help to avoid error when user edit their own json file and type state in uppercase
+        for (const state in sprite.states) {
+            if (state.toLowerCase() === state) continue;
+
+            sprite.states[state.toLowerCase()] = sprite.states[state];
+            delete sprite.states[state];
+        }
+
         // register state animations
         for (const animationConfig of this.getAnimationConfigPerSprite(sprite)) {
             if (this.anims.exists(animationConfig.key)) continue;
@@ -257,8 +266,10 @@ export default class Pets extends Phaser.Scene {
         // this.pets[index].setScale(this.pets[index].scaleX * 0.8, this.pets[index].scaleY * 0.8);
 
         this.pets[index].setCollideWorldBounds(true, 0, 0, true);
+        
         // store available states to pet (it actual name, not modified name)
-        this.pets[index].availableStates = Object.keys(sprite.states);
+        this.pets[index].availableStates = Object.keys(sprite.states)
+
         this.petFallOrPlayRandomState(this.pets[index]);
     }
 
@@ -291,9 +302,7 @@ export default class Pets extends Phaser.Scene {
                 break;
         }
 
-        if (direction) {
-            this.updateDirection(pet, direction);
-        }
+        this.updateDirection(pet, direction);
     };
 
     // this function will be called every time we update the pet direction using updateDirection
@@ -375,15 +384,10 @@ export default class Pets extends Phaser.Scene {
                 this.petClimbAndCrawlIndex = this.petClimbAndCrawlIndex.filter(index => index !== this.pets.indexOf(pet));
             }
 
-            if (this.movementState.includes(state.toLowerCase())) {
-                this.updateStateDirection(pet, state);
-                return;
-            }
-
-            this.updateDirection(pet, Direction.UNKNOWN);
-        } catch (error) {
+            this.updateStateDirection(pet, state);
+        } catch (err: any) {
             // error could happen when trying to get name
-            console.log(error);
+            error(err);
         }
     }
 
@@ -507,13 +511,13 @@ export default class Pets extends Phaser.Scene {
     }
 
     getOneRandomState(pet: IPet): string {
-        let randomState;
+        let randomStateIndex;
 
         do {
-            randomState = Phaser.Math.Between(0, pet.availableStates.length - 1);
-        } while (this.forbiddenRandomState.includes(pet.availableStates[randomState]));
+            randomStateIndex = Phaser.Math.Between(0, pet.availableStates.length - 1);
+        } while (this.forbiddenRandomState.includes(pet.availableStates[randomStateIndex]));
 
-        return pet.availableStates[randomState];
+        return pet.availableStates[randomStateIndex];
     }
 
     getOneRandomStateByPet(pet: IPet): string {
