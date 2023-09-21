@@ -24,12 +24,13 @@ export default class Pets extends Phaser.Scene {
     readonly frameRate: number = 9;
     // -1 means repeat forever
     readonly repeat: number = -1;
-    readonly forbiddenRandomState: string[] = ['fall', 'climb', 'drag', 'crawl', 'drag'];
-    readonly movementState: string[] = ['walk', 'fall', 'climb', 'crawl'];
+    readonly forbiddenRandomState: string[] = ['fall', 'climb', 'drag', 'crawl', 'drag', 'bounce', 'jump'];
+    readonly movementState: string[] = ['walk', 'jump', 'climb', 'crawl'];
     readonly updateDelay: number = 1000 / this.frameRate;
     readonly moveVelocity: number = this.frameRate * 6;
     readonly moveAcceleration: number = this.moveVelocity * 2;
-    readonly tweenAcceleration: number = this.frameRate;
+    readonly tweenAcceleration: number = this.frameRate * 1.1;
+    readonly randomStateDelay: number = 3000;
 
     constructor() {
         super({ key: 'Pets' });
@@ -151,10 +152,10 @@ export default class Pets extends Phaser.Scene {
 
         this.physics.world.on('worldbounds', (body: Phaser.Physics.Arcade.Body, up: boolean, down: boolean, left: boolean, right: boolean) => {
             const pet = body.gameObject as IPet;
-            // if crawl to world bounds, we make the pet fall or spawn on the ground
+            // if crawl to world bounds, we make the pet jump or spawn on the ground
             if (pet.anims && pet.anims.getName() === this.getStateName('crawl', pet)) {
                 if (left || right) {
-                    this.petFallOrPlayRandomState(pet);
+                    this.petJumpOrPlayRandomState(pet);
                 }
                 return;
             }
@@ -164,9 +165,9 @@ export default class Pets extends Phaser.Scene {
                     this.switchState(pet, 'crawl')
                     return;
                 }
-                this.petFallOrPlayRandomState(pet);
+                this.petJumpOrPlayRandomState(pet);
             } else if (down) {
-                this.switchStateAfterPetFall(pet);
+                this.switchStateAfterPetJump(pet);
                 this.petOnTheGroundPlayRandomState(pet);
             }
 
@@ -207,6 +208,8 @@ export default class Pets extends Phaser.Scene {
                     break;
             }
         })
+
+        info('Pets scene loaded');
     }
 
     update(time: number, delta: number): void {
@@ -224,7 +227,7 @@ export default class Pets extends Phaser.Scene {
                 });
             }
 
-            this.randomFallIfPetClimbAndCrawl();
+            this.randomJumpIfPetClimbAndCrawl();
         }
     }
 
@@ -255,7 +258,7 @@ export default class Pets extends Phaser.Scene {
         }
 
         const randomX = Phaser.Math.Between(100, this.physics.world.bounds.width - 100);
-        // make the pet fall from the top of the screen
+        // make the pet jump from the top of the screen
         const petY = 0 + this.getFrameSize(sprite).frameHeight;
         this.pets[index] = this.physics.add.sprite(randomX, petY, sprite.name).setInteractive({
             draggable: true,
@@ -269,8 +272,9 @@ export default class Pets extends Phaser.Scene {
         
         // store available states to pet (it actual name, not modified name)
         this.pets[index].availableStates = Object.keys(sprite.states)
+        this.pets[index].canPlayRandomState = true;
 
-        this.petFallOrPlayRandomState(this.pets[index]);
+        this.petJumpOrPlayRandomState(this.pets[index]);
     }
 
     updateDirection(pet: IPet, direction: Direction): void {
@@ -286,8 +290,8 @@ export default class Pets extends Phaser.Scene {
                 // if pet.scaleX is negative, it means pet is facing left, so we set direction to left, else right
                 direction = pet.scaleX < 0 ? Direction.LEFT : Direction.RIGHT;
                 break;
-            case 'fall':
-                // feel like fall state is opposite of walk so every fall, i flip the pet horizontally :)
+            case 'jump':
+                // feel like jump state is opposite of walk so every jump, i flip the pet horizontally :)
                 this.toggleFlipX(pet);
                 direction = Direction.DOWN;
                 break;
@@ -525,13 +529,36 @@ export default class Pets extends Phaser.Scene {
     }
 
     playRandomState(pet: IPet): void {
+        if (!pet.canPlayRandomState) return;
+
         this.switchState(pet, this.getOneRandomState(pet));
+        pet.canPlayRandomState = false;
+
+        // add delay to prevent spamming random state too fast
+        setTimeout(() => {
+            pet.canPlayRandomState = true;
+        }, this.randomStateDelay);
     }
 
-    // this function is for when pet fall to the ground, it will call every time pet hit the ground
-    switchStateAfterPetFall(pet: IPet): void {
+    // this function is for when pet jump to the ground, it will call every time pet hit the ground
+    switchStateAfterPetJump(pet: IPet): void {
         if (!pet) return;
-        if (pet.anims && pet.anims.getName() !== this.getStateName('fall', pet)) return;
+        if (pet.anims && pet.anims.getName() !== this.getStateName('jump', pet)) return;
+
+        if (pet.availableStates.includes('fall')) {
+            this.switchState(pet, 'fall', {
+                repeat: 0,
+            });
+
+            // after fall animation complete, we play random state
+            pet.canPlayRandomState = false;
+            pet.on('animationcomplete', () => {
+                pet.canPlayRandomState = true;
+                this.playRandomState(pet);
+            });
+
+            return
+        }
         this.playRandomState(pet);
     }
 
@@ -600,15 +627,14 @@ export default class Pets extends Phaser.Scene {
         this.physics.world.setBounds(0, 0, window.innerWidth, window.innerHeight);
     }
 
-    petFallOrPlayRandomState(pet: IPet): void {
+    petJumpOrPlayRandomState(pet: IPet): void {
         if (!pet) return;
 
-        if (pet.availableStates.includes('fall')) {
-            this.switchState(pet, 'fall');
+        if (pet.availableStates.includes('jump')) {
+            this.switchState(pet, 'jump');
             return
         }
 
-        // play random state
         this.switchState(pet, this.getOneRandomState(pet));
     }
 
@@ -622,7 +648,7 @@ export default class Pets extends Phaser.Scene {
                 return;
             case this.getStateName('drag', pet):
                 return;
-            case this.getStateName('fall', pet):
+            case this.getStateName('jump', pet):
                 return;
         }
 
@@ -654,7 +680,7 @@ export default class Pets extends Phaser.Scene {
         }
     }
 
-    randomFallIfPetClimbAndCrawl(): void {
+    randomJumpIfPetClimbAndCrawl(): void {
         if (this.petClimbAndCrawlIndex.length === 0) return;
 
         for (const index of this.petClimbAndCrawlIndex) {
@@ -664,7 +690,7 @@ export default class Pets extends Phaser.Scene {
             switch (pet.anims.getName()) {
                 case this.getStateName('drag', pet):
                     continue;
-                case this.getStateName('fall', pet):
+                case this.getStateName('jump', pet):
                     continue;
             }
 
@@ -672,16 +698,16 @@ export default class Pets extends Phaser.Scene {
 
             if (random === 78) {
                 let newPetx = pet.x;
-                // if pet climb, I want the pet to have some opposite x direction when fall
+                // if pet climb, I want the pet to have some opposite x direction when jump
                 if (pet.anims && pet.anims.getName() === this.getStateName('climb', pet)) {
                     // if pet.scaleX is negative, it means pet is facing left, vice versa
                     newPetx = pet.scaleX < 0 ? Phaser.Math.Between(pet.x, 500) : Phaser.Math.Between(pet.x, this.physics.world.bounds.width - 500);
                 }
 
-                // disable body to prevent shaking when fall
+                // disable body to prevent shaking when jump
                 if (pet.body!.enable) pet.body!.enable = false;
-                this.switchState(pet, 'fall');
-                // use tween animation to make fall more smooth
+                this.switchState(pet, 'jump');
+                // use tween animation to make jump more smooth
                 this.tweens.add({
                     targets: pet,
                     x: newPetx,
@@ -691,7 +717,7 @@ export default class Pets extends Phaser.Scene {
                     onComplete: () => {
                         if (!pet.body!.enable) {
                             pet.body!.enable = true;
-                            this.switchStateAfterPetFall(pet);
+                            this.switchStateAfterPetJump(pet);
                         }
                     }
                 });
@@ -772,19 +798,19 @@ export default class Pets extends Phaser.Scene {
                     this.toggleFlipXThenUpdateDirection(pet);
 
                 } else {
-                    // if pet bounding left or right and not on the ground, we make the pet fall or spawn on the ground
-                    this.petFallOrPlayRandomState(pet);
+                    // if pet bounding left or right and not on the ground, we make the pet jump or spawn on the ground
+                    this.petJumpOrPlayRandomState(pet);
                 }
             }
         } else {
             if (worldBounding.down) {
-                // if pet is on the ground and they are not bounding left or right, we play random state
+                // if pet is on the ground after being dragged and they are not bounding left or right, we play random state
                 if (pet.anims && pet.anims.getName() === this.getStateName('drag', pet)) {
                     this.switchState(pet, this.getOneRandomState(pet));
                 }
             } else {
-                // if pet is not on the ground and they are not bounding left or right, we make the pet fall or spawn on the ground
-                this.petFallOrPlayRandomState(pet);
+                // if pet is not on the ground and they are not bounding left or right, we make the pet jump or spawn on the ground
+                this.petJumpOrPlayRandomState(pet);
             }
         }
     }

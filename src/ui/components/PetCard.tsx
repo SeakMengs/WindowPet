@@ -6,7 +6,7 @@ import { useInView } from "react-intersection-observer";
 import { ButtonVariant, CanvasSize } from "../../utils";
 
 function PetCard({ btnLabel, pet, btnFunction, type }: IPetCardProps) {
-    const [playState, setPlayState] = useState<string>(pet.states['idle'] ? 'idle' : Object.keys(pet.states)[0]);
+    const [playState, setPlayState] = useState<string>(pet.states['idle'] ? 'idle' : Object.keys(pet.states)[Math.floor(Math.random() * Object.keys(pet.states).length)]);
     const { ref, inView } = useInView();
 
     return (

@@ -12,6 +12,7 @@ export enum Direction {
 export interface IPet extends Phaser.Physics.Arcade.Sprite {
     direction?: Direction;
     availableStates: string[];
+    canPlayRandomState: boolean;
 }
 
 export interface IWorldBounding {
