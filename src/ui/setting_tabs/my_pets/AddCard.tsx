@@ -30,7 +30,7 @@ function AddCard({ scrollToTop }: { scrollToTop: () => void }) {
                 border: `0.0625rem solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
                 padding: theme.spacing.lg,
                 width: '224px',
-                height: '370px',
+                height: '400px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',

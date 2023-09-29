@@ -51,7 +51,7 @@ function PetShop() {
         return pets.map((pet: ISpriteConfig, index: number) => {
             return <PetCard key={index} pet={pet} btnLabel={t("Acquire")} type={PetCardType.Add} btnFunction={() => addPetToConfig(index)} />
         })
-    }, [pets, addPetToConfig, t]);
+    }, [addPetToConfig, t]);
 
     return (
         <>
