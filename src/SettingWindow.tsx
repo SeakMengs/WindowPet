@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { useSettingStore } from './hooks/useSettingStore';
 import { handleSettingChange } from './utils/handleSettingChange';
 import { ISettingTabComponent } from './types/ISetting';
-import { memo, useCallback, useMemo, useRef } from 'react';
+import { memo, useMemo, useRef } from 'react';
 import MyPets from './ui/setting_tabs/MyPets';
 import PetShop from './ui/setting_tabs/PetShop';
 import Settings from './ui/setting_tabs/Settings';
@@ -47,8 +47,6 @@ function SettingWindow() {
     const newTheme = value || (colorScheme === 'dark' ? 'light' : 'dark');
     handleSettingChange('changeAppTheme', newTheme);
   }
-
-  const scrollToTop = useCallback(() => viewport!.current!.scrollTo({ top: 0, behavior: 'smooth' }), []);
 
   // set active tab from url search params, by doing this user can refresh the page and still get the same tab
   if (queryParams.has('tab') && Number(queryParams.get('tab')) !== activeTab) {
@@ -131,10 +129,10 @@ function SettingWindow() {
                 </Flex>
               </Navbar>
             }>
-            <ScrollArea h={"100vh"} viewportRef={viewport}>
+            <ScrollArea h={"100vh"} viewportRef={viewport} key={activeTab}>
               <Box m={"sm"}>
                 <Title title={SettingTabComponent[activeTab].title} description={SettingTabComponent[activeTab].description} />
-                <CurrentSettingTab scrollToTop={scrollToTop} />
+                <CurrentSettingTab key={activeTab}/>
               </Box>
             </ScrollArea>
           </AppShell>

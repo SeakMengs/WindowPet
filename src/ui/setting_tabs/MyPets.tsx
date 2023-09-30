@@ -14,7 +14,7 @@ import { IconCheck } from "@tabler/icons-react";
 import { handleSettingChange } from "../../utils/handleSettingChange";
 import { PetCardType } from "../../types/components/type";
 
-export function MyPets({ scrollToTop }: { scrollToTop: () => void; }) {
+export function MyPets() {
     const { t } = useTranslation();
     const { pets, setPets } = useSettingStore();
 
@@ -66,7 +66,7 @@ export function MyPets({ scrollToTop }: { scrollToTop: () => void; }) {
                 gridGap: "1rem",
             }}>
                 {PetCards}
-                <AddCard scrollToTop={scrollToTop} />
+                <AddCard/>
             </Box>
         </>
     );

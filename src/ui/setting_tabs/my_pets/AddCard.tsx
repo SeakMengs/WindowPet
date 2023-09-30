@@ -1,6 +1,7 @@
 import { Box, createStyles } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { useSearchParams } from "react-router-dom";
+import { ESettingTab } from "../../../types/ISetting";
 
 const useStyles = createStyles((theme) => ({
     plus: {
@@ -11,16 +12,15 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
-function AddCard({ scrollToTop }: { scrollToTop: () => void }) {
+function AddCard() {
     const [searchParams, setSearchParams] = useSearchParams();
     const { classes } = useStyles();
 
     return (
         // tab index 1 is Pet Store
         <Box onClick={() => {
-            searchParams.set('tab', '1');
+            searchParams.set('tab', ESettingTab.PetShop.toString());
             setSearchParams(searchParams);
-            scrollToTop();
         }}
             sx={(theme) => ({
                 backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.white,

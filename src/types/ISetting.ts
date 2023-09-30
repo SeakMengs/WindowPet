@@ -36,7 +36,7 @@ export enum ESettingTab {
 }
 
 export interface ISettingTabComponent {
-    component: MemoExoticComponent<({ scrollToTop }: { scrollToTop: () => void }) => JSX.Element>,
+    component: MemoExoticComponent<() => JSX.Element>,
     title: string,
     description: string,
 }

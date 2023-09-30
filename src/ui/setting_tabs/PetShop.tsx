@@ -13,7 +13,7 @@ import { handleSettingChange } from "../../utils/handleSettingChange";
 import { PetCardType } from "../../types/components/type";
 import { useSettingStore } from "../../hooks/useSettingStore";
 
-function PetShop({ scrollToTop }: { scrollToTop: () => void; }) {
+function PetShop() {
     const { setPets, defaultPet } = useSettingStore();
     const { t } = useTranslation();
 
