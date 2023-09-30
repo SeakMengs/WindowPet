@@ -33,7 +33,7 @@ import { checkForUpdate } from './utils/update';
 
 function SettingWindow() {
   const viewport = useRef<HTMLDivElement>(null);
-  const { theme: colorScheme, language, pets } = useSettingStore();
+  const { theme: colorScheme, language, pets, defaultPet } = useSettingStore();
   const { t } = useTranslation();
   const queryParams = useQueryParams();
   const { activeTab, setActiveTab } = useSettingTabStore();
@@ -63,7 +63,7 @@ function SettingWindow() {
     },
     {
       component: PetShop,
-      title: t("Pet Shop"),
+      title: t("Pet Shop Total", {totalPets: defaultPet.length}),
       description: t("Browse wide selection of adorable pets, find your perfect companion today!"),
     },
     {

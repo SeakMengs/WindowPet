@@ -28,6 +28,13 @@ export interface IHandleSettingChange {
     ): void;
 }
 
+export enum ESettingTab {
+    MyPets = 0,
+    PetShop = 1,
+    Settings = 2,
+    About = 3,
+}
+
 export interface ISettingTabComponent {
     component: MemoExoticComponent<({ scrollToTop }: { scrollToTop: () => void }) => JSX.Element>,
     title: string,

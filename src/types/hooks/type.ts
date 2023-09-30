@@ -14,6 +14,8 @@ export interface ISettingStoreState {
     setAllowAutoStartUp: (newBoolean: boolean) => void;
     allowPetInteraction: boolean;
     setAllowPetInteraction: (newBoolean: boolean) => void;
+    defaultPet: ISpriteConfig[];
+    setDefaultPet: (newDefaultPet: ISpriteConfig[]) => void;
 }
 
 export interface ISettingTabState {

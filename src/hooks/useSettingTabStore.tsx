@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import useQueryParams from "./useQueryParams";
+import { ESettingTab } from "../types/ISetting";
 
 interface ISettingTabState {
     activeTab: number;
@@ -7,6 +8,6 @@ interface ISettingTabState {
 }
 
 export const useSettingTabStore = create<ISettingTabState>()((set) => ({
-    activeTab: 0,
+    activeTab: ESettingTab.MyPets,
     setActiveTab: (activeTab: number) => set({ activeTab }),
 }));

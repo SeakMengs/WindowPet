@@ -2,7 +2,6 @@ import { Box } from "@mantine/core";
 import { memo, useCallback, useMemo } from "react";
 import PetCard from "../components/PetCard";
 import { useTranslation } from "react-i18next";
-import defaultPetConfig from "../../config/pet_config.json";
 import { ISpriteConfig } from "../../types/ISpriteConfig";
 import { getAppSettings } from "../../utils/settings";
 import { invoke } from "@tauri-apps/api";
@@ -14,14 +13,13 @@ import { handleSettingChange } from "../../utils/handleSettingChange";
 import { PetCardType } from "../../types/components/type";
 import { useSettingStore } from "../../hooks/useSettingStore";
 
-function PetShop() {
-    const pets = JSON.parse(JSON.stringify(defaultPetConfig));
-    const { setPets } = useSettingStore();
+function PetShop({ scrollToTop }: { scrollToTop: () => void; }) {
+    const { setPets, defaultPet } = useSettingStore();
     const { t } = useTranslation();
 
     const addPetToConfig = useCallback(async (index: number) => {
         const userPetConfig = await getAppSettings({ configName: "pets.json" });
-        userPetConfig.push(pets[index]);
+        userPetConfig.push(defaultPet[index]);
 
         const configPath: string = await invoke("combine_config_path", { config_name: "pets.json" });
         const store = new Store(configPath);
@@ -32,7 +30,7 @@ function PetShop() {
         setPets(userPetConfig);
 
         notifications.show({
-            message: t("pet name has been added to your realm", { name: pets[index].name }),
+            message: t("pet name has been added to your realm", { name: defaultPet[index].name }),
             title: t("Pet Added"),
             color: PrimaryColor,
             icon: <IconCheck size="1rem" />,
@@ -44,11 +42,11 @@ function PetShop() {
         })
 
         // update pet window to show new pet
-        handleSettingChange('addPet', pets[index]);
+        handleSettingChange('addPet', defaultPet[index]);
     }, []);
 
     const PetCards = useMemo(() => {
-        return pets.map((pet: ISpriteConfig, index: number) => {
+        return defaultPet.map((pet: ISpriteConfig, index: number) => {
             return <PetCard key={index} pet={pet} btnLabel={t("Acquire")} type={PetCardType.Add} btnFunction={() => addPetToConfig(index)} />
         })
     }, [addPetToConfig, t]);
