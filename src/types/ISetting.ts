@@ -35,10 +35,13 @@ export enum ESettingTab {
     About = 3,
 }
 
-export interface ISettingTabComponent {
-    component: MemoExoticComponent<() => JSX.Element>,
+export interface ISettingTabs {
+    Component: MemoExoticComponent<() => JSX.Element>,
     title: string,
     description: string,
+    Icon: React.ReactNode;
+    label: string;
+    tab: ESettingTab,
 }
 
 export interface ISettingsContent {

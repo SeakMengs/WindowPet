@@ -1,6 +1,6 @@
 import { Box, Button, Select, Title } from "@mantine/core";
 import { memo, useState } from "react";
-import { IPetCardProps, PetCardType } from "../../types/components/type";
+import { IPetCardProps } from "../../types/components/type";
 import PhaserCanvas from "./PhaserCanvas";
 import { useInView } from "react-intersection-observer";
 import { ButtonVariant, CanvasSize } from "../../utils";
@@ -22,32 +22,35 @@ function PetCard({ btnLabel, pet, btnFunction, type }: IPetCardProps) {
                 boxShadow: theme.shadows.md,
                 border: `0.0625rem solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
             })}>
-                {/* if the pet is currently in user viewport, show it, otherwise destroy it dom because it take a lot of resource */}
+                {/* if the pet is currently in user viewport, show it, otherwise destroy its dom because it take a lot of resource */}
                 {inView ?
-                    <PhaserCanvas pet={pet} playState={playState} /> :
+                    <div className="">
+                        <PhaserCanvas pet={pet} playState={playState} key={playState} />
+                        <Box sx={(theme) => ({
+                            padding: theme.spacing.lg,
+                        })}>
+                            <Title order={4} align="center" truncate="end">{pet.name}</Title>
+                            <Select
+                                my={"md"}
+                                maxDropdownHeight={210}
+                                placeholder="Pick one"
+                                defaultValue={playState}
+                                data={Object.keys(pet.states).map(state => ({ value: state, label: state, })
+                                )}
+                                onChange={setPlayState as any}
+                            />
+                            <Button variant={ButtonVariant} fullWidth onClick={btnFunction}>
+                                {btnLabel}
+                            </Button>
+                        </Box>
+                    </div>
+                    :
                     <div className="" style={{
                         height: CanvasSize,
                         width: CanvasSize,
                     }}>
                     </div>
                 }
-                <Box sx={(theme) => ({
-                    padding: theme.spacing.lg,
-                })}>
-                    <Title order={4} align="center" truncate="end">{pet.name}</Title>
-                    <Select
-                        my={"md"}
-                        maxDropdownHeight={210}
-                        placeholder="Pick one"
-                        defaultValue={playState}
-                        data={Object.keys(pet.states).map(state => ({ value: state, label: state, })
-                        )}
-                        onChange={setPlayState as any}
-                    />
-                    <Button variant={ButtonVariant} fullWidth onClick={btnFunction}>
-                        {btnLabel}
-                    </Button>
-                </Box>
             </Box>
         </>
     )

@@ -46,11 +46,16 @@ function PhaserCanvas({ pet, playState }: PhaserCanvasProps) {
 
         return () => {
             game.destroy(true);
+            // reset the dom
+            if (phaserDom.current !== null) phaserDom.current.innerHTML = '';
         }
     }, [pet, playState]);
 
     return (
-        <div ref={phaserDom}></div>
+        <div style={{
+            // disable pointer events so that the canvas can be scrolled when the mouse is over it
+            pointerEvents: 'none',
+        }} ref={phaserDom}></div>
     )
 }
 

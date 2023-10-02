@@ -10,13 +10,20 @@ import {
   Stack,
   Flex,
 } from '@mantine/core';
-import { IconSun, IconMoonStars } from '@tabler/icons-react';
+import {
+  IconSun,
+  IconMoonStars,
+  IconCat,
+  IconInfoCircle,
+  IconSettings,
+  IconBuildingStore,
+} from '@tabler/icons-react';
 import Logo from './ui/components/Logo';
 import SettingTabs from './ui/shell/SettingTabs';
 import { useTranslation } from 'react-i18next';
 import { useSettingStore } from './hooks/useSettingStore';
 import { handleSettingChange } from './utils/handleSettingChange';
-import { ISettingTabComponent } from './types/ISetting';
+import { ESettingTab, ISettingTabs } from './types/ISetting';
 import { memo, useMemo, useRef } from 'react';
 import MyPets from './ui/setting_tabs/MyPets';
 import PetShop from './ui/setting_tabs/PetShop';
@@ -53,29 +60,41 @@ function SettingWindow() {
     setActiveTab(Number(queryParams.get('tab')));
   }
 
-  const SettingTabComponent: ISettingTabComponent[] = useMemo(() => ([
+  const settingTabs: ISettingTabs[] = useMemo(() => ([
     {
-      component: MyPets,
+      Component: MyPets,
       title: t("My Pets", { totalPets: pets.length }),
       description: t("Meet your furry friend, a loyal companion who loves to play and cuddle"),
+      Icon: <IconCat size="1rem" />,
+      label: t('My Pet'),
+      tab: ESettingTab.MyPets,
     },
     {
-      component: PetShop,
-      title: t("Pet Shop Total", {totalPets: defaultPet.length}),
+      Component: PetShop,
+      title: t("Pet Shop Total", { totalPets: defaultPet.length }),
       description: t("Browse wide selection of adorable pets, find your perfect companion today!"),
+      Icon: <IconBuildingStore size="1rem" />,
+      label: t('Pet Shop'),
+      tab: ESettingTab.PetShop,
     },
     {
-      component: Settings,
+      Component: Settings,
       title: t("Setting Preferences"),
-      description: t("Choose what u desire, do what u love")
+      description: t("Choose what u desire, do what u love"),
+      Icon: <IconSettings size="1rem" />,
+      label: t('Settings'),
+      tab: ESettingTab.Settings,
     },
     {
-      component: About,
+      Component: About,
       title: t("About"),
-      description: t("Know more about WindowPet")
+      description: t("Know more about WindowPet"),
+      Icon: <IconInfoCircle size="1rem" />,
+      label: t('About'),
+      tab: ESettingTab.About,
     },
   ]), [language, pets.length]);
-  let CurrentSettingTab = SettingTabComponent[activeTab]?.component;
+  let CurrentSettingTab = settingTabs[activeTab]?.Component;
 
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
@@ -115,7 +134,7 @@ function SettingWindow() {
                       mt={50}
                     >
                       <Stack justify="center" align={"center"} spacing={0}>
-                        <SettingTabs activeTab={activeTab} />
+                        <SettingTabs activeTab={activeTab} settingTabs={settingTabs} />
                       </Stack>
                     </Navbar.Section>
                   </Stack>
@@ -131,8 +150,8 @@ function SettingWindow() {
             }>
             <ScrollArea h={"100vh"} viewportRef={viewport} key={activeTab}>
               <Box m={"sm"}>
-                <Title title={SettingTabComponent[activeTab].title} description={SettingTabComponent[activeTab].description} />
-                <CurrentSettingTab key={activeTab}/>
+                <Title title={settingTabs[activeTab].title} description={settingTabs[activeTab].description} />
+                <CurrentSettingTab key={activeTab} />
               </Box>
             </ScrollArea>
           </AppShell>

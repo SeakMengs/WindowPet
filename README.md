@@ -87,7 +87,7 @@ npm install
 ```
 - Build the project
 ```
- npm run tauri build
+ npm run tauri build --release
 ``` 
 - Notice: 
   - for build release we use github actions to build the project and upload the build to github release. You can check the build [workflow here](https://github.com/SeakMengs/WindowPet/blob/main/.github/workflows/release.yml)

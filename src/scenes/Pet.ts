@@ -38,6 +38,10 @@ export class Pet extends Phaser.Scene {
         });
         
         this.pet.body!.enable = false;
+
+        // disable input because we don't have any interaction with the pet, just show it
+        this.input.keyboard!.enabled = false;
+        this.input.mouse!.enabled = false;
     }
 
     getFrameSize(sprite: ISpriteConfig): { frameWidth: number, frameHeight: number } {

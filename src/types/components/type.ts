@@ -1,5 +1,6 @@
 import { UpdateManifest } from "@tauri-apps/api/updater";
 import { ISpriteConfig } from "../ISpriteConfig";
+import { ISettingTabs } from "../ISetting";
 
 export interface ISettingTabProps {
     Icon: React.ReactNode;
@@ -9,6 +10,7 @@ export interface ISettingTabProps {
 }
 export interface ISettingTabsProps {
     activeTab: number;
+    settingTabs: ISettingTabs[];
 }
 
 export interface ITitleProps {
