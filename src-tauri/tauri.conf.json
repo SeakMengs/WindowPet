@@ -22,7 +22,10 @@
       },
       "fs": {
         "all": true,
-        "scope": ["**"]
+        "scope": {
+          "allow": ["**"],
+          "requireLiteralLeadingDot": false
+        }
       },
       "path": {
         "all": true

@@ -31,6 +31,7 @@ export default class Pets extends Phaser.Scene {
     readonly moveAcceleration: number = this.moveVelocity * 2;
     readonly tweenAcceleration: number = this.frameRate * 1.1;
     readonly randomStateDelay: number = 3000;
+    readonly flipDelay: number = 5000;
 
     constructor() {
         super({ key: 'Pets' });
@@ -269,10 +270,11 @@ export default class Pets extends Phaser.Scene {
         // this.pets[index].setScale(this.pets[index].scaleX * 0.8, this.pets[index].scaleY * 0.8);
 
         this.pets[index].setCollideWorldBounds(true, 0, 0, true);
-        
+
         // store available states to pet (it actual name, not modified name)
         this.pets[index].availableStates = Object.keys(sprite.states)
         this.pets[index].canPlayRandomState = true;
+        this.pets[index].canRandomFlip = true;
 
         this.petJumpOrPlayRandomState(this.pets[index]);
     }
@@ -459,7 +461,9 @@ export default class Pets extends Phaser.Scene {
 
         let highestFrameMax = 0;
         for (const state in sprite.states) {
-            highestFrameMax = Math.max(highestFrameMax, sprite.states[state].frameMax);
+            // if frameMax doesn't exist in sprite.states[state] maybe the user specify specific position using start, end
+            if (!sprite.states[state].frameMax!) return 0;
+            highestFrameMax = Math.max(highestFrameMax, sprite.states[state].frameMax!);
         }
 
         return highestFrameMax;
@@ -478,7 +482,10 @@ export default class Pets extends Phaser.Scene {
         }
 
         for (const state in sprite.states) {
-            if (!sprite.states[state].spriteLine || !sprite.states[state].frameMax) return false;
+            if (
+                (!sprite.states[state].spriteLine || !sprite.states[state].frameMax) &&
+                (!sprite.states[state].start || !sprite.states[state].end)
+            ) return false;
         }
 
         return true;
@@ -491,17 +498,20 @@ export default class Pets extends Phaser.Scene {
         repeat: number;
     }[] {
         let animationConfig = [];
+        const HighestFrameMax = this.getHighestFrameMax(sprite);
         for (const state in sprite.states) {
-            // -1 because phaser frame start from 0
-            const start = (sprite.states[state].spriteLine - 1) * this.getHighestFrameMax(sprite);
-            const end = start + sprite.states[state].frameMax - 1;
+            
+            const start = sprite.states[state].start! || (sprite.states[state].spriteLine!) * HighestFrameMax;
+            const end = sprite.states[state].end! || start + sprite.states[state].frameMax!;
+
             animationConfig.push({
                 // avoid duplicate key
                 key: `${state}-${sprite.name}`,
                 frames: this.anims.generateFrameNumbers(sprite.name, {
-                    start: start,
-                    end: end,
-                    first: start
+                    // -1 because phaser frame start from 0
+                    start: start - 1,
+                    end: end - 1,
+                    first: start - 1
                 }),
                 frameRate: this.frameRate,
                 repeat: this.repeat,
@@ -672,7 +682,16 @@ export default class Pets extends Phaser.Scene {
 
         // just some random number to play random state
         if (random >= 888 && random <= 890) {
-            this.toggleFlipXThenUpdateDirection(pet);
+            // allow random flip only after pet flipped "flipDelay" time
+            if (pet.canRandomFlip) {
+                this.toggleFlipXThenUpdateDirection(pet);
+                pet.canRandomFlip = false;
+
+                // add delay to prevent spamming pet flip too fast
+                setTimeout(() => {
+                    pet.canRandomFlip = true
+                }, this.flipDelay);
+            }
         } else if (random >= 777 && random <= 780) {
             this.playRandomState(pet);
         } else if (random >= 170 && random <= 175) {

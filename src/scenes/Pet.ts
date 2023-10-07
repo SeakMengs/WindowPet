@@ -36,7 +36,7 @@ export class Pet extends Phaser.Scene {
             key: `${this.playState}-${this.sprite!.name}`,
             repeat: this.repeat,
         });
-        
+
         this.pet.body!.enable = false;
 
         // disable input because we don't have any interaction with the pet, just show it
@@ -64,17 +64,20 @@ export class Pet extends Phaser.Scene {
         repeat: number;
     }[] {
         let animationConfig = [];
+        const HighestFrameMax = this.getHighestFrameMax(sprite);
         for (const state in sprite.states) {
-            // -1 because phaser frame start from 0
-            const start = (sprite.states[state].spriteLine - 1) * this.getHighestFrameMax(sprite);
-            const end = start + sprite.states[state].frameMax - 1;
+            
+            const start = sprite.states[state].start! || (sprite.states[state].spriteLine!) * HighestFrameMax;
+            const end = sprite.states[state].end! || start + sprite.states[state].frameMax!;
+
             animationConfig.push({
                 // avoid duplicate key
                 key: `${state}-${sprite.name}`,
                 frames: this.anims.generateFrameNumbers(sprite.name, {
-                    start: start,
-                    end: end,
-                    first: start
+                    // -1 because phaser frame start from 0
+                    start: start - 1,
+                    end: end - 1,
+                    first: start - 1
                 }),
                 frameRate: this.frameRate,
                 repeat: this.repeat,
@@ -88,7 +91,9 @@ export class Pet extends Phaser.Scene {
 
         let highestFrameMax = 0;
         for (const state in sprite.states) {
-            highestFrameMax = Math.max(highestFrameMax, sprite.states[state].frameMax);
+            // if frameMax doesn't exist in sprite.states[state] maybe the user specify specific position using start, end
+            if (!sprite.states[state].frameMax!) return 0;
+            highestFrameMax = Math.max(highestFrameMax, sprite.states[state].frameMax!);
         }
 
         return highestFrameMax;

@@ -1,8 +1,3 @@
-// vitest need to configure it to use a browser environment and not a node one: https://vitest.dev/config/#environment
-/**
- * @vitest-environment jsdom
- */
-
 import { mockIPC, mockWindows, clearMocks } from '@tauri-apps/api/mocks'
 import { getAppSettings } from "../../utils/settings";
 import { expect, test, afterEach } from "vitest";

@@ -28,5 +28,10 @@ export default defineConfig(async () => ({
     supported: {
       'top-level-await': true //browsers can handle top-level-await features
     },
+  },
+  // vitest need to configure it to use a browser environment and not a node one: https://vitest.dev/config/#environment
+  test: {
+    global: true,
+    environment: 'jsdom',
   }
 }));
