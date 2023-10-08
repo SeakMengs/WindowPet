@@ -37,6 +37,7 @@ import useQueryParams from './hooks/useQueryParams';
 import { ModalsProvider } from '@mantine/modals';
 import useInit from './hooks/useInit';
 import { checkForUpdate } from './utils/update';
+import { DispatchType } from './types/IEvents';
 
 function SettingWindow() {
   const viewport = useRef<HTMLDivElement>(null);
@@ -52,7 +53,7 @@ function SettingWindow() {
 
   const toggleColorScheme = (value?: ColorScheme) => {
     const newTheme = value || (colorScheme === 'dark' ? 'light' : 'dark');
-    handleSettingChange('changeAppTheme', newTheme);
+    handleSettingChange(DispatchType.ChangeAppTheme, newTheme);
   }
 
   // set active tab from url search params, by doing this user can refresh the page and still get the same tab

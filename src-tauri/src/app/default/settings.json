@@ -2,5 +2,8 @@
     "theme": "dark",
     "language": "en",
     "allowPetAboveTaskbar": false,
-    "allowPetInteraction": true
+    "allowPetInteraction": true,
+    "allowOverridePetScale": true,
+    "allowAutoStartUp": false,
+    "petScale": 1
 }

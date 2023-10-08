@@ -12,6 +12,7 @@ import { PrimaryColor } from "../../utils";
 import { handleSettingChange } from "../../utils/handleSettingChange";
 import { PetCardType } from "../../types/components/type";
 import { useSettingStore } from "../../hooks/useSettingStore";
+import { DispatchType } from "../../types/IEvents";
 
 function PetShop() {
     const { setPets, defaultPet } = useSettingStore();
@@ -42,7 +43,7 @@ function PetShop() {
         })
 
         // update pet window to show new pet
-        handleSettingChange('addPet', defaultPet[index]);
+        handleSettingChange(DispatchType.AddPet, defaultPet[index]);
     }, []);
 
     const PetCards = useMemo(() => {

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Phaser from "phaser";
 import Pets from "./scenes/Pets";
 import { useSettingStore } from "./hooks/useSettingStore";
@@ -11,8 +11,18 @@ function PhaserWrapper() {
     const { pets } = useSettingStore();
     const defaultPets = JSON.parse(JSON.stringify(defaultPetConfig));
 
+    const [screenWidth, setScreenWidth] = useState(window.screen.width);
+    const [screenHeight, setScreenHeight] = useState(window.screen.height);
+
     useEffect(() => {
         if (!phaserDom.current) return;
+
+        const handleResize = () => {
+            setScreenWidth(window.screen.width);
+            setScreenHeight(window.screen.height);
+        };
+
+        window.addEventListener("resize", handleResize);
 
         // ensure that if component remount user will still be able to touch their screen
         appWindow.setIgnoreCursorEvents(true);
@@ -24,8 +34,8 @@ function PhaserWrapper() {
             transparent: true,
             scale: {
                 mode: Phaser.Scale.ScaleModes.RESIZE,
-                width: window.innerWidth,
-                height: window.innerHeight,
+                width: screenWidth,
+                height: screenHeight,
             },
             physics: {
                 default: 'arcade',
@@ -55,9 +65,12 @@ function PhaserWrapper() {
 
         return () => {
             game.destroy(true);
+            // reset the dom
+            if (phaserDom.current !== null) phaserDom.current.innerHTML = '';
+            window.removeEventListener("resize", handleResize);
         }
 
-    }, [pets]);
+    }, [pets, screenWidth, screenHeight]);
 
     return (
         <>

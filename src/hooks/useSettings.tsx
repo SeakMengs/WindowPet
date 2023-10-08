@@ -4,20 +4,27 @@ import { getAppSettings } from "../utils/settings";
 import { TAppSetting } from "../types/ISetting";
 import { isEnabled } from "tauri-plugin-autostart-api";
 import i18next from "i18next";
+import defaultSettings from "../../src-tauri/src/app/default/settings.json";
+import { error } from "tauri-plugin-log-api";
 
-const { setLanguage, setTheme, setAllowAutoStartUp, setAllowPetAboveTaskbar, setAllowPetInteraction, } = useSettingStore.getState();
+const { setLanguage, setTheme, setAllowAutoStartUp, setAllowPetAboveTaskbar, setAllowPetInteraction, setAllowOverridePetScale, setPetScale } = useSettingStore.getState();
 
 const getSettings = async () => {
     let setting: TAppSetting = await getAppSettings({ configName: "settings.json" });
+    
     if (setting === undefined) {
-        return [];
+        error("Settings is undefined")
+        throw new Error("Settings is undefined");
     }
+
     if (i18next.language !== setting.language) i18next.changeLanguage(setting.language);
-    setLanguage(setting.language);
-    setTheme(setting.theme);
+    setLanguage(setting.language ?? defaultSettings.language);
+    setTheme(setting.theme ?? defaultSettings.theme);
     setAllowAutoStartUp(await isEnabled());
-    setAllowPetAboveTaskbar(setting.allowPetAboveTaskbar);
-    setAllowPetInteraction(setting.allowPetInteraction);
+    setAllowPetAboveTaskbar(setting.allowPetAboveTaskbar ?? defaultSettings.allowPetAboveTaskbar);
+    setAllowPetInteraction(setting.allowPetInteraction ?? defaultSettings.allowPetInteraction);
+    setAllowOverridePetScale(setting.allowOverridePetScale ?? defaultSettings.allowOverridePetScale);
+    setPetScale(setting.petScale ?? defaultSettings.petScale);
 };
 
 export function useSettings() {

@@ -3,9 +3,10 @@ import { appWindow } from "@tauri-apps/api/window";
 import { ISpriteConfig } from "../types/ISpriteConfig";
 import { useSettingStore } from "../hooks/useSettingStore";
 import { listen } from "@tauri-apps/api/event";
-import { TRenderEventListener } from "../types/IEvents";
+import { DispatchType, EventType, TRenderEventListener } from "../types/IEvents";
 import { IPet, Direction, IWorldBounding, ISwitchStateOptions, Ease } from "../types/IPet";
 import { info, error } from "tauri-plugin-log-api";
+import defaultSettings from "../../src-tauri/src/app/default/settings.json";
 
 export default class Pets extends Phaser.Scene {
     private pets: IPet[] = [];
@@ -13,11 +14,15 @@ export default class Pets extends Phaser.Scene {
     private isIgnoreCursorEvents: boolean = true;
     private isFlipped: boolean = false;
     private frameCount: number = 0;
-    private allowPetInteraction: boolean = useSettingStore.getState().allowPetInteraction
-    private allowPetAboveTaskbar: boolean = useSettingStore.getState().allowPetAboveTaskbar
     // use this array to store index of pet that is currently climb and crawl
     private petClimbAndCrawlIndex: number[] = [];
     private registeredName: string[] = [];
+
+    // app settings
+    private allowPetInteraction: boolean = useSettingStore.getState().allowPetInteraction ?? defaultSettings.allowPetInteraction
+    private allowPetAboveTaskbar: boolean = useSettingStore.getState().allowPetAboveTaskbar ?? defaultSettings.allowPetAboveTaskbar
+    private allowOverridePetScale: boolean = useSettingStore.getState().allowOverridePetScale ?? defaultSettings.allowOverridePetScale
+    private petScale: number = useSettingStore.getState().petScale ?? defaultSettings.petScale
 
     // delay ms to set ignore cursor events
     readonly setIgnoreCursorEventsDelay: number = 50;
@@ -185,25 +190,42 @@ export default class Pets extends Phaser.Scene {
         });
 
         // listen to setting change from setting window and update settings
-        listen<any>('settingToMain', (event: TRenderEventListener) => {
+        listen<any>(EventType.SettingWindowToPetOverlay, (event: TRenderEventListener) => {
             switch (event.payload.dispatchType) {
-                case 'switchAllowPetInteraction':
-                    this.allowPetInteraction = event.payload!.value as boolean;
+                case DispatchType.SwitchAllowPetInteraction:
+                    this.allowPetInteraction = event.payload.value as boolean;
                     break;
-                case 'switchPetAboveTaskbar':
-                    this.allowPetAboveTaskbar = event.payload!.value as boolean;
+                case DispatchType.SwitchPetAboveTaskbar:
+                    this.allowPetAboveTaskbar = event.payload.value as boolean;
                     this.updatePetAboveTaskbar();
+
+                    // when the user switch from pet above taskbar to not above taskbar, there will be a little space for pet, we force pet to jump or play random state
+                    if (!this.allowPetAboveTaskbar) {
+                        this.pets.forEach((pet) => {
+                            this.petJumpOrPlayRandomState(pet);
+                        });
+                    }
+
                     break;
-                case 'addPet':
+                case DispatchType.AddPet:
                     this.addPet(event.payload!.value as ISpriteConfig, this.pets.length);
                     break;
-                case 'removePet':
+                case DispatchType.RemovePet:
                     const index = event.payload.value as number;
                     if (this.pets[index]) {
                         this.pets[index].destroy();
                         // 2nd parameter means remove one item only
                         this.pets.splice(index, 1);
                     }
+                    break;
+                case DispatchType.OverridePetScale:
+                    this.allowOverridePetScale = event.payload.value as boolean;
+                    this.allowOverridePetScale ?
+                        this.scaleAllPets(this.petScale) : this.scaleAllPets(1);
+                    break;
+                case DispatchType.ChangePetScale:
+                    this.petScale = event.payload.value as number;
+                    this.scaleAllPets(this.petScale);
                     break;
                 default:
                     break;
@@ -266,8 +288,7 @@ export default class Pets extends Phaser.Scene {
             pixelPerfect: true,
         }) as IPet;
 
-        //! scale the pet in the future might be allow user to scale, don't delete
-        // this.pets[index].setScale(this.pets[index].scaleX * 0.8, this.pets[index].scaleY * 0.8);
+        if (this.allowOverridePetScale) this.scalePet(this.pets[index], this.petScale);
 
         this.pets[index].setCollideWorldBounds(true, 0, 0, true);
 
@@ -411,6 +432,21 @@ export default class Pets extends Phaser.Scene {
         }
     }
 
+    scalePet(pet: IPet, scaleValue: number): void {
+        const scaleX = pet.scaleX > 0 ? scaleValue : -scaleValue;
+        const scaleY = scaleValue > 0 ? scaleValue : -scaleValue;
+        pet.setScale(scaleX, scaleY);
+    }
+
+    scaleAllPets(scaleValue: number): void {
+        this.pets.forEach((pet) => {
+            this.scalePet(pet, scaleValue);
+
+            // force pet to jump or play random state when scale change
+            this.petJumpOrPlayRandomState(pet);
+        });
+    }
+
     toggleFlipX(pet: IPet): void {
         /*
          * using scale because flipX doesn't flip the hitbox
@@ -471,6 +507,7 @@ export default class Pets extends Phaser.Scene {
 
     validatePetSprite(sprite: ISpriteConfig): boolean {
         if (!sprite.name || !sprite.imageSrc || !sprite.states) {
+            error(`Invalid sprite config: ${sprite.name ?? 'unknown name'}`);
             return false;
         }
 
@@ -478,6 +515,7 @@ export default class Pets extends Phaser.Scene {
         if (!sprite.frameSize &&
             (!sprite.width || !sprite.height || !sprite.highestFrameMax || !sprite.totalSpriteLine)
         ) {
+            error(`Invalid sprite config: ${sprite.name}`);
             return false;
         }
 
@@ -485,7 +523,10 @@ export default class Pets extends Phaser.Scene {
             if (
                 (!sprite.states[state].spriteLine || !sprite.states[state].frameMax) &&
                 (!sprite.states[state].start || !sprite.states[state].end)
-            ) return false;
+            ) {
+                error(`Invalid sprite config: ${sprite.name}`);
+                return false;
+            }
         }
 
         return true;
@@ -500,18 +541,22 @@ export default class Pets extends Phaser.Scene {
         let animationConfig = [];
         const HighestFrameMax = this.getHighestFrameMax(sprite);
         for (const state in sprite.states) {
-            
-            const start = sprite.states[state].start! || (sprite.states[state].spriteLine!) * HighestFrameMax;
-            const end = sprite.states[state].end! || start + sprite.states[state].frameMax!;
+
+            // we accept to type of state input, either start, end or spriteLine, frameMax
+            // -1 because phaser frame start from 0
+            const start = sprite.states[state].start !== undefined ?
+                sprite.states[state].start! - 1 : (sprite.states[state].spriteLine! - 1) * HighestFrameMax;
+            const end = sprite.states[state].end !== undefined ?
+                sprite.states[state].end! - 1 : start + sprite.states[state].frameMax! - 1;
 
             animationConfig.push({
                 // avoid duplicate key
                 key: `${state}-${sprite.name}`,
                 frames: this.anims.generateFrameNumbers(sprite.name, {
                     // -1 because phaser frame start from 0
-                    start: start - 1,
-                    end: end - 1,
-                    first: start - 1
+                    start: start,
+                    end: end,
+                    first: start
                 }),
                 frameRate: this.frameRate,
                 repeat: this.repeat,
@@ -627,14 +672,14 @@ export default class Pets extends Phaser.Scene {
     updatePetAboveTaskbar(): void {
         if (this.allowPetAboveTaskbar) {
             // get taskbar height
-            const taskbarHeight = window.innerHeight - screen.availHeight
+            const taskbarHeight = window.screen.height - window.screen.availHeight
 
             // update world bounds to include task bar
-            this.physics.world.setBounds(0, 0, window.innerWidth, window.innerHeight - taskbarHeight);
+            this.physics.world.setBounds(0, 0, window.screen.width, window.screen.height - taskbarHeight);
             return;
         }
 
-        this.physics.world.setBounds(0, 0, window.innerWidth, window.innerHeight);
+        this.physics.world.setBounds(0, 0, window.screen.width, window.screen.height);
     }
 
     petJumpOrPlayRandomState(pet: IPet): void {
@@ -835,9 +880,12 @@ export default class Pets extends Phaser.Scene {
     }
 
     detectMouseOverPet(clientX: number, clientY: number): boolean {
+        // if not pixel perfect, we can detect mouse over pet using this (with loop through pets array)
         // return Phaser.Geom.Rectangle.Contains(this.pets[0].getBounds(), clientX, clientY);
-        this.input.mousePointer.x = clientX;
-        this.input.mousePointer.y = clientY;
+
+        // divide clientX,Y by window.devicePixelRatio because the game world is not scaled by devicePixelRatio, and the mouse position we get is scaled by devicePixelRatio
+        this.input.mousePointer.x = clientX / window.devicePixelRatio;
+        this.input.mousePointer.y = clientY / window.devicePixelRatio;
 
         // this returns an array of all objects that the pointer is currently over, 
         // if array length > 0, it means the pointer is over some sprite object

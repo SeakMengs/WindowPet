@@ -1,6 +1,7 @@
 import { ColorScheme } from "@mantine/core";
 import { LazyExoticComponent, MemoExoticComponent } from "react";
 import { ISpriteConfig } from "./ISpriteConfig";
+import { DispatchType } from "./IEvents";
 
 export interface IGetAppSetting {
     configName?: string,
@@ -15,15 +16,17 @@ export interface ISetSetting extends IGetAppSetting {
 }
 
 export type TAppSetting = {
-    allowPetAboveTaskbar: boolean,
-    allowPetInteraction: boolean,
     language: string,
     theme: ColorScheme
+    allowPetAboveTaskbar: boolean,
+    allowPetInteraction: boolean,
+    allowOverridePetScale: boolean,
+    petScale: number,
 }
 
 export interface IHandleSettingChange {
     (
-        dispatchType: string,
+        dispatchType: DispatchType,
         newValue: string | boolean | ISpriteConfig | number,
     ): void;
 }
@@ -45,8 +48,9 @@ export interface ISettingTabs {
 }
 
 export interface ISettingsContent {
-    title: string;
-    description: string;
-    checked: boolean;
-    dispatchType: string;
+    title: string,
+    description: string,
+    checked: boolean,
+    dispatchType: DispatchType,
+    component?: React.ReactNode,
 }

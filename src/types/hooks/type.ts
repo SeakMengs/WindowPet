@@ -6,14 +6,18 @@ export interface ISettingStoreState {
     setLanguage: (newLanguage: string) => void;
     theme: ColorScheme;
     setTheme: (newTheme: ColorScheme) => void;
-    pets: ISpriteConfig[];
-    setPets: (newPets: ISpriteConfig[]) => void;
     allowPetAboveTaskbar: boolean;
     setAllowPetAboveTaskbar: (newBoolean: boolean) => void;
     allowAutoStartUp: boolean;
     setAllowAutoStartUp: (newBoolean: boolean) => void;
     allowPetInteraction: boolean;
     setAllowPetInteraction: (newBoolean: boolean) => void;
+    allowOverridePetScale: boolean;
+    setAllowOverridePetScale: (newBoolean: boolean) => void;
+    petScale: number;
+    setPetScale: (petScale: number) => void;
+    pets: ISpriteConfig[];
+    setPets: (newPets: ISpriteConfig[]) => void;
     defaultPet: ISpriteConfig[];
     setDefaultPet: (newDefaultPet: ISpriteConfig[]) => void;
 }

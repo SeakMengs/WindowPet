@@ -1,4 +1,4 @@
-import { Select } from "@mantine/core";
+import { Select, Slider } from "@mantine/core";
 import { SelectItem } from "./settings/SelectItem";
 import languages from "../../locale/languages";
 import SettingSwitch from "./settings/SettingSwitch";
@@ -10,30 +10,39 @@ import { memo, useCallback } from "react";
 import { IconLanguage } from "@tabler/icons-react";
 import { invoke } from "@tauri-apps/api/tauri";
 import SettingButton from "./settings/SettingButton";
+import { DispatchType } from "../../types/IEvents";
 
 function Settings() {
     const { t, i18n } = useTranslation();
-    const { allowAutoStartUp, allowPetAboveTaskbar, allowPetInteraction } = useSettingStore();
+    const { allowAutoStartUp, allowPetAboveTaskbar, allowPetInteraction, allowOverridePetScale, petScale } = useSettingStore();
 
     const settingSwitches: ISettingsContent[] = [
         {
             title: t("Auto start-up"),
             description: t("Automatically open WindowPet every time u start the computer"),
             checked: allowAutoStartUp,
-            dispatchType: "switchAutoWindowStartUp",
+            dispatchType: DispatchType.SwitchAutoWindowStartUp,
         },
         {
             title: t("Pet above taskbar"),
             description: t("Make the pet float above taskbar (For Window User)"),
             checked: allowPetAboveTaskbar,
-            dispatchType: "switchPetAboveTaskbar",
+            dispatchType: DispatchType.SwitchPetAboveTaskbar,
         },
         {
             title: t("Allow pet interactions"),
             description: t("If allow pet interaction turn on, user will be able to drag and move the pet around their window"),
             checked: allowPetInteraction,
-            dispatchType: "switchAllowPetInteraction",
+            dispatchType: DispatchType.SwitchAllowPetInteraction,
         },
+        {
+            title: t("Allow override pet scale"),
+            description: t("Allow the program to adjust all pet sizes by a fixed amount determined by your preferences, ignoring any individual pet scales"),
+            checked: allowOverridePetScale,
+            dispatchType: DispatchType.OverridePetScale,
+            component: allowOverridePetScale &&
+                <Slider min={0.1} max={2} defaultValue={petScale} my={"md"} step={0.1} onChangeEnd={(value) => handleSettingChange(DispatchType.ChangePetScale, value)} />,
+        }
     ];
 
     const SettingSwitches = settingSwitches.map((setting, index) => {
@@ -58,7 +67,7 @@ function Settings() {
                 data={languages}
                 maxDropdownHeight={400}
                 value={i18n.language}
-                onChange={(value) => handleSettingChange("changeAppLanguage", value as string)}
+                onChange={(value) => handleSettingChange(DispatchType.ChangeAppLanguage, value as string)}
             />
         </>
     )

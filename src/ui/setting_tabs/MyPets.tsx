@@ -13,6 +13,7 @@ import { PrimaryColor, noPetDialog } from "../../utils";
 import { IconCheck } from "@tabler/icons-react";
 import { handleSettingChange } from "../../utils/handleSettingChange";
 import { PetCardType } from "../../types/components/type";
+import { DispatchType } from "../../types/IEvents";
 
 export function MyPets() {
     const { t } = useTranslation();
@@ -46,7 +47,7 @@ export function MyPets() {
         });
 
         // update pet window to show new pet
-        handleSettingChange('removePet', index);
+        handleSettingChange(DispatchType.RemovePet, index);
     }, [pets]);
 
     const PetCards = useMemo(() => {

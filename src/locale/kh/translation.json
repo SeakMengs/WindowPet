@@ -42,5 +42,7 @@
     "Update available": "មានកំណែថ្មីសម្រាប់ទាញយក",
     "WindowPet v available, do you want to install the update?": "មាន WindowPet v{{version}}, តើអ្នកចង់ដំឡើងបច្ចុប្បន្នភាពទេ?",
     "Yes": "យល់ព្រម",
-    "No": "ទេ"
+    "No": "ទេ",
+    "Allow override pet scale": "អនុញ្ញាតឱ្យកំណត់ទំហំសត្វចិញ្ចឹម",
+    "Allow the program to adjust all pet sizes by a fixed amount determined by your preferences, ignoring any individual pet scales": "អនុញ្ញាតឱ្យកម្មវិធីកែតម្រូវទំហំសត្វចិញ្ចឹមទាំងអស់ដោយចំនួនថេរដែលកំណត់ដោយអ្នក ដោយមិនអើពើនឹងមាត្រដ្ឋានសត្វចិញ្ចឹមនីមួយៗ"
 }

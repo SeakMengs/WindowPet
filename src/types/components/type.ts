@@ -1,6 +1,7 @@
 import { UpdateManifest } from "@tauri-apps/api/updater";
 import { ISpriteConfig } from "../ISpriteConfig";
 import { ISettingTabs } from "../ISetting";
+import { DispatchType } from "../IEvents";
 
 export interface ISettingTabProps {
     Icon: React.ReactNode;
@@ -34,7 +35,8 @@ export interface SettingSwitchProps {
     title: string,
     description: string,
     checked: boolean,
-    dispatchType: string;
+    dispatchType: DispatchType,
+    component?: React.ReactNode,
 }
 
 export interface SettingButtonProps {

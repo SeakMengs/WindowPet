@@ -42,5 +42,7 @@
     "WindowPet v available, do you want to install the update?": "WindowPet v{{version}} available, do you want to install the update?",
     "Update available": "Update available",
     "Yes": "Yes",
-    "No": "No"
+    "No": "No",
+    "Allow override pet scale": "Allow override pet scale",
+    "Allow the program to adjust all pet sizes by a fixed amount determined by your preferences, ignoring any individual pet scales": "Allow the program to adjust all pet sizes by a fixed amount determined by your preferences, ignoring any individual pet scales"
 }

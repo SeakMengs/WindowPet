@@ -66,18 +66,20 @@ export class Pet extends Phaser.Scene {
         let animationConfig = [];
         const HighestFrameMax = this.getHighestFrameMax(sprite);
         for (const state in sprite.states) {
-            
-            const start = sprite.states[state].start! || (sprite.states[state].spriteLine!) * HighestFrameMax;
-            const end = sprite.states[state].end! || start + sprite.states[state].frameMax!;
+
+            // -1 because phaser frame start from 0
+            const start = sprite.states[state].start !== undefined ?
+                sprite.states[state].start! - 1 : (sprite.states[state].spriteLine! - 1) * HighestFrameMax;
+            const end = sprite.states[state].end !== undefined ?
+                sprite.states[state].end! - 1 : start + sprite.states[state].frameMax! - 1;
 
             animationConfig.push({
                 // avoid duplicate key
                 key: `${state}-${sprite.name}`,
                 frames: this.anims.generateFrameNumbers(sprite.name, {
-                    // -1 because phaser frame start from 0
-                    start: start - 1,
-                    end: end - 1,
-                    first: start - 1
+                    start: start,
+                    end: end,
+                    first: start
                 }),
                 frameRate: this.frameRate,
                 repeat: this.repeat,
