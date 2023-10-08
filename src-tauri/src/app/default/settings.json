@@ -3,7 +3,7 @@
     "language": "en",
     "allowPetAboveTaskbar": false,
     "allowPetInteraction": true,
-    "allowOverridePetScale": true,
     "allowAutoStartUp": false,
-    "petScale": 1
+    "allowOverridePetScale": true,
+    "petScale": 0.7
 }

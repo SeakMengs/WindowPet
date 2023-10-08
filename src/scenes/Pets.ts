@@ -221,7 +221,8 @@ export default class Pets extends Phaser.Scene {
                 case DispatchType.OverridePetScale:
                     this.allowOverridePetScale = event.payload.value as boolean;
                     this.allowOverridePetScale ?
-                        this.scaleAllPets(this.petScale) : this.scaleAllPets(1);
+                        this.scaleAllPets(this.petScale) :
+                        this.scaleAllPets(defaultSettings.petScale);
                     break;
                 case DispatchType.ChangePetScale:
                     this.petScale = event.payload.value as number;
@@ -434,7 +435,7 @@ export default class Pets extends Phaser.Scene {
 
     scalePet(pet: IPet, scaleValue: number): void {
         const scaleX = pet.scaleX > 0 ? scaleValue : -scaleValue;
-        const scaleY = scaleValue > 0 ? scaleValue : -scaleValue;
+        const scaleY = pet.scaleY > 0 ? scaleValue : -scaleValue;
         pet.setScale(scaleX, scaleY);
     }
 

@@ -41,7 +41,7 @@ function Settings() {
             checked: allowOverridePetScale,
             dispatchType: DispatchType.OverridePetScale,
             component: allowOverridePetScale &&
-                <Slider min={0.1} max={2} defaultValue={petScale} my={"md"} step={0.1} onChangeEnd={(value) => handleSettingChange(DispatchType.ChangePetScale, value)} />,
+                <Slider min={0.1} max={1} defaultValue={petScale} my={"sm"} step={0.1} onChangeEnd={(value) => handleSettingChange(DispatchType.ChangePetScale, value)} />,
         }
     ];
 

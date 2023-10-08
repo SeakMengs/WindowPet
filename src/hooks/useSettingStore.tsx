@@ -30,7 +30,7 @@ export const useSettingStore = create<ISettingStoreState>()((set) => ({
     setAllowOverridePetScale: (newBoolean) => {
         set({allowOverridePetScale: newBoolean})
     },
-    petScale: defaultSettings.petScale ?? 1,
+    petScale: defaultSettings.petScale ?? 0.7,
     setPetScale: (petScale) => {
         set({petScale: petScale})
     },

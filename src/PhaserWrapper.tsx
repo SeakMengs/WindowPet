@@ -28,10 +28,12 @@ function PhaserWrapper() {
         appWindow.setIgnoreCursorEvents(true);
 
         const phaserConfig: Phaser.Types.Core.GameConfig = {
-            type: Phaser.CANVAS,
+            type: Phaser.AUTO,
             parent: phaserDom.current,
             backgroundColor: '#ffffff0',
             transparent: true,
+            roundPixels: true,
+            antialias: true,
             scale: {
                 mode: Phaser.Scale.ScaleModes.RESIZE,
                 width: screenWidth,
@@ -45,7 +47,7 @@ function PhaserWrapper() {
                 },
             },
             fps: {
-                target: 144,
+                target: 30,
                 min: 30,
                 smoothStep: true,
             },

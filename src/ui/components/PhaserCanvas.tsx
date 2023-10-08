@@ -13,6 +13,8 @@ function PhaserCanvas({ pet, playState }: PhaserCanvasProps) {
             type: Phaser.CANVAS,
             parent: phaserDom.current,
             transparent: true,
+            roundPixels: true,
+            antialias: true,
             scale: {
                 // mode: Phaser.Scale.ScaleModes.RESIZE,
                 width: CanvasSize,
@@ -26,7 +28,7 @@ function PhaserCanvas({ pet, playState }: PhaserCanvasProps) {
                 },
             },
             fps: {
-                target: 144,
+                target: 30,
                 min: 30,
                 smoothStep: true,
             },
