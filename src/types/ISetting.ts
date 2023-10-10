@@ -9,10 +9,12 @@ export interface IGetAppSetting {
 }
 
 export interface ISetSetting extends IGetAppSetting {
-    configName?: string,
-    key?: string,
     setKey: string,
     newValue: unknown,
+}
+
+export interface ISetConfig extends IGetAppSetting {
+    newConfig: unknown,
 }
 
 export type TAppSetting = {

@@ -5,9 +5,7 @@ import AddCard from "./my_pets/AddCard";
 import { useTranslation } from "react-i18next";
 import { useSettingStore } from "../../hooks/useSettingStore";
 import { ISpriteConfig } from "../../types/ISpriteConfig";
-import { getAppSettings } from "../../utils/settings";
-import { invoke } from "@tauri-apps/api";
-import { Store } from "tauri-plugin-store-api";
+import { getAppSettings, setConfig, setSettings } from "../../utils/settings";
 import { notifications } from "@mantine/notifications";
 import { PrimaryColor, noPetDialog } from "../../utils";
 import { IconCheck } from "@tabler/icons-react";
@@ -19,23 +17,22 @@ export function MyPets() {
     const { t } = useTranslation();
     const { pets, setPets } = useSettingStore();
 
-    const removePet = useCallback(async (index: number) => {
+    const removePet = useCallback(async (petId: string) => {
         const userPetConfig = await getAppSettings({ configName: "pets.json" });
-        // 2nd parameter means remove one item only
-        userPetConfig.splice(index, 1);
+        let removedPetName;
+        const newConfig = userPetConfig.filter((pet: ISpriteConfig) => {
+            // if (pet.id === petId) removedPetName = pet.name;
+            if (pet.id === petId) removedPetName = pet.name;
+            return pet.id !== petId;
+        });
 
-        const configPath: string = await invoke("combine_config_path", { config_name: "pets.json" });
-        const store = new Store(configPath);
-        await store.set('app', userPetConfig);
-        await store.save();
-
-        // update pets state
-        setPets(userPetConfig);
+        setConfig({ configName: "pets.json", newConfig: newConfig });
+        setPets(newConfig);
 
         if (userPetConfig.length === 0) noPetDialog();
 
         notifications.show({
-            message: t("pet name has been removed", { name: pets[index].name }),
+            message: t("pet name has been removed", { name: removedPetName }),
             title: t("Pet Removed"),
             color: PrimaryColor,
             icon: <IconCheck size="1rem" />,
@@ -47,16 +44,16 @@ export function MyPets() {
         });
 
         // update pet window to show new pet
-        handleSettingChange(DispatchType.RemovePet, index);
-    }, [pets]);
+        handleSettingChange(DispatchType.RemovePet, petId);
+    }, [t]);
 
     const PetCards = useMemo(() => {
         return pets.map((pet: ISpriteConfig, index: number) => {
             return (
-                <PetCard key={index} pet={pet} btnLabel={t("Remove")} type={PetCardType.Remove} btnFunction={() => removePet(index)} />
+                <PetCard key={pet.id} pet={pet} btnLabel={t("Remove")} type={PetCardType.Remove} btnFunction={() => removePet(pet.id as string)} />
             );
         });
-    }, [pets, removePet, t]);
+    }, [t, pets]);
 
     return (
         <>
@@ -67,7 +64,7 @@ export function MyPets() {
                 gridGap: "1rem",
             }}>
                 {PetCards}
-                <AddCard/>
+                <AddCard />
             </Box>
         </>
     );

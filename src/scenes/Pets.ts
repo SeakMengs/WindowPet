@@ -211,12 +211,7 @@ export default class Pets extends Phaser.Scene {
                     this.addPet(event.payload!.value as ISpriteConfig, this.pets.length);
                     break;
                 case DispatchType.RemovePet:
-                    const index = event.payload.value as number;
-                    if (this.pets[index]) {
-                        this.pets[index].destroy();
-                        // 2nd parameter means remove one item only
-                        this.pets.splice(index, 1);
-                    }
+                    this.removePet(event.payload.value as string);
                     break;
                 case DispatchType.OverridePetScale:
                     this.allowOverridePetScale = event.payload.value as boolean;
@@ -289,7 +284,9 @@ export default class Pets extends Phaser.Scene {
             pixelPerfect: true,
         }) as IPet;
 
-        if (this.allowOverridePetScale) this.scalePet(this.pets[index], this.petScale);
+        this.allowOverridePetScale ?
+            this.scalePet(this.pets[index], this.petScale) :
+            this.scalePet(this.pets[index], defaultSettings.petScale);
 
         this.pets[index].setCollideWorldBounds(true, 0, 0, true);
 
@@ -297,8 +294,23 @@ export default class Pets extends Phaser.Scene {
         this.pets[index].availableStates = Object.keys(sprite.states)
         this.pets[index].canPlayRandomState = true;
         this.pets[index].canRandomFlip = true;
+        this.pets[index].id = sprite.id as string;
 
         this.petJumpOrPlayRandomState(this.pets[index]);
+    }
+
+    removePet(petId: string): void {
+        this.pets = this.pets.filter((pet: IPet, index: number) => {
+            if (pet.id === petId) {
+                pet.destroy();
+                // remove index from petClimbAndCrawlIndex if it exist because the pet is destroyed
+                if (this.petClimbAndCrawlIndex.includes(index)) {
+                    this.petClimbAndCrawlIndex = this.petClimbAndCrawlIndex.filter(i => i !== index);
+                }
+                return false;
+            }
+            return true;
+        });
     }
 
     updateDirection(pet: IPet, direction: Direction): void {

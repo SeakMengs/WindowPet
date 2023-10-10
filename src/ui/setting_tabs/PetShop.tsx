@@ -3,7 +3,7 @@ import { memo, useCallback, useMemo } from "react";
 import PetCard from "../components/PetCard";
 import { useTranslation } from "react-i18next";
 import { ISpriteConfig } from "../../types/ISpriteConfig";
-import { getAppSettings } from "../../utils/settings";
+import { getAppSettings, setConfig } from "../../utils/settings";
 import { invoke } from "@tauri-apps/api";
 import { Store } from "tauri-plugin-store-api";
 import { notifications } from "@mantine/notifications";
@@ -21,13 +21,9 @@ function PetShop() {
     const addPetToConfig = useCallback(async (index: number) => {
         const userPetConfig = await getAppSettings({ configName: "pets.json" });
         userPetConfig.push(defaultPet[index]);
+        userPetConfig[userPetConfig.length - 1].id = crypto.randomUUID();
 
-        const configPath: string = await invoke("combine_config_path", { config_name: "pets.json" });
-        const store = new Store(configPath);
-        await store.set('app', userPetConfig);
-        await store.save();
-
-        // update pets in state
+        setConfig({ configName: "pets.json", newConfig: userPetConfig });
         setPets(userPetConfig);
 
         notifications.show({
@@ -44,13 +40,13 @@ function PetShop() {
 
         // update pet window to show new pet
         handleSettingChange(DispatchType.AddPet, defaultPet[index]);
-    }, []);
+    }, [t]);
 
     const PetCards = useMemo(() => {
         return defaultPet.map((pet: ISpriteConfig, index: number) => {
             return <PetCard key={index} pet={pet} btnLabel={t("Acquire")} type={PetCardType.Add} btnFunction={() => addPetToConfig(index)} />
         })
-    }, [addPetToConfig, t]);
+    }, [t]);
 
     return (
         <>

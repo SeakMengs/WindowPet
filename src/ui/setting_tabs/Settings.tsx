@@ -30,13 +30,13 @@ function Settings() {
             dispatchType: DispatchType.SwitchPetAboveTaskbar,
         },
         {
-            title: t("Allow pet interactions"),
+            title: t("Pet interactions"),
             description: t("If allow pet interaction turn on, user will be able to drag and move the pet around their window"),
             checked: allowPetInteraction,
             dispatchType: DispatchType.SwitchAllowPetInteraction,
         },
         {
-            title: t("Allow override pet scale"),
+            title: t("Override pet scale"),
             description: t("Allow the program to adjust all pet sizes by a fixed amount determined by your preferences, ignoring any individual pet scales"),
             checked: allowOverridePetScale,
             dispatchType: DispatchType.OverridePetScale,

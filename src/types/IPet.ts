@@ -14,6 +14,7 @@ export interface IPet extends Phaser.Physics.Arcade.Sprite {
     availableStates: string[];
     canPlayRandomState: boolean;
     canRandomFlip: boolean;
+    id: string;
 }
 
 export interface IWorldBounding {

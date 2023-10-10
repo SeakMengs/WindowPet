@@ -121,7 +121,7 @@ function SettingWindow() {
         primaryColor: PrimaryColor,
       }} withGlobalStyles withNormalizeCSS>
         <ModalsProvider>
-          <Notifications limit={3} />
+          <Notifications limit={2} position={'top-center'}/>
           <AppShell
             padding={0}
             navbar={

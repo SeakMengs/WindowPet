@@ -6,6 +6,7 @@
  */
 export interface ISpriteConfig {
     name: string;
+    id?: string;
     width?: number;
     height?: number;
     frameSize?: number;

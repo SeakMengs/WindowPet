@@ -25,7 +25,7 @@ function PetCard({ btnLabel, pet, btnFunction, type }: IPetCardProps) {
                 {/* if the pet is currently in user viewport, show it, otherwise destroy its dom because it take a lot of resource */}
                 {inView ?
                     <div className="">
-                        <PhaserCanvas pet={pet} playState={playState} key={playState} />
+                        <PhaserCanvas pet={pet} playState={playState} key={pet.id} />
                         <Box sx={(theme) => ({
                             padding: theme.spacing.lg,
                         })}>

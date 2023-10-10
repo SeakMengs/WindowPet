@@ -16,7 +16,7 @@
     "Automatically open WindowPet every time u start the computer": "Automatically open WindowPet every time u start the computer",
     "Make the pet float above taskbar (For Window User)": "Make the pet float above taskbar (For Window User)",
     "Pet above taskbar": "Pet above taskbar",
-    "Allow pet interactions": "Allow pet interactions",
+    "Pet interactions": "Pet interactions",
     "If allow pet interaction turn on, user will be able to drag and move the pet around their window": "If allow pet interaction turn on, user will be able to drag and move the pet around their window",
     "Acquire": "Acquire",
     "Remove": "Remove",
@@ -43,6 +43,6 @@
     "Update available": "Update available",
     "Yes": "Yes",
     "No": "No",
-    "Allow override pet scale": "Allow override pet scale",
+    "Override pet scale": "Override pet scale",
     "Allow the program to adjust all pet sizes by a fixed amount determined by your preferences, ignoring any individual pet scales": "Allow the program to adjust all pet sizes by a fixed amount determined by your preferences, ignoring any individual pet scales"
 }
