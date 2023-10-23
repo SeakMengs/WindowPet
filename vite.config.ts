@@ -1,9 +1,10 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
-  plugins: [react()],
+  plugins: [react(), tsconfigPaths()],
 
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   // prevent vite from obscuring rust errors
@@ -30,8 +31,15 @@ export default defineConfig(async () => ({
     },
   },
   // vitest need to configure it to use a browser environment and not a node one: https://vitest.dev/config/#environment
+  // https://github.com/wobsoriano/vitest-canvas-mock
   test: {
     global: true,
     environment: 'jsdom',
+    setupFiles: ['./vitest.setup.ts'],
+    optimizer: {
+      web: {
+        include: ['vitest-canvas-mock']
+      }
+    }
   }
 }));

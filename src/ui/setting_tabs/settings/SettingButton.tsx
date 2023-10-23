@@ -5,7 +5,7 @@ import { ButtonVariant } from "../../../utils";
 function SettingButton({ title, description, btnLabel, btnFunction}: SettingButtonProps) {
     return (
         <>
-            <Group position="apart">
+            <Group justify={"space-between"}>
                 <div>
                     <Text >{title}</Text>
                     <Text maw={460} fz={"xs"} c={"dimmed"} >

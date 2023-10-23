@@ -5,23 +5,23 @@ import AddCard from "./my_pets/AddCard";
 import { useTranslation } from "react-i18next";
 import { useSettingStore } from "../../hooks/useSettingStore";
 import { ISpriteConfig } from "../../types/ISpriteConfig";
-import { getAppSettings, setConfig, setSettings } from "../../utils/settings";
+import { getAppSettings, setConfig } from "../../utils/settings";
 import { notifications } from "@mantine/notifications";
 import { PrimaryColor, noPetDialog } from "../../utils";
 import { IconCheck } from "@tabler/icons-react";
 import { handleSettingChange } from "../../utils/handleSettingChange";
 import { PetCardType } from "../../types/components/type";
 import { DispatchType } from "../../types/IEvents";
+import { ColorSchemeType } from "../../types/ISetting";
 
 export function MyPets() {
     const { t } = useTranslation();
-    const { pets, setPets } = useSettingStore();
+    const { theme: colorScheme ,pets, setPets } = useSettingStore();
 
     const removePet = useCallback(async (petId: string) => {
         const userPetConfig = await getAppSettings({ configName: "pets.json" });
         let removedPetName;
         const newConfig = userPetConfig.filter((pet: ISpriteConfig) => {
-            // if (pet.id === petId) removedPetName = pet.name;
             if (pet.id === petId) removedPetName = pet.name;
             return pet.id !== petId;
         });
@@ -38,8 +38,8 @@ export function MyPets() {
             icon: <IconCheck size="1rem" />,
             withBorder: true,
             autoClose: 800,
-            sx: (theme) => ({
-                backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[0],
+            style: (theme) => ({
+                backgroundColor: colorScheme === ColorSchemeType.Dark ? theme.colors.dark[7] : theme.colors.gray[0],
             })
         });
 
@@ -57,7 +57,7 @@ export function MyPets() {
 
     return (
         <>
-            <Box sx={{
+            <Box style={{
                 display: "grid",
                 placeItems: "center",
                 gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",

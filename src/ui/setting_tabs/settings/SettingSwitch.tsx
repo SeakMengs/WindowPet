@@ -5,7 +5,7 @@ import { SettingSwitchProps } from "../../../types/components/type";
 function SettingSwitch({ title, description, checked = false, dispatchType, component }: SettingSwitchProps) {
     return (
         <>
-            <Group position="apart">
+            <Group justify={"space-between"}>
                 <div>
                     <Text >{title}</Text>
                     <Text maw={460} fz={"xs"} c={"dimmed"} >

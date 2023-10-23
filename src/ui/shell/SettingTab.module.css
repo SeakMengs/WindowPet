@@ -1,0 +1,36 @@
+.link {
+    width: 50px;
+    height: 50px;
+    border-radius: var(--mantine-radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--mantine-color-gray-7) !important;
+
+    /* if dark mode */
+    /* check mantine postcss to learn more about mixin and light-dark function */
+    @mixin dark {
+        color: var(--mantine-color-dark-0) !important;
+    }
+
+    &:hover {
+        background-color: var(--mantine-color-gray-0);
+
+        @mixin dark {
+            background-color: var(--mantine-color-dark-5);
+        }
+    }
+}
+
+.active {
+    background-color: var(--mantine-primary-color-light) !important;
+    color: var(--mantine-primary-color-light-color) !important;
+
+    &:hover {
+        background-color: var(--mantine-primary-color-light-hover) !important;
+    }
+}
+
+.tooltipLabel {
+    color: var(--mantine-color-white-0) !important;
+}

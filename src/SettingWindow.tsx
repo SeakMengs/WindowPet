@@ -1,14 +1,11 @@
 import {
   AppShell,
-  Navbar,
   Box,
   ActionIcon,
-  MantineProvider,
-  ColorSchemeProvider,
-  ColorScheme,
   ScrollArea,
   Stack,
   Flex,
+  useMantineColorScheme,
 } from '@mantine/core';
 import {
   IconSun,
@@ -17,20 +14,20 @@ import {
   IconInfoCircle,
   IconSettings,
   IconBuildingStore,
+  IconPaw,
 } from '@tabler/icons-react';
 import Logo from './ui/components/Logo';
 import SettingTabs from './ui/shell/SettingTabs';
 import { useTranslation } from 'react-i18next';
 import { useSettingStore } from './hooks/useSettingStore';
 import { handleSettingChange } from './utils/handleSettingChange';
-import { ESettingTab, ISettingTabs } from './types/ISetting';
+import { ColorScheme, ColorSchemeType, ESettingTab, ISettingTabs } from './types/ISetting';
 import { memo, useMemo, useRef } from 'react';
 import MyPets from './ui/setting_tabs/MyPets';
 import PetShop from './ui/setting_tabs/PetShop';
 import Settings from './ui/setting_tabs/Settings';
 import { useSettingTabStore } from './hooks/useSettingTabStore';
 import Title from './ui/components/Title';
-import { PrimaryColor } from './utils';
 import { Notifications } from '@mantine/notifications';
 import About from './ui/setting_tabs/About';
 import useQueryParams from './hooks/useQueryParams';
@@ -38,6 +35,9 @@ import { ModalsProvider } from '@mantine/modals';
 import useInit from './hooks/useInit';
 import { checkForUpdate } from './utils/update';
 import { DispatchType } from './types/IEvents';
+import AddPet from './ui/setting_tabs/AddPet';
+import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 
 function SettingWindow() {
   const viewport = useRef<HTMLDivElement>(null);
@@ -45,6 +45,7 @@ function SettingWindow() {
   const { t } = useTranslation();
   const queryParams = useQueryParams();
   const { activeTab, setActiveTab } = useSettingTabStore();
+  const { setColorScheme } = useMantineColorScheme();
 
   // check for update when open settings window
   useInit(() => {
@@ -52,7 +53,9 @@ function SettingWindow() {
   });
 
   const toggleColorScheme = (value?: ColorScheme) => {
-    const newTheme = value || (colorScheme === 'dark' ? 'light' : 'dark');
+    const newTheme = value || (colorScheme === ColorSchemeType.Dark ? ColorSchemeType.Light : ColorSchemeType.Dark);
+
+    setColorScheme(newTheme);
     handleSettingChange(DispatchType.ChangeAppTheme, newTheme);
   }
 
@@ -79,6 +82,14 @@ function SettingWindow() {
       tab: ESettingTab.PetShop,
     },
     {
+      Component: AddPet,
+      title: t("Add Custom Pet"),
+      description: t("Add your custom pet to your computer and watch them bring kawaii cuteness to your digital world!"),
+      Icon: <IconPaw size="1rem" />,
+      label: t('Add Custom Pet'),
+      tab: ESettingTab.AddPet,
+    },
+    {
       Component: Settings,
       title: t("Setting Preferences"),
       description: t("Choose what u desire, do what u love"),
@@ -98,67 +109,48 @@ function SettingWindow() {
   let CurrentSettingTab = settingTabs[activeTab]?.Component;
 
   return (
-    <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-      <MantineProvider theme={{
-        colorScheme: colorScheme,
-        fontFamily: 'cursive, Siemreap, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji',
-        colors: {
-          dark: [
-            "#C1C2C5",
-            "#A6A7AB",
-            "#909296",
-            "#5C5F66",
-            "#373A40",
-            "#2C2E33",
-            // shade
-            "#1A1B1E",
-            // background
-            "#141517",
-            "#1A1B1E",
-            "#101113",
-          ],
-        },
-        primaryColor: PrimaryColor,
-      }} withGlobalStyles withNormalizeCSS>
-        <ModalsProvider>
-          <Notifications limit={2} position={'top-center'}/>
-          <AppShell
-            padding={0}
-            navbar={
-              <Navbar width={{ base: 80 }} p="md">
-                <Flex style={{
-                  height: "100%"
-                }} direction={"column"} justify={'space-between'} align={"center"}>
-                  <Stack justify="center" align={"center"} spacing={0}>
-                    <Logo />
-                    <Navbar.Section
-                      mt={50}
-                    >
-                      <Stack justify="center" align={"center"} spacing={0}>
-                        <SettingTabs activeTab={activeTab} settingTabs={settingTabs} />
-                      </Stack>
-                    </Navbar.Section>
+    <>
+      <Notifications position={'top-center'} limit={2} />
+      <ModalsProvider>
+        <AppShell
+          padding={0}
+          navbar={{ width: 80, breakpoint: 0 }}
+        >
+          <AppShell.Navbar p="md">
+            <Flex style={{
+              height: "100%"
+            }} direction={"column"} justify={'space-between'} align={"center"}>
+              <Stack justify="center" align={"center"}>
+                <Logo />
+                <AppShell.Section
+                  mt={50}
+                >
+                  <Stack justify="center" align={"center"} gap={5}>
+                    <SettingTabs activeTab={activeTab} settingTabs={settingTabs} />
                   </Stack>
-                  <Navbar.Section>
-                    <Stack justify="center" align={"center"} spacing={0}>
-                      <ActionIcon variant="default" onClick={() => toggleColorScheme()} size={30} >
-                        {colorScheme === 'dark' ? <IconSun size="1rem" /> : <IconMoonStars size="1rem" />}
-                      </ActionIcon>
-                    </Stack>
-                  </Navbar.Section>
-                </Flex>
-              </Navbar>
-            }>
+                </AppShell.Section>
+              </Stack>
+              <AppShell.Section>
+                <Stack justify="center" align={"center"}>
+                  <ActionIcon variant="default" onClick={() => toggleColorScheme()} size={30} >
+                    {colorScheme === ColorSchemeType.Dark ? <IconSun size="1rem" /> : <IconMoonStars size="1rem" />}
+                  </ActionIcon>
+                </Stack>
+              </AppShell.Section>
+            </Flex>
+          </AppShell.Navbar>
+          <AppShell.Main>
+            {/* <ScrollArea h={"100vh"} viewportRef={viewport} key={activeTab}> */}
             <ScrollArea h={"100vh"} viewportRef={viewport} key={activeTab}>
               <Box m={"sm"}>
                 <Title title={settingTabs[activeTab].title} description={settingTabs[activeTab].description} />
                 <CurrentSettingTab key={activeTab} />
               </Box>
             </ScrollArea>
-          </AppShell>
-        </ModalsProvider>
-      </MantineProvider>
-    </ColorSchemeProvider>
+          </AppShell.Main>
+        </AppShell>
+      </ModalsProvider>
+    </>
   );
 }
 

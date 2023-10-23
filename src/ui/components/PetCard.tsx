@@ -4,33 +4,43 @@ import { IPetCardProps } from "../../types/components/type";
 import PhaserCanvas from "./PhaserCanvas";
 import { useInView } from "react-intersection-observer";
 import { ButtonVariant, CanvasSize } from "../../utils";
+import { useSettingStore } from "../../hooks/useSettingStore";
+import { ColorSchemeType } from "../../types/ISetting";
 
 function PetCard({ btnLabel, pet, btnFunction, type }: IPetCardProps) {
     const randomState = Object.keys(pet.states)[Math.floor(Math.random() * Object.keys(pet.states).length)];
     const [playState, setPlayState] = useState<string>(randomState);
+    const { theme: colorScheme } = useSettingStore();
     const { ref, inView } = useInView();
 
     return (
         <>
-            <Box ref={ref} sx={(theme) => ({
-                backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.white,
-                maxWidth: '14rem',
-                minWidth: '14rem',
-                width: '224px',
-                height: '400px',
-                borderRadius: theme.radius.md,
-                boxShadow: theme.shadows.md,
-                border: `0.0625rem solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
-            })}>
+            <Box ref={ref}
+                style={(theme) => ({
+                    backgroundColor: colorScheme === ColorSchemeType.Dark ? theme.colors.dark[6] : theme.white,
+                    maxWidth: '14rem',
+                    minWidth: '14rem',
+                    width: '224px',
+                    height: '400px',
+                    borderRadius: theme.radius.md,
+                    boxShadow: theme.shadows.md,
+                    border: `0.0625rem solid ${colorScheme === ColorSchemeType.Dark ? theme.colors.dark[4] : theme.colors.gray[3]}`,
+                })}
+            >
                 {/* if the pet is currently in user viewport, show it, otherwise destroy its dom because it take a lot of resource */}
                 {inView ?
                     <div className="">
                         <PhaserCanvas pet={pet} playState={playState} key={pet.id} />
-                        <Box sx={(theme) => ({
-                            padding: theme.spacing.lg,
-                        })}>
-                            <Title order={4} align="center" truncate="end">{pet.name}</Title>
+                        <Box p={"lg"}>
+                            <Title order={4} style={{
+                                textAlign: 'center',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                            }}>{pet.name}</Title>
                             <Select
+                                allowDeselect={false}
+                                checkIconPosition={"right"}
                                 my={"md"}
                                 maxDropdownHeight={210}
                                 placeholder="Pick one"
@@ -45,13 +55,13 @@ function PetCard({ btnLabel, pet, btnFunction, type }: IPetCardProps) {
                         </Box>
                     </div>
                     :
-                    <div className="" style={{
+                    <div style={{
                         height: CanvasSize,
                         width: CanvasSize,
                     }}>
                     </div>
                 }
-            </Box>
+            </Box >
         </>
     )
 };

@@ -4,8 +4,6 @@ import PetCard from "../components/PetCard";
 import { useTranslation } from "react-i18next";
 import { ISpriteConfig } from "../../types/ISpriteConfig";
 import { getAppSettings, setConfig } from "../../utils/settings";
-import { invoke } from "@tauri-apps/api";
-import { Store } from "tauri-plugin-store-api";
 import { notifications } from "@mantine/notifications";
 import { IconCheck } from "@tabler/icons-react";
 import { PrimaryColor } from "../../utils";
@@ -13,9 +11,10 @@ import { handleSettingChange } from "../../utils/handleSettingChange";
 import { PetCardType } from "../../types/components/type";
 import { useSettingStore } from "../../hooks/useSettingStore";
 import { DispatchType } from "../../types/IEvents";
+import { ColorSchemeType } from "../../types/ISetting";
 
 function PetShop() {
-    const { setPets, defaultPet } = useSettingStore();
+    const { setPets, defaultPet, theme: colorScheme } = useSettingStore();
     const { t } = useTranslation();
 
     const addPetToConfig = useCallback(async (index: number) => {
@@ -33,8 +32,8 @@ function PetShop() {
             icon: <IconCheck size="1rem" />,
             withBorder: true,
             autoClose: 800,
-            sx: (theme) => ({
-                backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[0],
+            style: (theme) => ({
+                backgroundColor: colorScheme === ColorSchemeType.Dark ? theme.colors.dark[7] : theme.colors.gray[0],
             })
         })
 
@@ -50,7 +49,7 @@ function PetShop() {
 
     return (
         <>
-            <Box sx={{
+            <Box style={{
                 display: "grid",
                 placeItems: "center",
                 gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
