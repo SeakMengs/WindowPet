@@ -1,4 +1,4 @@
-import { ColorScheme } from "@mantine/core";
+import { ColorScheme } from "../ISetting";
 import { ISpriteConfig } from "../ISpriteConfig";
 
 export interface ISettingStoreState {

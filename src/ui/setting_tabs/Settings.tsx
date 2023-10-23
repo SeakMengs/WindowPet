@@ -59,11 +59,13 @@ function Settings() {
             {SettingSwitches}
             <SettingButton title={t("App Config Path")} description={t(`The location path of where the app store your config such as settings, pets, etc`)} btnLabel={t("Open")} btnFunction={openConfigFolder} />
             <Select
-                icon={<IconLanguage />}
+                leftSection={<IconLanguage />}
+                allowDeselect={false}
+                checkIconPosition={"right"}
                 my={"sm"}
                 label={t("Language")}
                 placeholder="Pick one"
-                itemComponent={SelectItem}
+                // itemComponent={SelectItem}
                 data={languages}
                 maxDropdownHeight={400}
                 value={i18n.language}

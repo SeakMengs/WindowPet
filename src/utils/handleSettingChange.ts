@@ -1,6 +1,5 @@
 import { setSettings, toggleAutoStartUp } from "./settings";
-import { IHandleSettingChange } from "../types/ISetting";
-import { ColorScheme } from "@mantine/core";
+import { ColorScheme, IHandleSettingChange } from "../types/ISetting";
 import { useSettingStore } from "../hooks/useSettingStore";
 import { emitUpdatePetsEvent } from "./event";
 import i18next from "i18next";

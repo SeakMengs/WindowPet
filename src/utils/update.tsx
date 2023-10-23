@@ -37,11 +37,14 @@ export const checkForUpdate = async () => {
 
 export const update = async () => {
   const unlisten = await onUpdaterEvent(({ error, status }) => {
+    info(`Updater event Error:${error}, Status${status}`)
     console.log('Updater event', error, status)
   })
 
   try {
+    info('Installing update');
     await installUpdate()
+    info('Update installed, relaunching app');
     await relaunch()
   } catch (err) {
     error(err as string);

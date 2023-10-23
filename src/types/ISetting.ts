@@ -1,4 +1,3 @@
-import { ColorScheme } from "@mantine/core";
 import { LazyExoticComponent, MemoExoticComponent } from "react";
 import { ISpriteConfig } from "./ISpriteConfig";
 import { DispatchType } from "./IEvents";
@@ -16,6 +15,13 @@ export interface ISetSetting extends IGetAppSetting {
 export interface ISetConfig extends IGetAppSetting {
     newConfig: unknown,
 }
+
+export enum ColorSchemeType {
+    Light = "light",
+    Dark = "dark",
+}
+
+export type ColorScheme = ColorSchemeType.Light | ColorSchemeType.Dark;
 
 export type TAppSetting = {
     language: string,
@@ -36,8 +42,9 @@ export interface IHandleSettingChange {
 export enum ESettingTab {
     MyPets = 0,
     PetShop = 1,
-    Settings = 2,
-    About = 3,
+    AddPet = 2,
+    Settings = 3,
+    About = 4,
 }
 
 export interface ISettingTabs {

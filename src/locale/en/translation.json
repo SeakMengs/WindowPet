@@ -44,5 +44,8 @@
     "Yes": "Yes",
     "No": "No",
     "Override pet scale": "Override pet scale",
-    "Allow the program to adjust all pet sizes by a fixed amount determined by your preferences, ignoring any individual pet scales": "Allow the program to adjust all pet sizes by a fixed amount determined by your preferences, ignoring any individual pet scales"
+    "Allow the program to adjust all pet sizes by a fixed amount determined by your preferences, ignoring any individual pet scales": "Allow the program to adjust all pet sizes by a fixed amount determined by your preferences, ignoring any individual pet scales",
+    "Report a bug:": "Report a bug:",
+    "Community: ": "Community:",
+    "Add Custom Pet": "Add Custom Pet"
 }

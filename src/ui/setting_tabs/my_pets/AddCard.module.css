@@ -1,0 +1,13 @@
+.plus {
+    color: var(--mantine-primary-color-light);
+
+    &:hover {
+        color: var(--mantine-primary-color-light-hover);
+    }
+}
+
+.box {
+    &:hover {
+        cursor: pointer;
+    }
+}

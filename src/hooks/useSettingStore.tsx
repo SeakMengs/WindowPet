@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { ISettingStoreState } from "../types/hooks/type";
-import { ColorScheme } from "@mantine/core";
 import defaultPetConfig from "../config/pet_config.json";
 import defaultSettings from "../../src-tauri/src/app/default/settings.json";
+import { ColorScheme } from "../types/ISetting";
 
 // initialize settings
 export const useSettingStore = create<ISettingStoreState>()((set) => ({
