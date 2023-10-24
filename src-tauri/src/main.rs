@@ -2,7 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod app;
-use app::{cmd, conf, tray};
+use app::{cmd, conf, tray, utils};
 use log::info;
 use tauri::Manager;
 use tauri_plugin_autostart::MacosLauncher;
@@ -14,11 +14,7 @@ struct Payload {
     cwd: String,
 }
 
-fn main() {
-    // Enable gpu hardware acceleration on Windows
-    //refer to this issue: https://github.com/tauri-apps/tauri/issues/4891
-    std::env::set_var("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS", "--ignore-gpu-blocklist");
-
+fn build_app() {
     tauri::Builder::default()
         .plugin(tauri_plugin_autostart::init(
             MacosLauncher::LaunchAgent,
@@ -38,7 +34,7 @@ fn main() {
         .build())
         .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
             println!("{}, {argv:?}, {cwd}", app.package_info().name);
-
+    
             app.emit_all("single-instance", Payload { args: argv, cwd })
                 .unwrap();
         }))
@@ -60,6 +56,7 @@ fn main() {
             conf::combine_config_path,
             cmd::get_mouse_position,
             cmd::open_folder,
+            utils::reopen_main_window,
         ])
         .build(tauri::generate_context!())
         .expect("error while running tauri application")
@@ -68,4 +65,12 @@ fn main() {
                 api.prevent_exit();
             }
         });
+}
+
+fn main() {
+    // Enable gpu hardware acceleration on Windows
+    //refer to this issue: https://github.com/tauri-apps/tauri/issues/4891
+    std::env::set_var("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS", "--ignore-gpu-blocklist");
+
+    build_app();
 }

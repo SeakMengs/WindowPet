@@ -16,7 +16,7 @@ import { ColorSchemeType } from "../../types/ISetting";
 
 export function MyPets() {
     const { t } = useTranslation();
-    const { theme: colorScheme ,pets, setPets } = useSettingStore();
+    const { theme: colorScheme, pets, setPets } = useSettingStore();
 
     const removePet = useCallback(async (petId: string) => {
         const userPetConfig = await getAppSettings({ configName: "pets.json" });
@@ -29,7 +29,11 @@ export function MyPets() {
         setConfig({ configName: "pets.json", newConfig: newConfig });
         setPets(newConfig);
 
-        if (userPetConfig.length === 0) noPetDialog();
+        // manually remove petCard dom to fix flickering problem
+        const petCardDom = document.getElementById(`petCard-id-${petId}`);
+        if (petCardDom) petCardDom.remove();
+
+        if (newConfig.length === 0) noPetDialog();
 
         notifications.show({
             message: t("pet name has been removed", { name: removedPetName }),
@@ -47,13 +51,15 @@ export function MyPets() {
         handleSettingChange(DispatchType.RemovePet, petId);
     }, [t]);
 
+    // we don't put pets as dependency because it will cause flickering when we remove pet
+    // so we manually remove petCard dom in removePet function
     const PetCards = useMemo(() => {
         return pets.map((pet: ISpriteConfig, index: number) => {
             return (
                 <PetCard key={pet.id} pet={pet} btnLabel={t("Remove")} type={PetCardType.Remove} btnFunction={() => removePet(pet.id as string)} />
             );
         });
-    }, [t, pets]);
+    }, [t]);
 
     return (
         <>

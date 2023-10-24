@@ -57,7 +57,7 @@ function PhaserCanvas({ pet, playState }: PhaserCanvasProps) {
         <div style={{
             // disable pointer events so that the canvas can be scrolled when the mouse is over it
             pointerEvents: 'none',
-        }} ref={phaserDom}></div>
+        }} ref={phaserDom} key={pet.id ?? pet.name}></div>
     )
 }
 

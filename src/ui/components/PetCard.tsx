@@ -1,65 +1,68 @@
-import { Box, Button, Select, Title } from "@mantine/core";
-import { memo, useState } from "react";
+import { Box, Button, NativeSelect, Select, Title } from "@mantine/core";
+import { memo, useEffect, useState } from "react";
 import { IPetCardProps } from "../../types/components/type";
 import PhaserCanvas from "./PhaserCanvas";
 import { useInView } from "react-intersection-observer";
 import { ButtonVariant, CanvasSize } from "../../utils";
-import { useSettingStore } from "../../hooks/useSettingStore";
-import { ColorSchemeType } from "../../types/ISetting";
+import classes from './PetCard.module.css';
+import { usePetStateStore } from "../../hooks/usePetStateStore";
 
 function PetCard({ btnLabel, pet, btnFunction, type }: IPetCardProps) {
-    const randomState = Object.keys(pet.states)[Math.floor(Math.random() * Object.keys(pet.states).length)];
+    const { petStates, storeDictPetStates } = usePetStateStore();
+    const availableStates = petStates[pet.name] ?? Object.keys(pet.states).map(state => (state));
+    const randomState = availableStates[Math.floor(Math.random() * availableStates.length)];
     const [playState, setPlayState] = useState<string>(randomState);
-    const { theme: colorScheme } = useSettingStore();
     const { ref, inView } = useInView();
+
+    // save pet to memoization so that we can use it later to save some resource
+    useEffect(() => {
+        if (!petStates.hasOwnProperty(pet.name)) {
+            storeDictPetStates(pet.name, availableStates);
+        }
+    }, []);
 
     return (
         <>
-            <Box ref={ref}
-                style={(theme) => ({
-                    backgroundColor: colorScheme === ColorSchemeType.Dark ? theme.colors.dark[6] : theme.white,
-                    maxWidth: '14rem',
-                    minWidth: '14rem',
-                    width: '224px',
-                    height: '400px',
-                    borderRadius: theme.radius.md,
-                    boxShadow: theme.shadows.md,
-                    border: `0.0625rem solid ${colorScheme === ColorSchemeType.Dark ? theme.colors.dark[4] : theme.colors.gray[3]}`,
-                })}
-            >
-                {/* if the pet is currently in user viewport, show it, otherwise destroy its dom because it take a lot of resource */}
+            {/* if the pet is currently in user viewport, show it, otherwise destroy its dom because it take a lot of resource */}
+            <Box id={`petCard-id-${pet.id}`} ref={ref} className={classes.boxWrapper} key={pet.id ?? pet.name}>
                 {inView ?
-                    <div className="">
+                    <Box>
                         <PhaserCanvas pet={pet} playState={playState} key={pet.id} />
                         <Box p={"lg"}>
-                            <Title order={4} style={{
-                                textAlign: 'center',
-                                whiteSpace: 'nowrap',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                            }}>{pet.name}</Title>
-                            <Select
+                            <Title order={4} className={classes.title}>{pet.name}</Title>
+                            {/* for now use native select because select in mantine 7 is very slow, let see until further update */}
+                            {/* <Select
                                 allowDeselect={false}
                                 checkIconPosition={"right"}
                                 my={"md"}
                                 maxDropdownHeight={210}
                                 placeholder="Pick one"
                                 defaultValue={playState}
-                                data={Object.keys(pet.states).map(state => ({ value: state, label: state, })
-                                )}
                                 onChange={setPlayState as any}
+                                pointer
+                                key={pet.id ?? pet.name}
+                                data={availableStates}
+                            /> */}
+                            <NativeSelect
+                                my={"md"}
+                                placeholder="Pick one"
+                                defaultValue={playState}
+                                onChange={(event) => setPlayState(event.currentTarget.value)}
+                                pointer
+                                key={pet.id ?? pet.name}
+                                data={availableStates}
                             />
                             <Button variant={ButtonVariant} fullWidth onClick={btnFunction}>
                                 {btnLabel}
                             </Button>
                         </Box>
-                    </div>
+                    </Box>
                     :
-                    <div style={{
+                    <Box style={{
                         height: CanvasSize,
                         width: CanvasSize,
                     }}>
-                    </div>
+                    </Box>
                 }
             </Box >
         </>

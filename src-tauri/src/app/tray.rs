@@ -27,10 +27,17 @@ pub fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                 match app.get_window("main") {
                     Some(window) => {
                         println!("Window already exists");
-                        tauri::api::dialog::message(Some(&window), "WindowPet Dialog", "Pet already exist");
+                        tauri::api::dialog::message(
+                            Some(&window),
+                            "WindowPet Dialog",
+                            "Pet already exist",
+                        );
                     }
                     None => {
-                        reopen_main_window(app);
+                        // use tokio to run the future to avoid blocking the thread
+                        let future = async { reopen_main_window(app.clone()).await };
+                        // run the future using an executor and handle the result
+                        let _result_ = tokio::runtime::Runtime::new().unwrap().block_on(future);
                     }
                 };
             }
@@ -46,11 +53,15 @@ pub fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
             }
             "setting" => match app.get_window("setting") {
                 Some(window) => {
-                    tauri::api::dialog::message(Some(&window), "WindowPet Dialog", "WindowPet setting already exist");
+                    tauri::api::dialog::message(
+                        Some(&window),
+                        "WindowPet Dialog",
+                        "WindowPet setting already exist",
+                    );
                     println!("Window setting already exist");
                 }
                 None => {
-                    open_setting_window(app);
+                    open_setting_window(app.clone());
                 }
             },
             "restart" => {
@@ -71,11 +82,15 @@ pub fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
     {
         match app.get_window("setting") {
             Some(window) => {
-                tauri::api::dialog::message(Some(&window), "WindowPet Dialog", "WindowPet setting already exist");
+                tauri::api::dialog::message(
+                    Some(&window),
+                    "WindowPet Dialog",
+                    "WindowPet setting already exist",
+                );
                 println!("Window setting already exists");
             }
             None => {
-                open_setting_window(app);
+                open_setting_window(app.clone());
             }
         }
     }

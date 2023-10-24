@@ -1,0 +1,26 @@
+.boxWrapper {
+    max-width: 14rem;
+    min-width: 14rem;
+    width: 224px;
+    height: 400px;
+    border-radius: var(--mantine-radius-md);
+    box-shadow: var(--mantine-shadows-md);
+    border: 0.0625rem solid var(--mantine-color-gray-3);
+    background-color: var(--mantine-color-white);
+
+    @mixin dark {
+        background-color: var(--mantine-color-dark-6);
+        border-color: var(--mantine-color-dark-4);
+    }
+}
+
+.p {
+    padding: var(--mantine-spacing-lg);
+}
+
+.title {
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

@@ -12,6 +12,8 @@ import { PetCardType } from "../../types/components/type";
 import { useSettingStore } from "../../hooks/useSettingStore";
 import { DispatchType } from "../../types/IEvents";
 import { ColorSchemeType } from "../../types/ISetting";
+import { invoke } from "@tauri-apps/api";
+import { WebviewWindow } from "@tauri-apps/api/window";
 
 function PetShop() {
     const { setPets, defaultPet, theme: colorScheme } = useSettingStore();
@@ -21,9 +23,11 @@ function PetShop() {
         const userPetConfig = await getAppSettings({ configName: "pets.json" });
         userPetConfig.push(defaultPet[index]);
         userPetConfig[userPetConfig.length - 1].id = crypto.randomUUID();
-
+        
         setConfig({ configName: "pets.json", newConfig: userPetConfig });
         setPets(userPetConfig);
+
+        if (!WebviewWindow.getByLabel('main')) await invoke("reopen_main_window");
 
         notifications.show({
             message: t("pet name has been added to your realm", { name: defaultPet[index].name }),

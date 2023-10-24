@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 import { useSettingStore } from './hooks/useSettingStore';
 import { handleSettingChange } from './utils/handleSettingChange';
 import { ColorScheme, ColorSchemeType, ESettingTab, ISettingTabs } from './types/ISetting';
-import { memo, useMemo, useRef } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 import MyPets from './ui/setting_tabs/MyPets';
 import PetShop from './ui/setting_tabs/PetShop';
 import Settings from './ui/setting_tabs/Settings';
@@ -40,7 +40,6 @@ import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 
 function SettingWindow() {
-  const viewport = useRef<HTMLDivElement>(null);
   const { theme: colorScheme, language, pets, defaultPet } = useSettingStore();
   const { t } = useTranslation();
   const queryParams = useQueryParams();
@@ -52,6 +51,13 @@ function SettingWindow() {
     checkForUpdate();
   });
 
+  useEffect(() => {
+    // set active tab from url search params, by doing this user can refresh the page and still get the same tab
+    if (queryParams.has('tab') && Number(queryParams.get('tab')) !== activeTab) {
+      setActiveTab(Number(queryParams.get('tab')));
+    }
+  }, [queryParams, activeTab]);
+  
   const toggleColorScheme = (value?: ColorScheme) => {
     const newTheme = value || (colorScheme === ColorSchemeType.Dark ? ColorSchemeType.Light : ColorSchemeType.Dark);
 
@@ -59,10 +65,6 @@ function SettingWindow() {
     handleSettingChange(DispatchType.ChangeAppTheme, newTheme);
   }
 
-  // set active tab from url search params, by doing this user can refresh the page and still get the same tab
-  if (queryParams.has('tab') && Number(queryParams.get('tab')) !== activeTab) {
-    setActiveTab(Number(queryParams.get('tab')));
-  }
 
   const settingTabs: ISettingTabs[] = useMemo(() => ([
     {
@@ -140,13 +142,12 @@ function SettingWindow() {
             </Flex>
           </AppShell.Navbar>
           <AppShell.Main>
-            {/* <ScrollArea h={"100vh"} viewportRef={viewport} key={activeTab}> */}
-            <ScrollArea h={"100vh"} viewportRef={viewport} key={activeTab}>
+            <ScrollArea.Autosize h={"100vh"} key={activeTab}>
               <Box m={"sm"}>
                 <Title title={settingTabs[activeTab].title} description={settingTabs[activeTab].description} />
                 <CurrentSettingTab key={activeTab} />
               </Box>
-            </ScrollArea>
+            </ScrollArea.Autosize>
           </AppShell.Main>
         </AppShell>
       </ModalsProvider>

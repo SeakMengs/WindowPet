@@ -26,3 +26,9 @@ export interface ISettingTabState {
     page: number;
     setPage: (page: number) => void;
 }
+
+export interface IPetStateStore {
+    petStates: Record<string, Array<string>>;
+    setPetStates: (newPetStates: Record<string, Array<string>>) => void;
+    storeDictPetStates: (petName: string, petState: Array<string>) => void;
+}
