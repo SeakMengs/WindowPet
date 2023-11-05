@@ -1,18 +1,21 @@
-import { Box, Button, NativeSelect, Select, Title } from "@mantine/core";
+import { Box, Button, Group, NativeSelect, Select, Title } from "@mantine/core";
 import { memo, useEffect, useState } from "react";
-import { IPetCardProps } from "../../types/components/type";
+import { IPetCardProps, PetCardType } from "../../types/components/type";
 import PhaserCanvas from "./PhaserCanvas";
 import { useInView } from "react-intersection-observer";
-import { ButtonVariant, CanvasSize } from "../../utils";
+import { ButtonVariant, CanvasSize, PrimaryColor } from "../../utils";
 import classes from './PetCard.module.css';
 import { usePetStateStore } from "../../hooks/usePetStateStore";
+import { IconPlus, IconTrash } from "@tabler/icons-react";
+import { SpriteType } from "../../types/ISpriteConfig";
 
-function PetCard({ btnLabel, pet, btnFunction, type }: IPetCardProps) {
+function PetCard({ btnLabel, btnLabelCustom, pet, btnFunction, btnFunctionCustom, type }: IPetCardProps) {
     const { petStates, storeDictPetStates } = usePetStateStore();
     const availableStates = petStates[pet.name] ?? Object.keys(pet.states).map(state => (state));
     const randomState = availableStates[Math.floor(Math.random() * availableStates.length)];
     const [playState, setPlayState] = useState<string>(randomState);
     const { ref, inView } = useInView();
+    const isCustomPet = (type === PetCardType.Add &&  pet.type === SpriteType.CUSTOM);
 
     // save pet to memoization so that we can use it later to save some resource
     useEffect(() => {
@@ -24,7 +27,7 @@ function PetCard({ btnLabel, pet, btnFunction, type }: IPetCardProps) {
     return (
         <>
             {/* if the pet is currently in user viewport, show it, otherwise destroy its dom because it take a lot of resource */}
-            <Box id={`petCard-id-${pet.id}`} ref={ref} className={classes.boxWrapper} key={pet.id ?? pet.name}>
+            <Box id={`petCard-id-${pet.id ?? pet.customId}`} ref={ref} className={classes.boxWrapper} key={pet.id ?? pet.name}>
                 {inView ?
                     <Box>
                         <PhaserCanvas pet={pet} playState={playState} key={pet.id} />
@@ -52,9 +55,32 @@ function PetCard({ btnLabel, pet, btnFunction, type }: IPetCardProps) {
                                 key={pet.id ?? pet.name}
                                 data={availableStates}
                             />
-                            <Button variant={ButtonVariant} fullWidth onClick={btnFunction}>
-                                {btnLabel}
-                            </Button>
+                            <Group>
+                                <Button
+                                    variant={ButtonVariant}
+                                    fullWidth
+                                    onClick={btnFunction}
+                                    color={type === PetCardType.Remove ? "red" : PrimaryColor}
+                                    leftSection={type === PetCardType.Add ?
+                                        <IconPlus /> :
+                                        <IconTrash />
+                                    }
+                                >
+                                    {btnLabel}
+                                </Button>
+                                {
+                                    isCustomPet &&
+                                    <Button
+                                        variant={ButtonVariant}
+                                        fullWidth
+                                        onClick={btnFunctionCustom}
+                                        color={"red"}
+                                        leftSection={<IconTrash />}
+                                    >
+                                        {btnLabelCustom}
+                                    </Button>
+                                }
+                            </Group>
                         </Box>
                     </Box>
                     :

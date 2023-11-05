@@ -1,5 +1,6 @@
+import { convertFileSrc } from "@tauri-apps/api/tauri";
 import { IPet } from "../types/IPet";
-import { ISpriteConfig } from "../types/ISpriteConfig";
+import { ISpriteConfig, SpriteType } from "../types/ISpriteConfig";
 
 export class Pet extends Phaser.Scene {
     private pet: IPet | null = null;
@@ -17,9 +18,11 @@ export class Pet extends Phaser.Scene {
     preload(): void {
         this.sprite = this.game.registry.get('spriteConfig');
         this.playState = this.game.registry.get('playState');
+
         this.load.spritesheet({
             key: this.sprite!.name,
-            url: this.sprite!.imageSrc,
+            // url: this.sprite!.imageSrc,
+            url: this.sprite!.type === SpriteType.CUSTOM ? convertFileSrc(this.sprite!.imageSrc) : this.sprite!.imageSrc,
             frameConfig: this.getFrameSize(this.sprite!)
         });
     }

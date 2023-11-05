@@ -1,14 +1,17 @@
 import { UseQueryResult, useQuery } from "react-query";
 import { getAppSettings, setConfig } from "../utils/settings";
 import { useSettingStore } from "./useSettingStore";
-import { ISpriteConfig } from "../types/ISpriteConfig";
-import { noPetDialog } from "../utils";
+import { ISpriteConfig, SpriteType } from "../types/ISpriteConfig";
+import { convertFileToAssetProtocol, noPetDialog } from "../utils";
+import { DefaultConfigName } from "../types/ISetting";
+import defaultPetConfig from "../config/pet_config.json";
 
-const setPets = useSettingStore.getState().setPets;
+const { setPets, setDefaultPet } = useSettingStore.getState();
 
 const getPets = async () => {
     let saveConfigAgain = false;
     const pets: ISpriteConfig[] = await getAppSettings({ configName: "pets.json" });
+
     if (pets.length === 0) {
         noPetDialog();
         return [];
@@ -23,10 +26,31 @@ const getPets = async () => {
     });
 
     if (saveConfigAgain) setConfig({ configName: "pets.json", newConfig: pets });
-    
+
     setPets(pets);
 };
 
 export function usePets(): UseQueryResult<unknown, Error> {
     return useQuery('pets', getPets, { refetchOnWindowFocus: false });
 };
+
+const getDefaultPets = async () => {
+    const defaultPets: ISpriteConfig[] = JSON.parse(JSON.stringify(defaultPetConfig));
+    const customPets = await getAppSettings({ configName: DefaultConfigName.PET_LINKER, withErrorDialog: false });
+
+    if (customPets && customPets.length > 0) {
+        for (const petPath of customPets) {
+            const pet: ISpriteConfig = await getAppSettings({ configName: petPath, withErrorDialog: false });
+            if (!pet) continue;
+            
+            pet.type = SpriteType.CUSTOM;
+            defaultPets.push(pet);
+        }
+    }
+
+    setDefaultPet(defaultPets);
+};
+
+export function useDefaultPets(): UseQueryResult<unknown, Error> {
+    return useQuery('defaultPets', getDefaultPets, { refetchOnWindowFocus: false });
+}

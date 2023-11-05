@@ -13,8 +13,10 @@ import { handleSettingChange } from "../../utils/handleSettingChange";
 import { PetCardType } from "../../types/components/type";
 import { DispatchType } from "../../types/IEvents";
 import { ColorSchemeType } from "../../types/ISetting";
+import { usePets } from "../../hooks/usePets";
 
 export function MyPets() {
+    const { refetch } = usePets();
     const { t } = useTranslation();
     const { theme: colorScheme, pets, setPets } = useSettingStore();
 
@@ -35,6 +37,9 @@ export function MyPets() {
 
         if (newConfig.length === 0) noPetDialog();
 
+        // update pet window to show new pet
+        handleSettingChange(DispatchType.RemovePet, petId);
+
         notifications.show({
             message: t("pet name has been removed", { name: removedPetName }),
             title: t("Pet Removed"),
@@ -47,8 +52,7 @@ export function MyPets() {
             })
         });
 
-        // update pet window to show new pet
-        handleSettingChange(DispatchType.RemovePet, petId);
+        refetch();
     }, [t]);
 
     // we don't put pets as dependency because it will cause flickering when we remove pet

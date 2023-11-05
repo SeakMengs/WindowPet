@@ -2,6 +2,8 @@ import { WebviewWindow } from '@tauri-apps/api/window';
 import { confirm } from "@tauri-apps/api/dialog";
 import i18next from 'i18next';
 import { error } from "tauri-plugin-log-api";
+import { convertFileSrc } from '@tauri-apps/api/tauri';
+import { isAbsolute } from '@tauri-apps/api/path';
 
 export const PrimaryColor = 'pink';
 export const ButtonVariant = 'outline';
@@ -13,4 +15,15 @@ export const noPetDialog = () => {
         // close the pet window
         WebviewWindow.getByLabel('main')?.close();
     });
+}
+
+/**
+ * since we allow custom pet, and webview doesn't allow access to local file, we convert the file
+ * to asset protocol and load it. though relative path won't work with convertFileSrc
+ */
+export const convertFileToAssetProtocol = async (filePath: string) => {
+    const absolute = await isAbsolute(filePath);
+    if (absolute) return convertFileSrc(filePath);
+
+    return filePath;
 }

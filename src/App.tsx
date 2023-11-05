@@ -3,7 +3,7 @@ import React, { Suspense } from "react";
 import Loading from "./Loading";
 import { useSettings } from "./hooks/useSettings";
 import { appWindow } from "@tauri-apps/api/window";
-import { usePets } from "./hooks/usePets";
+import { useDefaultPets, usePets } from "./hooks/usePets";
 import { confirm } from "@tauri-apps/api/dialog";
 import { MantineProvider } from "@mantine/core";
 import { PrimaryColor } from "./utils";
@@ -15,6 +15,7 @@ const SettingWindow = React.lazy(() => import("./SettingWindow"));
 
 function App() {
   useSettings();
+  useDefaultPets();
   const { isError, error } = usePets();
 
   if (isError) {

@@ -1,8 +1,9 @@
-import { LazyExoticComponent, MemoExoticComponent } from "react";
+import { MemoExoticComponent } from "react";
 import { ISpriteConfig } from "./ISpriteConfig";
 import { DispatchType } from "./IEvents";
 
 export interface IGetAppSetting {
+    withErrorDialog?: boolean,
     configName?: string,
     key?: string,
 }
@@ -62,4 +63,8 @@ export interface ISettingsContent {
     checked: boolean,
     dispatchType: DispatchType,
     component?: React.ReactNode,
+}
+
+export enum DefaultConfigName {
+    PET_LINKER = "pet_linker.json",
 }

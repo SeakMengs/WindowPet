@@ -53,10 +53,13 @@
 ## ✨ Features
 ![image](https://github.com/SeakMengs/WindowPet/assets/54373229/42ecd3ea-5999-462e-8630-7904a1a3075f)
 - Add pets
+- Add your own custom pet
 - Remove pets
 - Pixel perfect drag pets on your screen
 - Click through pets
 - Auto start up
+- Auto update
+- Allow more than 200+ pets on your screen (depend on your computer performance)
 - Pet above taskbar
 - Settings window
   - Language support: English and Khmer

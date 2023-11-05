@@ -1,8 +1,8 @@
 .boxWrapper {
     max-width: 14rem;
     min-width: 14rem;
-    width: 224px;
-    height: 400px;
+    /* width: 224px; */
+    /* height: 450px; */
     border-radius: var(--mantine-radius-md);
     box-shadow: var(--mantine-shadows-md);
     border: 0.0625rem solid var(--mantine-color-gray-3);

@@ -26,8 +26,10 @@ export enum PetCardType {
 
 export interface IPetCardProps {
     btnLabel: string,
+    btnLabelCustom?: string,
     pet: ISpriteConfig,
     btnFunction: () => void,
+    btnFunctionCustom?: () => void,
     type: PetCardType,
 }
 

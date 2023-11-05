@@ -1,0 +1,7 @@
+.browse {
+    color: var(--mantine-color-gray-7) !important;
+
+    @mixin dark {
+        color: var(--mantine-color-dark-0) !important;
+    }
+}

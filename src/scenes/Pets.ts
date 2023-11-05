@@ -1,12 +1,13 @@
 import { invoke } from "@tauri-apps/api";
 import { appWindow } from "@tauri-apps/api/window";
-import { ISpriteConfig } from "../types/ISpriteConfig";
+import { ISpriteConfig, SpriteType } from "../types/ISpriteConfig";
 import { useSettingStore } from "../hooks/useSettingStore";
 import { listen } from "@tauri-apps/api/event";
 import { DispatchType, EventType, TRenderEventListener } from "../types/IEvents";
 import { IPet, Direction, IWorldBounding, ISwitchStateOptions, Ease } from "../types/IPet";
 import { info, error } from "tauri-plugin-log-api";
 import defaultSettings from "../../src-tauri/src/app/default/settings.json";
+import { convertFileSrc } from "@tauri-apps/api/tauri";
 
 export default class Pets extends Phaser.Scene {
     private pets: IPet[] = [];
@@ -44,34 +45,16 @@ export default class Pets extends Phaser.Scene {
 
     preload(): void {
         this.spriteConfig = this.game.registry.get('spriteConfig');
-        const defaultPets = this.game.registry.get('defaultPets');
+        const defaultPets: ISpriteConfig[] = this.game.registry.get('defaultPets');
 
         // preload all sprite that the app has
-        for (let sprite of defaultPets) {
-            // if sprite name is duplicate, we skip it because we can use the same key for different sprite object
-            if (this.checkDuplicateName(sprite.name)) continue;
-            // if pet sprite is not valid, we skip it to avoid error
-            if (!this.validatePetSprite(sprite)) continue;
-
-            this.load.spritesheet({
-                key: sprite.name,
-                url: sprite.imageSrc,
-                frameConfig: this.getFrameSize(sprite)
-            });
+        for (const sprite of defaultPets) {
+            this.loadSpriteSheet(sprite);
         }
 
         // preload the sprite of the user, if it has already loaded above, we skip it
-        for (let sprite of this.spriteConfig) {
-            // if sprite name is duplicate, we skip it because we can use the same key for different sprite object
-            if (this.checkDuplicateName(sprite.name)) continue;
-            // if pet sprite is not valid, we skip it to avoid error
-            if (!this.validatePetSprite(sprite)) continue;
-
-            this.load.spritesheet({
-                key: sprite.name,
-                url: sprite.imageSrc,
-                frameConfig: this.getFrameSize(sprite)
-            });
+        for (const sprite of this.spriteConfig) {
+            this.loadSpriteSheet(sprite);
         }
     }
 
@@ -250,6 +233,19 @@ export default class Pets extends Phaser.Scene {
         }
     }
 
+    loadSpriteSheet(sprite: ISpriteConfig): void {
+        // if sprite name is duplicate, we skip it because we can use the same key for different sprite object
+        if (this.checkDuplicateName(sprite.name)) return;
+        // if pet sprite is not valid, we skip it to avoid error
+        if (!this.validatePetSprite(sprite)) return;
+
+        this.load.spritesheet({
+            key: sprite.name,
+            url: sprite.type === SpriteType.CUSTOM ? convertFileSrc(sprite.imageSrc) : sprite.imageSrc,
+            frameConfig: this.getFrameSize(sprite)
+        });
+    }
+
     checkDuplicateName(name: string): boolean {
         if (this.registeredName.includes(name)) return true;
 
@@ -260,6 +256,11 @@ export default class Pets extends Phaser.Scene {
     addPet(sprite: ISpriteConfig, index: number): void {
         // avoid showing broken sprite
         if (!this.validatePetSprite(sprite)) return;
+
+        // in case sprite hasn't loaded yet, we load it
+        if (!this.textures.exists(sprite.name)) {
+            this.loadSpriteSheet(sprite);
+        }
 
         // convert sprite states to lowercase because it help to avoid error when user edit their own json file and type state in uppercase
         for (const state in sprite.states) {

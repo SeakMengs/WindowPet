@@ -11,11 +11,13 @@ import { handleSettingChange } from "../../utils/handleSettingChange";
 import { PetCardType } from "../../types/components/type";
 import { useSettingStore } from "../../hooks/useSettingStore";
 import { DispatchType } from "../../types/IEvents";
-import { ColorSchemeType } from "../../types/ISetting";
+import { ColorSchemeType, DefaultConfigName } from "../../types/ISetting";
 import { invoke } from "@tauri-apps/api";
 import { WebviewWindow } from "@tauri-apps/api/window";
+import { useDefaultPets } from "../../hooks/usePets";
 
 function PetShop() {
+    const { refetch } = useDefaultPets();
     const { setPets, defaultPet, theme: colorScheme } = useSettingStore();
     const { t } = useTranslation();
 
@@ -23,7 +25,7 @@ function PetShop() {
         const userPetConfig = await getAppSettings({ configName: "pets.json" });
         userPetConfig.push(defaultPet[index]);
         userPetConfig[userPetConfig.length - 1].id = crypto.randomUUID();
-        
+
         setConfig({ configName: "pets.json", newConfig: userPetConfig });
         setPets(userPetConfig);
 
@@ -45,9 +47,36 @@ function PetShop() {
         handleSettingChange(DispatchType.AddPet, defaultPet[index]);
     }, [t]);
 
+    const removeCustomPet = useCallback(async (index: number) => {
+        const customConfigToRemove = defaultPet[index];
+        const petLinker = await getAppSettings({ configName: DefaultConfigName.PET_LINKER });
+
+        if (!petLinker) return;
+
+        // remove custom pet from linker
+        const newPetLinker = petLinker.filter((pet: ISpriteConfig) => pet.name === customConfigToRemove.name);
+        setConfig({ configName: DefaultConfigName.PET_LINKER, newConfig: newPetLinker });
+
+        notifications.show({
+            message: t("pet name has been removed from your realm", { name: defaultPet[index].name }),
+            title: t("Pet Removed"),
+            color: PrimaryColor,
+            icon: <IconCheck size="1rem" />,
+            withBorder: true,
+            autoClose: 800,
+            style: (theme) => ({
+                backgroundColor: colorScheme === ColorSchemeType.Dark ? theme.colors.dark[7] : theme.colors.gray[0],
+            })
+        })
+
+        const petCardDom = document.getElementById(`petCard-id-${customConfigToRemove.customId}`);
+        if (petCardDom) petCardDom.remove();
+        refetch();
+    }, [t]);
+
     const PetCards = useMemo(() => {
         return defaultPet.map((pet: ISpriteConfig, index: number) => {
-            return <PetCard key={index} pet={pet} btnLabel={t("Acquire")} type={PetCardType.Add} btnFunction={() => addPetToConfig(index)} />
+            return <PetCard key={index} pet={pet} btnLabel={t("Acquire")} type={PetCardType.Add} btnFunction={() => addPetToConfig(index)} btnLabelCustom={t("Remove")} btnFunctionCustom={() => removeCustomPet(index)} />
         })
     }, [t]);
 

@@ -12,9 +12,9 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@mantine/core": "^7.1.5",
-    "@mantine/modals": "^7.1.5",
-    "@mantine/notifications": "^7.1.5",
+    "@mantine/core": "^7.1.7",
+    "@mantine/modals": "^7.1.7",
+    "@mantine/notifications": "^7.1.7",
     "@tabler/icons-react": "^2.39.0",
     "@tauri-apps/api": "^1.5.1",
     "clsx": "^2.0.0",
@@ -35,7 +35,7 @@
     "zustand": "^4.4.4"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^1.5.5",
+    "@tauri-apps/cli": "1.5.6",
     "@testing-library/react": "^14.0.0",
     "@types/node": "^18.18.6",
     "@types/react": "^18.2.31",
