@@ -59,7 +59,7 @@
 - Click through pets
 - Auto start up
 - Auto update
-- Allow more than 200+ pets on your screen (depend on your computer performance)
+- Allow as many pet/character as you want on your screen without any performance issue
 - Pet above taskbar
 - Settings window
   - Language support: English and Khmer

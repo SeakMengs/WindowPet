@@ -7,6 +7,7 @@ import { confirm } from "@tauri-apps/api/dialog";
 import { IPetObject } from "../types/ISpriteConfig";
 import { showNotification } from "./notification";
 import i18next from "i18next";
+import { error, info } from "tauri-plugin-log-api";
 
 export function toggleAutoStartUp(allowAutoStartUp: boolean) {
     (async () => {
@@ -97,6 +98,7 @@ async function updateCustomPetConfig(newCustomPetPath: string) {
 
 export async function saveCustomPet(petObject: IPetObject) {
     try {
+        info(`Start saving custom pet, pet name: ${petObject.name}`);
         petObject.customId = crypto.randomUUID();
         const uniquePetFileName = await getNoneExistingConfigFileName({
             configName: petObject.name as string,
@@ -117,9 +119,11 @@ export async function saveCustomPet(petObject: IPetObject) {
 
         showNotification({
             title: i18next.t("Custom Pet Added"),
-            message: i18next.t(`pet name has been added to your custom pet list`, { name: petObject.name }),
+            message: i18next.t(`pet name has been added to your custom pet list, restart WindowPet and check pet shop to spawn your custom pet`, { name: petObject.name }),
         });
+        info(`Successfully save custom pet, pet name: ${petObject.name}`);
     } catch (err) {
+        error(`Error at saveCustomPet: ${err}`);
         showNotification({
             title: i18next.t("Error Adding Custom Pet"),
             message: err as any,

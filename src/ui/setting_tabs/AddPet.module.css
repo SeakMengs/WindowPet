@@ -5,3 +5,7 @@
         color: var(--mantine-color-dark-0) !important;
     }
 }
+
+.errorBorder {
+    border: calc(.0625rem*var(--mantine-scale)) solid var(--mantine-color-error) !important;
+}

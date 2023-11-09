@@ -9,11 +9,18 @@ import {
     Text,
     Group,
     Button,
+    Flex,
 } from "@mantine/core";
 import { memo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ButtonVariant, PrimaryColor } from "../../utils";
-import { IconCheck, IconExclamationCircle, IconFolderOpen, IconPlus, IconTrash } from "@tabler/icons-react";
+import {
+    IconCheck,
+    IconExclamationCircle,
+    IconFolderOpen,
+    IconPlus,
+    IconTrash
+} from "@tabler/icons-react";
 import { open } from "@tauri-apps/api/dialog";
 import classes from './AddPet.module.css';
 import clsx from "clsx";
@@ -23,23 +30,44 @@ import { saveCustomPet } from "../../utils/settings";
 import { useDefaultPets } from "../../hooks/usePets";
 
 interface IPetStates {
-    name: string,
+    stateName: string,
     start: number,
     end: number,
+    startError?: string | null,
+    stateNameError?: string | null,
+    endError?: string | null,
 }
+
+export interface IPetInfo {
+    frameSize: number,
+    imageSrc: string,
+    name: string,
+    states: IPetStates[],
+    frameSizeError?: string | null,
+    imageSrcError?: string | null,
+    nameError?: string | null,
+}
+
+const defaultStateInfo = {
+    stateName: '',
+    start: 1,
+    end: 1,
+    endError: null,
+    startError: null,
+    stateNameError: null,
+};
 
 function AddPet() {
     const { refetch } = useDefaultPets();
-    const [imageSrc, setImageSrc] = useState<string>('');
-    const [frameSize, setFrameSize] = useState<number>(1);
-    const [petName, setPetName] = useState<string>('');
-    const [petStates, setPetStates] = useState<IPetStates[]>([
-        {
-            name: 'state',
-            start: 1,
-            end: 1,
-        },
-    ]);
+    const [petInfo, setPetInfo] = useState<IPetInfo>({
+        imageSrc: '',
+        frameSize: 1,
+        name: '',
+        states: [structuredClone(defaultStateInfo)],
+        nameError: null,
+        imageSrcError: null,
+        frameSizeError: null,
+    });
     const { t } = useTranslation();
 
     const selectImage = async () => {
@@ -49,25 +77,23 @@ function AddPet() {
                 name: 'Image',
                 extensions: ['png'],
             }],
-        });
-        if (filePath) setImageSrc(filePath as string);
+        }) as string;
+        if (filePath) setPetInfo({ ...petInfo, imageSrc: filePath });
     }
 
     const addMoreState = () => {
-        const defaultStateInput = {
-            name: 'state',
-            start: 1,
-            end: 1,
-        };
-        const newArr = petStates;
-        newArr.push(defaultStateInput);
-        setPetStates([...newArr]);
+        const newStateArr = petInfo.states;
+        // clone the object otherwise it will use the same reference causing all state to have the same value
+        newStateArr.push(structuredClone(defaultStateInfo));
+        setPetInfo({ ...petInfo, states: newStateArr });
     }
 
     const removeStateAtIndex = (removeAtIndex: number) => {
-        const newArr = petStates;
-        newArr.splice(removeAtIndex, 1);
-        setPetStates([...newArr]);
+        if (petInfo.states.length === 1) return;
+
+        const newStateArr = petInfo.states;
+        newStateArr.splice(removeAtIndex, 1);
+        setPetInfo({ ...petInfo, states: newStateArr });
     }
 
     const combineStateToObject = () => {
@@ -77,82 +103,158 @@ function AddPet() {
                 end: number,
             }
         } = {};
-        petStates.forEach(petStates => {
-            states[petStates.name] = {
+        petInfo.states.forEach(petStates => {
+            states[petStates.stateName] = {
                 start: petStates.start,
                 end: petStates.end,
             }
         });
 
         return {
-            frameSize: frameSize,
-            imageSrc: imageSrc,
-            name: petName,
+            frameSize: petInfo.frameSize,
+            imageSrc: petInfo.imageSrc,
+            name: petInfo.name,
             states: states,
         }
     }
 
-    const verifyCustomPetObject = async () => {
-        const petState = combineStateToObject();
+    /**
+     * function can be refactor down to a shorter function 
+     * but I want to keep the code readable and easy to understand
+     */
+    const validateCustomPetObject = async () => {
+        let isValid = true;
+        const tempPetInfo = structuredClone(petInfo);
 
-        if (!petState.name) return false;
-        if (!petState.imageSrc) return false;
-        if (!petState.frameSize) return false;
-
-        const imageSrcExist = await exists(petState.imageSrc);
-        if (!imageSrcExist) return false;
-
-        for (const state of Object.keys(petState.states)) {
-            if (!state) return false;
-
-            const stateValue = petState.states[state];
-            if (!stateValue.start || stateValue.start <= 0) return false;
-            if (!stateValue.end || stateValue.end <= 0) return false;
+        if (!petInfo.name) {
+            tempPetInfo.nameError = t("Pet name is required");
+            isValid = false;
+        } else {
+            tempPetInfo.nameError = null;
         }
 
-        return true;
+        if (!petInfo.imageSrc) {
+            petInfo.imageSrcError = t("Spritesheet path is required");
+            isValid = false;
+        } else {
+            tempPetInfo.imageSrcError = null;
+        }
+
+        if (!petInfo.frameSize) {
+            tempPetInfo.frameSizeError = t("Frame size is required");
+            isValid = false;
+        } else {
+            tempPetInfo.frameSizeError = null;
+        }
+
+        const imageSrcExist = await exists(petInfo.imageSrc);
+        if (!imageSrcExist) {
+            tempPetInfo.imageSrcError = t("Spritesheet path provided does not exist");
+            isValid = false;
+        } else {
+            tempPetInfo.imageSrcError = null;
+        }
+
+        for (const state of tempPetInfo.states) {
+            if (!state.stateName) {
+                state.stateNameError = t("Pet state name is required");
+                isValid = false;
+            } else {
+                state.stateNameError = null;
+            }
+
+            if (!state.start) {
+                state.startError = t("Pet state start is required");
+                isValid = false;
+            } else {
+                state.startError = null;
+            }
+
+            if (!state.end) {
+                state.endError = t("Pet state end is required");
+                isValid = false;
+            } else {
+                state.endError = null;
+            }
+            
+            if (state.start <= 0) {
+                state.startError = t("Pet start must be greater than 0");
+                isValid = false;
+            } else {
+                state.startError = null;
+            }
+
+            if (state.end <= 0) {
+                state.endError = t("Pet end must be greater than 0");
+                isValid = false;
+            } else {
+                state.endError = null;
+            }
+
+            if (state.start > state.end) {
+                state.startError = t("Pet start must be less than end");
+                state.endError = t("Pet end must be greater than start");
+                isValid = false;
+            } else {
+                state.startError = null;
+                state.endError = null;
+            }
+
+        }
+
+        if (!isValid) {
+            setPetInfo({ ...tempPetInfo });
+        }
+
+        return isValid;
     }
 
-    const PetStates = petStates.map((petState, index) => {
+    const PetStates = petInfo.states.map((petState, index) => {
         return (
-            <Accordion.Item value={index.toString()} key={index}>
+            <Accordion.Item value={index.toString()} key={index} className={clsx({
+                [classes.errorBorder]: petState.stateNameError || petState.startError || petState.endError,
+            })}>
                 <Accordion.Control>
-                    {petState.name}
+                    {petState.stateName || t('State')}
                 </Accordion.Control>
                 <Accordion.Panel>
                     <Stack gap={"sm"}>
-                        <Group grow>
+                        <Group grow align={"normal"}>
                             <TextInput
                                 label={t("State name")}
                                 placeholder={t("State name")}
+                                error={petState.stateNameError}
+                                value={petState.stateName}
                                 onChange={(event) => {
-                                    const newArr = petStates;
-                                    newArr[index].name = event.target.value;
-                                    setPetStates([...newArr]);
+                                    const newStateArr = petInfo.states;
+                                    newStateArr[index].stateName = event.target.value;
+                                    setPetInfo({ ...petInfo, states: newStateArr });
                                 }}
                             />
                             {/* start */}
                             <NumberInput
                                 label={t("Start")}
-                                placeholder={t("Enter number")}
+                                placeholder={t("Start number")}
+                                error={petState.startError}
                                 min={1}
                                 value={petState.start}
                                 onChange={(value) => {
-                                    const newArr = petStates;
-                                    newArr[index].start = Number(value);
-                                    setPetStates([...newArr]);
+                                    const newStateArr = petInfo.states;
+                                    newStateArr[index].start = Number(value);
+                                    setPetInfo({ ...petInfo, states: newStateArr });
                                 }}
                             />
                             {/* end */}
                             <NumberInput
                                 label={t("End")}
-                                placeholder={t("Enter number")}
+                                placeholder={t("End number")}
+                                error={petState.endError}
                                 min={1}
                                 value={petState.end}
                                 onChange={(value) => {
-                                    const newArr = petStates;
-                                    newArr[index].end = Number(value);
-                                    setPetStates([...newArr]);
+                                    const newStateArr = petInfo.states;
+                                    newStateArr[index].end = Number(value);
+                                    setPetInfo({ ...petInfo, states: newStateArr });
                                 }}
                             />
                         </Group>
@@ -161,6 +263,7 @@ function AddPet() {
                                 variant={ButtonVariant}
                                 color="red"
                                 leftSection={<IconTrash />}
+                                disabled={petInfo.states.length === 1}
                                 onClick={() => removeStateAtIndex(index)}
                             >
                                 {t("Remove state")}
@@ -178,21 +281,24 @@ function AddPet() {
                 <TextInput
                     label={t("Pet name")}
                     placeholder={t("Pet name")}
-                    value={petName}
-                    onChange={(event) => setPetName(event.target.value)}
+                    error={petInfo.nameError}
+                    value={petInfo.name}
+                    onChange={(event) => setPetInfo({ ...petInfo, name: event.target.value })}
                 />
                 <NumberInput
                     min={1}
                     label={t("Frame size")}
                     placeholder={t("Frame size")}
-                    value={frameSize}
-                    onChange={(value) => setFrameSize(Number(value))}
+                    error={petInfo.frameSizeError}
+                    value={petInfo.frameSize}
+                    onChange={(value) => setPetInfo({ ...petInfo, frameSize: Number(value) })}
                 />
                 <TextInput
                     label={t("Spritesheet path")}
                     placeholder={t("Spritesheet path")}
-                    value={imageSrc}
-                    onChange={(event) => setImageSrc(event.currentTarget.value)}
+                    error={petInfo.imageSrcError}
+                    value={petInfo.imageSrc}
+                    onChange={(event) => setPetInfo({ ...petInfo, imageSrc: event.target.value })}
                     rightSection={
                         <Tooltip
                             label={t("Browse file")}
@@ -223,7 +329,7 @@ function AddPet() {
                         color={"green"}
                         leftSection={<IconCheck />}
                         onClick={async () => {
-                            const canAddPet = await verifyCustomPetObject();
+                            const canAddPet = await validateCustomPetObject();
 
                             if (!canAddPet) {
                                 notifications.show({
@@ -241,7 +347,7 @@ function AddPet() {
                             refetch();
                         }}
                     >
-                       {t("Add Custom Pet")}
+                        {t("Add Custom Pet")}
                     </Button>
                 </Group>
             </Stack>

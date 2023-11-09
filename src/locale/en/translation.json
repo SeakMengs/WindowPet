@@ -61,10 +61,21 @@
     "Error: Pet cannot be added": "Error: Pet cannot be added",
     "pet name has been removed from your realm": "{{name}} has been removed from your realm",
     "Custom Pet Added": "Custom Pet Added",
-    "pet name has been added to your custom pet list": "{{name}} has been added to your custom pet list",
+    "pet name has been added to your custom pet list, restart WindowPet and check pet shop to spawn your custom pet": "{{name}} has been added to your custom pet list, restart WindowPet and check pet shop to spawn your custom pet",
     "Error Adding Custom Pet": "Error Adding Custom Pet",
     "Pet states": "Pet states",
     "Add more state": "Add more state",
     "Remove state": "Remove state",
-    "Add your custom pet to your computer and watch them bring kawaii cuteness to your digital world!": "Add your custom pet to your computer and watch them bring kawaii cuteness to your digital world!"
+    "Add your custom pet to your computer and watch them bring kawaii cuteness to your digital world!": "Add your custom pet to your computer and watch them bring kawaii cuteness to your digital world!",
+    "Pet name is required": "Pet name is required",
+    "Spritesheet path is required": "Spritesheet path is required",
+    "Frame size is required": "Frame size is required",
+    "Pet state name is required": "Pet state name is required",
+    "Pet state start is required": "Pet state start is required",
+    "Pet state end is required": "Pet state end is required",
+    "Pet start must be greater than 0": "Pet start must be greater than 0",
+    "Pet end must be greater than 0": "Pet end must be greater than 0",
+    "Pet start must be less than end": "Pet start must be less than end",
+    "Pet end must be greater than start": "Pet end must be greater than start",
+    "Spritesheet path provided does not exist": "Spritesheet path provided does not exist"
 }

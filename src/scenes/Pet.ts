@@ -21,7 +21,6 @@ export class Pet extends Phaser.Scene {
 
         this.load.spritesheet({
             key: this.sprite!.name,
-            // url: this.sprite!.imageSrc,
             url: this.sprite!.type === SpriteType.CUSTOM ? convertFileSrc(this.sprite!.imageSrc) : this.sprite!.imageSrc,
             frameConfig: this.getFrameSize(this.sprite!)
         });
