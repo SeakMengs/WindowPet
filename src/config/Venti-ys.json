@@ -1,0 +1,46 @@
+{
+    "name": "Venti-ys",
+    "imageSrc": "media/Venti-ys.png",
+    "frameSize": 128,
+    "credit": {
+        "socialMedia": "http://space.bilibili.com/22463254/#/"
+    },
+    "states": {
+        "stand": {
+            "spriteLine": 1,
+            "frameMax": 14
+        },
+        "walk": {
+            "spriteLine": 2,
+            "frameMax": 4
+        },
+        "sit": {
+            "spriteLine": 3,
+            "frameMax": 10
+        },
+        "greet": {
+            "spriteLine": 4,
+            "frameMax": 6
+        },
+        "crawl": {
+            "spriteLine": 5,
+            "frameMax": 13
+        },
+        "climb": {
+            "spriteLine": 6,
+            "frameMax": 13
+        },
+        "jump": {
+            "spriteLine": 7,
+            "frameMax": 1
+        },
+        "fall": {
+            "spriteLine": 8,
+            "frameMax": 3
+        },
+        "drag": {
+            "spriteLine": 9,
+            "frameMax": 1
+        }
+    }
+}

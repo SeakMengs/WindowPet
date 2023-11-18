@@ -1,0 +1,39 @@
+{
+    "frameSize": 128,
+    "imageSrc": "media/Lavender Town Ghost Shimeji.png",
+    "name": "Lavender Town Ghost",
+    "states": {
+        "stand": {
+            "frameMax": 5,
+            "spriteLine": 1
+        },
+        "walk": {
+            "frameMax": 4,
+            "spriteLine": 2
+        },
+        "greet": {
+            "frameMax": 23,
+            "spriteLine": 3
+        },
+        "crawl": {
+            "frameMax": 4,
+            "spriteLine": 7
+        },
+        "climb": {
+            "frameMax": 4,
+            "spriteLine": 8
+        },
+        "jump": {
+            "frameMax": 1,
+            "spriteLine": 4
+        },
+        "fall": {
+            "frameMax": 5,
+            "spriteLine": 5
+        },
+        "drag": {
+            "frameMax": 1,
+            "spriteLine": 6
+        }
+    }
+}

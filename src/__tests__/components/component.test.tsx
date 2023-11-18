@@ -3,7 +3,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import PetCard from "../../ui/components/PetCard";
 import { ISpriteConfig } from "../../types/ISpriteConfig";
 import { PetCardType } from "../../types/components/type";
-import defaultPet from "../../config/pet_config.json";
+import defaultPet from "../../config/pet_config";
 import { afterEach } from "node:test";
 import SettingWindow from "../../SettingWindow";
 

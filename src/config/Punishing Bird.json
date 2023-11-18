@@ -1,0 +1,43 @@
+{
+    "name": "Punishing Bird",
+    "imageSrc": "media/Punishing Bird.png",
+    "frameSize": 128,
+    "states": {
+        "stand": {
+            "spriteLine": 1,
+            "frameMax": 4
+        },
+        "walk": {
+            "spriteLine": 2,
+            "frameMax": 5
+        },
+        "sit": {
+            "spriteLine": 3,
+            "frameMax": 4
+        },
+        "greet": {
+            "spriteLine": 4,
+            "frameMax": 14
+        },
+        "crawl": {
+            "spriteLine": 8,
+            "frameMax": 8
+        },
+        "climb": {
+            "spriteLine": 9,
+            "frameMax": 8
+        },
+        "jump": {
+            "spriteLine": 5,
+            "frameMax": 8
+        },
+        "fall": {
+            "spriteLine": 6,
+            "frameMax": 8
+        },
+        "drag": {
+            "spriteLine": 7,
+            "frameMax": 1
+        }
+    }
+}

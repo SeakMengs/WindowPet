@@ -1,0 +1,46 @@
+{
+    "name": "slugcat",
+    "imageSrc": "media/slugcat.png",
+    "frameSize": 128,
+    "credit": {
+        "link": "https://www.deviantart.com/annoyingflower/art/Slugcat-shimeji-781935044"
+    },
+    "states": {
+        "stand": {
+            "spriteLine": 1,
+            "frameMax": 13
+        },
+        "walk": {
+            "spriteLine": 2,
+            "frameMax": 5
+        },
+        "sit": {
+            "spriteLine": 3,
+            "frameMax": 17
+        },
+        "greet": {
+            "spriteLine": 4,
+            "frameMax": 27
+        },
+        "crawl": {
+            "spriteLine": 8,
+            "frameMax": 8
+        },
+        "climb": {
+            "spriteLine": 9,
+            "frameMax": 8
+        },
+        "jump": {
+            "spriteLine": 5,
+            "frameMax": 1
+        },
+        "fall": {
+            "spriteLine": 6,
+            "frameMax": 9
+        },
+        "drag": {
+            "spriteLine": 7,
+            "frameMax": 1
+        }
+    }
+}

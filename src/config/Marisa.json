@@ -1,0 +1,42 @@
+{
+    "name": "Marisa",
+    "imageSrc": "media/Marisa.png",
+    "frameSize": 128,
+    "credit": {
+        "link": "https://www.deviantart.com/sai-nekosuki/art/SHIMEJI-Marisa-253952799 SHIMEJI "
+    },
+    "states": {
+        "stand": {
+            "spriteLine": 1,
+            "frameMax": 1
+        },
+        "walk": {
+            "spriteLine": 2,
+            "frameMax": 4
+        },
+        "greet": {
+            "spriteLine": 3,
+            "frameMax": 9
+        },
+        "crawl": {
+            "spriteLine": 7,
+            "frameMax": 5
+        },
+        "climb": {
+            "spriteLine": 8,
+            "frameMax": 8
+        },
+        "jump": {
+            "spriteLine": 4,
+            "frameMax": 1
+        },
+        "fall": {
+            "spriteLine": 5,
+            "frameMax": 3
+        },
+        "drag": {
+            "spriteLine": 6,
+            "frameMax": 1
+        }
+    }
+}

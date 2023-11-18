@@ -1,0 +1,42 @@
+{
+    "name": "The King",
+    "imageSrc": "media/The King.png",
+    "frameSize": 128,
+    "credit": {
+        "link": "https://www.youtube.com/channel/UCV9E4PI8XDPlDd0vblD9XmA"
+    },
+    "states": {
+        "stand": {
+            "spriteLine": 1,
+            "frameMax": 1
+        },
+        "walk": {
+            "spriteLine": 2,
+            "frameMax": 8
+        },
+        "greet": {
+            "spriteLine": 4,
+            "frameMax": 5
+        },
+        "crawl": {
+            "spriteLine": 8,
+            "frameMax": 6
+        },
+        "climb": {
+            "spriteLine": 9,
+            "frameMax": 6
+        },
+        "jump": {
+            "spriteLine": 5,
+            "frameMax": 1
+        },
+        "fall": {
+            "spriteLine": 6,
+            "frameMax": 6
+        },
+        "drag": {
+            "spriteLine": 7,
+            "frameMax": 1
+        }
+    }
+}

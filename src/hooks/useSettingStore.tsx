@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { ISettingStoreState } from "../types/hooks/type";
-import defaultPetConfig from "../config/pet_config.json";
+import defaultPetConfig from "../config/pet_config";
 import defaultSettings from "../../src-tauri/src/app/default/settings.json";
 import { ColorScheme } from "../types/ISetting";
 

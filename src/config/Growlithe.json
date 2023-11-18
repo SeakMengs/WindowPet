@@ -1,0 +1,42 @@
+{
+    "name": "Growlithe",
+    "imageSrc": "media/Growlithe.png",
+    "frameSize": 128,
+    "credit": {
+        "link": "http://cachomon.com/shimeji.php?&id=249"
+    },
+    "states": {
+        "stand": {
+            "spriteLine": 1,
+            "frameMax": 16
+        },
+        "walk": {
+            "spriteLine": 2,
+            "frameMax": 27
+        },
+        "greet": {
+            "spriteLine": 3,
+            "frameMax": 7
+        },
+        "crawl": {
+            "spriteLine": 4,
+            "frameMax": 16
+        },
+        "climb": {
+            "spriteLine": 5,
+            "frameMax": 16
+        },
+        "jump": {
+            "spriteLine": 6,
+            "frameMax": 1
+        },
+        "fall": {
+            "spriteLine": 7,
+            "frameMax": 4
+        },
+        "drag": {
+            "spriteLine": 8,
+            "frameMax": 1
+        }
+    }
+}

@@ -1,0 +1,43 @@
+{
+    "frameSize": 128,
+    "imageSrc": "media/Ganyu-xll.png",
+    "name": "Ganyu",
+    "states": {
+        "climb": {
+            "frameMax": 8,
+            "spriteLine": 9
+        },
+        "crawl": {
+            "frameMax": 8,
+            "spriteLine": 8
+        },
+        "drag": {
+            "frameMax": 1,
+            "spriteLine": 7
+        },
+        "fall": {
+            "frameMax": 3,
+            "spriteLine": 6
+        },
+        "greet": {
+            "frameMax": 4,
+            "spriteLine": 4
+        },
+        "idle": {
+            "frameMax": 1,
+            "spriteLine": 1
+        },
+        "jump": {
+            "frameMax": 1,
+            "spriteLine": 5
+        },
+        "sit": {
+            "frameMax": 13,
+            "spriteLine": 3
+        },
+        "walk": {
+            "frameMax": 4,
+            "spriteLine": 2
+        }
+    }
+}

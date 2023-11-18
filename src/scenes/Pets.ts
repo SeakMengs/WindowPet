@@ -222,10 +222,11 @@ export default class Pets extends Phaser.Scene {
             if (this.allowPetInteraction) {
                 invoke('get_mouse_position').then((event: any) => {
                     if (this.detectMouseOverPet(event.clientX, event.clientY)) {
-                        this.turnOffIgnoreCursorEvents()
-                    } else {
-                        this.turnOnIgnoreCursorEvents();
+                        this.turnOffIgnoreCursorEvents();
+                        return;
                     }
+                    
+                    this.turnOnIgnoreCursorEvents();
                 });
             }
 

@@ -1,0 +1,46 @@
+{
+    "name": "Starphin Shimeji",
+    "imageSrc": "media/Starphin Shimeji.png",
+    "frameSize": 128,
+    "credit": {
+        "link": "https://www.dropbox.com/sh/r1ofen1npg78vyp/AAAoCzy51pRvaFDMmNs_fngSa?dl=0"
+    },
+    "states": {
+        "stand": {
+            "spriteLine": 1,
+            "frameMax": 1
+        },
+        "walk": {
+            "spriteLine": 2,
+            "frameMax": 4
+        },
+        "sit": {
+            "spriteLine": 3,
+            "frameMax": 1
+        },
+        "greet": {
+            "spriteLine": 4,
+            "frameMax": 4
+        },
+        "crawl": {
+            "spriteLine": 8,
+            "frameMax": 8
+        },
+        "climb": {
+            "spriteLine": 9,
+            "frameMax": 8
+        },
+        "jump": {
+            "spriteLine": 5,
+            "frameMax": 1
+        },
+        "fall": {
+            "spriteLine": 6,
+            "frameMax": 3
+        },
+        "drag": {
+            "spriteLine": 7,
+            "frameMax": 1
+        }
+    }
+}

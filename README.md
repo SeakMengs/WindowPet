@@ -52,7 +52,7 @@
 
 ## ✨ Features
 ![image](https://github.com/SeakMengs/WindowPet/assets/54373229/42ecd3ea-5999-462e-8630-7904a1a3075f)
-- Add pets
+- Add pets (45+ pets and characters available to choose from)
 - Add your own custom pet
 - Remove pets
 - Pixel perfect drag pets on your screen

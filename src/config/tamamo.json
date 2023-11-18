@@ -1,0 +1,43 @@
+{
+    "frameSize": 128,
+    "imageSrc": "media/tamamo shimeji.png",
+    "name": "Tamamo",
+    "states": {
+        "idle": {
+            "frameMax": 4,
+            "spriteLine": 1
+        },
+        "walk": {
+            "frameMax": 4,
+            "spriteLine": 2
+        },
+        "sprawl": {
+            "frameMax": 2,
+            "spriteLine": 3
+        },
+        "jump": {
+            "frameMax": 1,
+            "spriteLine": 4
+        },
+        "stay": {
+            "frameMax": 2,
+            "spriteLine": 5
+        },
+        "fall": {
+            "frameMax": 3,
+            "spriteLine": 6
+        },
+        "drag": {
+            "frameMax": 1,
+            "spriteLine": 7
+        },
+        "crawl": {
+            "frameMax": 7,
+            "spriteLine": 8
+        },
+        "climb": {
+            "frameMax": 5,
+            "spriteLine": 9
+        }
+    }
+}

@@ -4,7 +4,7 @@ import { useSettingStore } from "./useSettingStore";
 import { ISpriteConfig, SpriteType } from "../types/ISpriteConfig";
 import { convertFileToAssetProtocol, noPetDialog } from "../utils";
 import { DefaultConfigName } from "../types/ISetting";
-import defaultPetConfig from "../config/pet_config.json";
+import defaultPetConfig from "../config/pet_config";
 
 const { setPets, setDefaultPet } = useSettingStore.getState();
 

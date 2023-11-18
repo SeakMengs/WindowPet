@@ -1,0 +1,46 @@
+{
+    "name": "Shimeji Nekojapan",
+    "imageSrc": "media/shimeji_nekojapan.png",
+    "frameSize": 128,
+    "credit": {
+        "link": "https://www.deviantart.com/uncut-adventure/art/Nekotalia-Japan-shimeji-271202482"
+    },
+    "states": {
+        "stand": {
+            "spriteLine": 1,
+            "frameMax": 9
+        },
+        "walk": {
+            "spriteLine": 2,
+            "frameMax": 4
+        },
+        "sit": {
+            "spriteLine": 3,
+            "frameMax": 5
+        },
+        "greet": {
+            "spriteLine": 4,
+            "frameMax": 8
+        },
+        "crawl": {
+            "spriteLine": 8,
+            "frameMax": 8
+        },
+        "climb": {
+            "spriteLine": 9,
+            "frameMax": 8
+        },
+        "jump": {
+            "spriteLine": 5,
+            "frameMax": 1
+        },
+        "fall": {
+            "spriteLine": 6,
+            "frameMax": 3
+        },
+        "drag": {
+            "spriteLine": 7,
+            "frameMax": 1
+        }
+    }
+}

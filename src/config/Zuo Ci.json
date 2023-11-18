@@ -1,0 +1,46 @@
+{
+    "name": "Zuo Ci",
+    "imageSrc": "media/Zuo Ci.png",
+    "frameSize": 128,
+    "credit": {
+        "link": "https://www.bilibili.com/video/BV1G14y1z7sY/?pop_share=1&vd_source=15d6a97492bf2bb5cb157702277def8c"
+    },
+    "states": {
+        "stand": {
+            "spriteLine": 1,
+            "frameMax": 1
+        },
+        "walk": {
+            "spriteLine": 2,
+            "frameMax": 3
+        },
+        "sit": {
+            "spriteLine": 3,
+            "frameMax": 1
+        },
+        "greet": {
+            "spriteLine": 4,
+            "frameMax": 1
+        },
+        "crawl": {
+            "spriteLine": 8,
+            "frameMax": 8
+        },
+        "climb": {
+            "spriteLine": 9,
+            "frameMax": 8
+        },
+        "jump": {
+            "spriteLine": 5,
+            "frameMax": 1
+        },
+        "fall": {
+            "spriteLine": 6,
+            "frameMax": 4
+        },
+        "drag": {
+            "spriteLine": 7,
+            "frameMax": 1
+        }
+    }
+}

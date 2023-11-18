@@ -1,0 +1,43 @@
+{
+    "frameSize": 128,
+    "imageSrc": "media/honeychurros shimejiee.png",
+    "name": "Honey Churros",
+    "states": {
+        "stand": {
+            "frameMax": 1,
+            "spriteLine": 1
+        },
+        "walk": {
+            "frameMax": 4,
+            "spriteLine": 2
+        },
+        "sit": {
+            "frameMax": 1,
+            "spriteLine": 3
+        },
+        "greet": {
+            "frameMax": 4,
+            "spriteLine": 4
+        },
+        "crawl": {
+            "frameMax": 8,
+            "spriteLine": 8
+        },
+        "climb": {
+            "frameMax": 8,
+            "spriteLine": 9
+        },
+        "jump": {
+            "frameMax": 1,
+            "spriteLine": 5
+        },
+        "fall": {
+            "frameMax": 3,
+            "spriteLine": 6
+        },
+        "drag": {
+            "frameMax": 1,
+            "spriteLine": 7
+        }
+    }
+}

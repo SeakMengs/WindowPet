@@ -21,6 +21,14 @@ export enum SpriteType {
  */
 export interface ISpriteConfig {
     name: string,
+    credit?: {
+        // link to download
+        resource?: string,
+        // link to post, etc
+        link?: string,
+        // link or string of name to social media
+        socialMedia?: string,
+    },
     id?: string,
     width?: number,
     height?: number,
