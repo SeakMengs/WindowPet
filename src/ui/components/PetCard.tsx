@@ -48,7 +48,6 @@ function PetCard({ btnLabel, btnLabelCustom, pet, btnFunction, btnFunctionCustom
                             /> */}
                             <NativeSelect
                                 my={"md"}
-                                placeholder="Pick one"
                                 defaultValue={playState}
                                 onChange={(event) => setPlayState(event.currentTarget.value)}
                                 pointer

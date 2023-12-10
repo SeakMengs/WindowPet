@@ -45,12 +45,6 @@ export default class Pets extends Phaser.Scene {
 
     preload(): void {
         this.spriteConfig = this.game.registry.get('spriteConfig');
-        const defaultPets: ISpriteConfig[] = this.game.registry.get('defaultPets');
-
-        // preload all sprite that the app has
-        for (const sprite of defaultPets) {
-            this.loadSpriteSheet(sprite);
-        }
 
         // preload the sprite of the user, if it has already loaded above, we skip it
         for (const sprite of this.spriteConfig) {
@@ -261,6 +255,12 @@ export default class Pets extends Phaser.Scene {
         // in case sprite hasn't loaded yet, we load it
         if (!this.textures.exists(sprite.name)) {
             this.loadSpriteSheet(sprite);
+            this.load.start();
+            
+            this.load.once('complete', () => {
+                this.addPet(sprite, index);
+            });
+            return;
         }
 
         // convert sprite states to lowercase because it help to avoid error when user edit their own json file and type state in uppercase
@@ -305,6 +305,15 @@ export default class Pets extends Phaser.Scene {
         this.pets = this.pets.filter((pet: IPet, index: number) => {
             if (pet.id === petId) {
                 pet.destroy();
+
+                // get pet that use the same texture as the pet that is destroyed
+                const petsWithSameTexture = this.pets.filter((pet: IPet) => pet.texture.key === this.pets[index].texture.key);
+
+                // remove texture if there is only one pet that use the texture because we don't need it anymore
+                if (petsWithSameTexture.length === 1) {
+                    this.textures.remove(pet.texture.key);
+                }
+
                 // remove index from petClimbAndCrawlIndex if it exist because the pet is destroyed
                 if (this.petClimbAndCrawlIndex.includes(index)) {
                     this.petClimbAndCrawlIndex = this.petClimbAndCrawlIndex.filter(i => i !== index);

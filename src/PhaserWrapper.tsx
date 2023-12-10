@@ -3,13 +3,10 @@ import Phaser from "phaser";
 import Pets from "./scenes/Pets";
 import { useSettingStore } from "./hooks/useSettingStore";
 import { appWindow } from "@tauri-apps/api/window";
-import defaultPetConfig from "./config/pet_config";
-
 
 function PhaserWrapper() {
     const phaserDom = useRef<HTMLDivElement>(null);
     const { pets } = useSettingStore();
-    const defaultPets = JSON.parse(JSON.stringify(defaultPetConfig));
 
     const [screenWidth, setScreenWidth] = useState(window.screen.width);
     const [screenHeight, setScreenHeight] = useState(window.screen.height);
@@ -58,7 +55,7 @@ function PhaserWrapper() {
             callbacks: {
                 preBoot: (game) => {
                     game.registry.set('spriteConfig', pets);
-                    game.registry.set('defaultPets', defaultPets);
+                    // game.registry.set('defaultPets', defaultPets);
                 }
             }
         }
