@@ -14,7 +14,7 @@ import { DispatchType } from "../../types/IEvents";
 
 function Settings() {
     const { t, i18n } = useTranslation();
-    const { allowAutoStartUp, allowPetAboveTaskbar, allowPetInteraction, allowOverridePetScale, petScale } = useSettingStore();
+    const { allowAutoStartUp, allowPetAboveTaskbar, allowPetInteraction, allowOverridePetScale, petScale, allowPetClimbing } = useSettingStore();
 
     const settingSwitches: ISettingsContent[] = [
         {
@@ -34,6 +34,12 @@ function Settings() {
             description: t("If allow pet interaction turn on, user will be able to drag and move the pet around their window"),
             checked: allowPetInteraction,
             dispatchType: DispatchType.SwitchAllowPetInteraction,
+        },
+        {
+            title: t("Allow pet climb"),
+            description: t("If allow pet climb turn on, pet will be able to climb on the left, right, and top of the window"),
+            checked: allowPetClimbing,
+            dispatchType: DispatchType.SwitchAllowPetClimbing,
         },
         {
             title: t("Override pet scale"),

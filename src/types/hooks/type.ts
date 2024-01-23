@@ -1,24 +1,29 @@
 import { ColorScheme } from "../ISetting";
 import { ISpriteConfig } from "../ISpriteConfig";
 
-export interface ISettingStoreState {
+export interface ISettingStoreVariables {
     language: string;
-    setLanguage: (newLanguage: string) => void;
     theme: ColorScheme;
-    setTheme: (newTheme: ColorScheme) => void;
     allowPetAboveTaskbar: boolean;
-    setAllowPetAboveTaskbar: (newBoolean: boolean) => void;
     allowAutoStartUp: boolean;
-    setAllowAutoStartUp: (newBoolean: boolean) => void;
     allowPetInteraction: boolean;
-    setAllowPetInteraction: (newBoolean: boolean) => void;
+    allowPetClimbing: boolean;
     allowOverridePetScale: boolean;
-    setAllowOverridePetScale: (newBoolean: boolean) => void;
     petScale: number;
-    setPetScale: (petScale: number) => void;
     pets: ISpriteConfig[];
-    setPets: (newPets: ISpriteConfig[]) => void;
     defaultPet: ISpriteConfig[];
+}
+
+export interface ISettingStoreState extends ISettingStoreVariables{
+    setLanguage: (newLanguage: string) => void;
+    setTheme: (newTheme: ColorScheme) => void;
+    setAllowPetAboveTaskbar: (newBoolean: boolean) => void;
+    setAllowAutoStartUp: (newBoolean: boolean) => void;
+    setAllowPetInteraction: (newBoolean: boolean) => void;
+    setAllowPetClimbing: (newBoolean: boolean) => void;
+    setAllowOverridePetScale: (newBoolean: boolean) => void;
+    setPetScale: (petScale: number) => void;
+    setPets: (newPets: ISpriteConfig[]) => void;
     setDefaultPet: (newDefaultPet: ISpriteConfig[]) => void;
 }
 

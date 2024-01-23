@@ -24,15 +24,6 @@ export enum ColorSchemeType {
 
 export type ColorScheme = ColorSchemeType.Light | ColorSchemeType.Dark;
 
-export type TAppSetting = {
-    language: string,
-    theme: ColorScheme
-    allowPetAboveTaskbar: boolean,
-    allowPetInteraction: boolean,
-    allowOverridePetScale: boolean,
-    petScale: number,
-}
-
 export interface IHandleSettingChange {
     (
         dispatchType: DispatchType,

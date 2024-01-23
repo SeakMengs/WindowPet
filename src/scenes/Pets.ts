@@ -24,6 +24,7 @@ export default class Pets extends Phaser.Scene {
     private allowPetAboveTaskbar: boolean = useSettingStore.getState().allowPetAboveTaskbar ?? defaultSettings.allowPetAboveTaskbar
     private allowOverridePetScale: boolean = useSettingStore.getState().allowOverridePetScale ?? defaultSettings.allowOverridePetScale
     private petScale: number = useSettingStore.getState().petScale ?? defaultSettings.petScale
+    private allowPetClimbing: boolean = useSettingStore.getState().allowPetClimbing ?? defaultSettings.allowPetClimbing
 
     // delay ms to set ignore cursor events
     readonly setIgnoreCursorEventsDelay: number = 50;
@@ -144,6 +145,11 @@ export default class Pets extends Phaser.Scene {
             }
 
             if (up) {
+                if (!this.allowPetClimbing) {
+                    this.petJumpOrPlayRandomState(pet);
+                    return;
+                }
+
                 if (pet.availableStates.includes('crawl')) {
                     this.switchState(pet, 'crawl')
                     return;
@@ -196,6 +202,16 @@ export default class Pets extends Phaser.Scene {
                         this.scaleAllPets(this.petScale) :
                         this.scaleAllPets(defaultSettings.petScale);
                     break;
+                case DispatchType.SwitchAllowPetClimbing:
+                    this.allowPetClimbing = event.payload.value as boolean;
+
+                    // when the user switch from pet climb to not climb, we force pet to jump or play random state
+                    if (!this.allowPetClimbing) {
+                        this.pets.forEach((pet) => {
+                            this.petJumpOrPlayRandomState(pet);
+                        });
+                    }
+                    break;
                 case DispatchType.ChangePetScale:
                     this.petScale = event.payload.value as number;
                     this.scaleAllPets(this.petScale);
@@ -219,7 +235,7 @@ export default class Pets extends Phaser.Scene {
                         this.turnOffIgnoreCursorEvents();
                         return;
                     }
-                    
+
                     this.turnOnIgnoreCursorEvents();
                 });
             }
@@ -256,7 +272,7 @@ export default class Pets extends Phaser.Scene {
         if (!this.textures.exists(sprite.name)) {
             this.loadSpriteSheet(sprite);
             this.load.start();
-            
+
             this.load.once('complete', () => {
                 this.addPet(sprite, index);
             });
@@ -416,6 +432,11 @@ export default class Pets extends Phaser.Scene {
         try {
             // when pet is destroyed, pet.anims will be undefined, there is a chance that this function get called because of setTimeout
             if (!pet.anims) return;
+
+            // prevent pet from playing crawl and climb state if allowPetClimbing is false
+            if (!this.allowPetClimbing) {
+                if (state === 'climb' || state === 'crawl') return;
+            }
 
             const animationKey = this.getStateName(state, pet);
             // if current state is the same as the new state, do nothing
@@ -860,7 +881,7 @@ export default class Pets extends Phaser.Scene {
         // pet.availableStates = pet.availableStates.filter(state => state !== 'climb');
 
         if (worldBounding.left || worldBounding.right) {
-            if (pet.availableStates.includes('climb')) {
+            if (pet.availableStates.includes('climb') && this.allowPetClimbing) {
                 this.switchState(pet, 'climb');
 
                 const lastPetX = pet.x;
@@ -879,8 +900,7 @@ export default class Pets extends Phaser.Scene {
                     pet.setPosition(lastPetX + this.getPetRightPosition(pet), pet.y);
                     this.setPetLookToTheLeft(pet, false);
                 }
-            }
-            else {
+            } else {
                 if (worldBounding.down) {
                     // if pet on the ground and beyond screen and doesn't have climb state, we flip the pet
                     this.toggleFlipXThenUpdateDirection(pet);

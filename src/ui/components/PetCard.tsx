@@ -50,7 +50,6 @@ function PetCard({ btnLabel, btnLabelCustom, pet, btnFunction, btnFunctionCustom
                                 my={"md"}
                                 defaultValue={playState}
                                 onChange={(event) => setPlayState(event.currentTarget.value)}
-                                pointer
                                 key={pet.id ?? pet.name}
                                 data={availableStates}
                             />

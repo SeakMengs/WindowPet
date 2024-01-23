@@ -26,6 +26,10 @@ export const useSettingStore = create<ISettingStoreState>()((set) => ({
     setAllowPetInteraction: (newBoolean) => {
         set({ allowPetInteraction: newBoolean })
     },
+    allowPetClimbing: defaultSettings.allowPetClimbing ?? true,
+    setAllowPetClimbing: (newBoolean) => {
+        set({ allowPetClimbing: newBoolean })
+    },
     allowOverridePetScale: defaultSettings.allowPetInteraction ?? true,
     setAllowOverridePetScale: (newBoolean) => {
         set({allowOverridePetScale: newBoolean})

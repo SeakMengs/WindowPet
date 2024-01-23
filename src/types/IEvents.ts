@@ -28,6 +28,7 @@ export enum DispatchType {
     SwitchAutoWindowStartUp = 'Switch auto window start up',
     SwitchPetAboveTaskbar = 'Switch pet above taskbar',
     SwitchAllowPetInteraction = 'Switch allow pet interaction',
+    SwitchAllowPetClimbing = 'Switch allow pet climbing',
     AddPet = 'Add pet',
     RemovePet = 'RemovePet',
     OverridePetScale = 'Override pet scale',

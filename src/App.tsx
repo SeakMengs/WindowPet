@@ -8,7 +8,6 @@ import { confirm } from "@tauri-apps/api/dialog";
 import { MantineProvider } from "@mantine/core";
 import { PrimaryColor } from "./utils";
 import { ColorSchemeType } from "./types/ISetting";
-import { Notifications } from "@mantine/notifications";
 
 const PhaserWrapper = React.lazy(() => import("./PhaserWrapper"));
 const SettingWindow = React.lazy(() => import("./SettingWindow"));

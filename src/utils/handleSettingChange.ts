@@ -7,7 +7,7 @@ import { info } from "tauri-plugin-log-api";
 import { DispatchType } from "../types/IEvents";
 
 export const handleSettingChange: IHandleSettingChange = (dispatchType, newValue) => {
-    const { setLanguage, setTheme, setAllowAutoStartUp, setAllowPetAboveTaskbar, setAllowPetInteraction, setAllowOverridePetScale, setPetScale } = useSettingStore.getState();
+    const { setLanguage, setTheme, setAllowAutoStartUp, setAllowPetAboveTaskbar, setAllowPetInteraction, setAllowOverridePetScale, setPetScale, setAllowPetClimbing } = useSettingStore.getState();
 
     info(`Change setting, type: ${dispatchType}, value: ${newValue}`);
 
@@ -37,6 +37,11 @@ export const handleSettingChange: IHandleSettingChange = (dispatchType, newValue
             setSettings({ setKey: "allowPetInteraction", newValue: newValue });
             setAllowPetInteraction(newValue as boolean);
             emitUpdatePetsEvent({ dispatchType, newValue });
+        case DispatchType.SwitchAllowPetClimbing:
+            setSettings({ setKey: "allowPetClimbing", newValue: newValue });
+            setAllowPetClimbing(newValue as boolean);
+            emitUpdatePetsEvent({ dispatchType, newValue });
+            return
         case DispatchType.AddPet:
             emitUpdatePetsEvent({ dispatchType, newValue });
             return
