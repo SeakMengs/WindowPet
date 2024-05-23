@@ -79,5 +79,6 @@
     "Pet end must be greater than start": "បញ្ចប់សត្វចិញ្ចឹមត្រូវតែធំជាងចាប់ផ្តើម",
     "Spritesheet path provided does not exist": "ទីតាំង Spritesheet ដែលបានផ្ដល់មិនមានទេ",
     "Allow pet climb": "អនុញ្ញាតឱ្យសត្វចិញ្ចឹមតោង",
-    "If allow pet climb turn on, pet will be able to climb on the left, right, and top of the window": "ប្រសិនបើអនុញ្ញាតឱ្យសត្វតោងកុំព្យូទ័រ សត្វចិញ្ចឹមនឹងអាចឡើងតោងនៅខាងឆ្វេង ស្ដាំ និងកំពូលកុំព្យូទ័រ"
+    "If allow pet climb turn on, pet will be able to climb on the left, right, and top of the window": "ប្រសិនបើអនុញ្ញាតឱ្យសត្វតោងកុំព្យូទ័រ សត្វចិញ្ចឹមនឹងអាចឡើងតោងនៅខាងឆ្វេង ស្ដាំ និងកំពូលកុំព្យូទ័រ",
+    "Search for pets": "ស្វែងរកសត្វចិញ្ចឹម"
 }

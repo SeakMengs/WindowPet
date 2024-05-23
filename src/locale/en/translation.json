@@ -79,5 +79,6 @@
     "Pet end must be greater than start": "Pet end must be greater than start",
     "Spritesheet path provided does not exist": "Spritesheet path provided does not exist",
     "Allow pet climb": "Allow pet climb",
-    "If allow pet climb turn on, pet will be able to climb on the left, right, and top of the window": "If allow pet climb turn on, pet will be able to climb on the left, right, and top of the window"
+    "If allow pet climb turn on, pet will be able to climb on the left, right, and top of the window": "If allow pet climb turn on, pet will be able to climb on the left, right, and top of the window",
+    "Search for pets": "Search for pets"
 }

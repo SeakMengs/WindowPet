@@ -6,58 +6,74 @@ import i18next from "i18next";
 import { info } from "tauri-plugin-log-api";
 import { DispatchType } from "../types/IEvents";
 
-export const handleSettingChange: IHandleSettingChange = (dispatchType, newValue) => {
-    const { setLanguage, setTheme, setAllowAutoStartUp, setAllowPetAboveTaskbar, setAllowPetInteraction, setAllowOverridePetScale, setPetScale, setAllowPetClimbing } = useSettingStore.getState();
+export const handleSettingChange: IHandleSettingChange = (
+    dispatchType,
+    newValue
+) => {
+    const {
+        setLanguage,
+        setTheme,
+        setAllowAutoStartUp,
+        setAllowPetAboveTaskbar,
+        setAllowPetInteraction,
+        setAllowOverridePetScale,
+        setPetScale,
+        setAllowPetClimbing,
+    } = useSettingStore.getState();
 
     info(`Change setting, type: ${dispatchType}, value: ${newValue}`);
 
     switch (dispatchType) {
         case DispatchType.ChangeAppLanguage:
-            setSettings({ setKey: 'language', newValue: newValue });
+            setSettings({ setKey: "language", newValue: newValue });
             setLanguage(newValue as string);
             i18next.changeLanguage(newValue as string);
-            localStorage.setItem('language', newValue as string);
-            return
+            localStorage.setItem("language", newValue as string);
+            return;
         case DispatchType.ChangeAppTheme:
             setSettings({ setKey: "theme", newValue: newValue });
             setTheme(newValue as ColorScheme);
-            localStorage.setItem('theme', newValue as string);
-            return
+            localStorage.setItem("theme", newValue as string);
+            return;
         case DispatchType.SwitchAutoWindowStartUp:
             // auto start up doesn't need to be saved in settings.json
             toggleAutoStartUp(newValue as boolean);
             setAllowAutoStartUp(newValue as boolean);
-            return
+            return;
         case DispatchType.SwitchPetAboveTaskbar:
             setSettings({ setKey: "allowPetAboveTaskbar", newValue: newValue });
             setAllowPetAboveTaskbar(newValue as boolean);
             emitUpdatePetsEvent({ dispatchType, newValue });
-            return
+            return;
         case DispatchType.SwitchAllowPetInteraction:
             setSettings({ setKey: "allowPetInteraction", newValue: newValue });
             setAllowPetInteraction(newValue as boolean);
             emitUpdatePetsEvent({ dispatchType, newValue });
+            return;
         case DispatchType.SwitchAllowPetClimbing:
             setSettings({ setKey: "allowPetClimbing", newValue: newValue });
             setAllowPetClimbing(newValue as boolean);
             emitUpdatePetsEvent({ dispatchType, newValue });
-            return
+            return;
         case DispatchType.AddPet:
             emitUpdatePetsEvent({ dispatchType, newValue });
-            return
+            return;
         case DispatchType.RemovePet:
             emitUpdatePetsEvent({ dispatchType, newValue });
-            return
+            return;
         case DispatchType.OverridePetScale:
-            setSettings({ setKey: "allowOverridePetScale", newValue: newValue });
+            setSettings({
+                setKey: "allowOverridePetScale",
+                newValue: newValue,
+            });
             setAllowOverridePetScale(newValue as boolean);
             emitUpdatePetsEvent({ dispatchType, newValue });
-            return
+            return;
         case DispatchType.ChangePetScale:
             setSettings({ setKey: "petScale", newValue: newValue });
             setPetScale(newValue as number);
             emitUpdatePetsEvent({ dispatchType, newValue });
-            return
+            return;
         default:
             return;
     }

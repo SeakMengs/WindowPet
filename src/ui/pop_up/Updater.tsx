@@ -16,7 +16,7 @@ function Updater({ shouldUpdate, manifest }: UpdaterPopupProps) {
 
             if (res.ok) {
                 const json = await res.json();
-                setMarkDown(json.body + json.body);
+                setMarkDown(json.body);
             }
         }
         getReleaseNote();
