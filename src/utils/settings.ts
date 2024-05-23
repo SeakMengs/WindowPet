@@ -1,6 +1,6 @@
 import { enable, isEnabled, disable } from "tauri-plugin-autostart-api";
 import { Store } from "tauri-plugin-store-api";
-import { DefaultConfigName, IGetAppSetting, ISetConfig, ISetSetting } from "../types/ISetting";
+import { DefaultConfigName, IGetAppSetting } from "../types/ISetting";
 import { invoke } from '@tauri-apps/api/tauri'
 import { readTextFile, exists, copyFile, BaseDirectory, createDir } from "@tauri-apps/api/fs"
 import { confirm } from "@tauri-apps/api/dialog";
@@ -39,6 +39,10 @@ export async function getAppSettings({ configName = "settings.json", key = "app"
 
 // set a specific key under object app
 // exp: { app: { key: value } }
+interface ISetSetting extends IGetAppSetting {
+    setKey: string,
+    newValue: unknown,
+}
 export function setSettings({ configName = "settings.json", key = "app", setKey, newValue }: ISetSetting) {
     (async () => {
         let setting: any = await getAppSettings({ configName });
@@ -52,6 +56,9 @@ export function setSettings({ configName = "settings.json", key = "app", setKey,
 }
 
 // this function differs from setSettings because it will replace the whole config file, not just some specific key
+export interface ISetConfig extends IGetAppSetting {
+    newConfig: unknown,
+}
 export function setConfig({ configName = "settings.json", key = "app", newConfig }: ISetConfig) {
     (async () => {
         const configPath: string = await invoke("combine_config_path", { config_name: configName });

@@ -4,13 +4,20 @@ import languages from "../../locale/languages";
 import SettingSwitch from "./settings/SettingSwitch";
 import { useTranslation } from "react-i18next";
 import { handleSettingChange } from "../../utils/handleSettingChange";
-import { ISettingsContent } from "../../types/ISetting";
 import { useSettingStore } from "../../hooks/useSettingStore";
 import { memo, useCallback } from "react";
 import { IconLanguage } from "@tabler/icons-react";
 import { invoke } from "@tauri-apps/api/tauri";
 import SettingButton from "./settings/SettingButton";
 import { DispatchType } from "../../types/IEvents";
+
+interface ISettingsContent {
+    title: string,
+    description: string,
+    checked: boolean,
+    dispatchType: DispatchType,
+    component?: React.ReactNode,
+}
 
 function Settings() {
     const { t, i18n } = useTranslation();

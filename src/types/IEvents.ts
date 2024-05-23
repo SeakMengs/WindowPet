@@ -13,11 +13,6 @@ export type TRenderEventListener = {
     id: number,
 }
 
-export interface IEmitReRenderPetsEvent {
-    dispatchType: DispatchType;
-    newValue?: boolean | string | ISpriteConfig | number;
-}
-
 export enum EventType {
     SettingWindowToPetOverlay = 'settingWindowToPetOverlay',
 }

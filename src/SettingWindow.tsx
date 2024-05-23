@@ -143,7 +143,7 @@ function SettingWindow() {
           </AppShell.Navbar>
           <AppShell.Main>
             <ScrollArea.Autosize h={"100vh"} key={activeTab}>
-              <Box m={"sm"}>
+              <Box m={"lg"}>
                 <Title title={settingTabs[activeTab].title} description={settingTabs[activeTab].description} />
                 <CurrentSettingTab key={activeTab} />
               </Box>

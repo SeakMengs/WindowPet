@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import useQueryParams from "./useQueryParams";
 import { ESettingTab } from "../types/ISetting";
 
 interface ISettingTabState {

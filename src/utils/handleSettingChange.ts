@@ -1,11 +1,18 @@
 import { setSettings, toggleAutoStartUp } from "./settings";
-import { ColorScheme, IHandleSettingChange } from "../types/ISetting";
+import { ColorScheme } from "../types/ISetting";
 import { useSettingStore } from "../hooks/useSettingStore";
 import { emitUpdatePetsEvent } from "./event";
 import i18next from "i18next";
 import { info } from "tauri-plugin-log-api";
 import { DispatchType } from "../types/IEvents";
+import { ISpriteConfig } from "../types/ISpriteConfig";
 
+interface IHandleSettingChange {
+    (
+        dispatchType: DispatchType,
+        newValue: string | boolean | ISpriteConfig | number,
+    ): void;
+}
 export const handleSettingChange: IHandleSettingChange = (
     dispatchType,
     newValue

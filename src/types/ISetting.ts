@@ -1,20 +1,9 @@
 import { MemoExoticComponent } from "react";
-import { ISpriteConfig } from "./ISpriteConfig";
-import { DispatchType } from "./IEvents";
 
 export interface IGetAppSetting {
     withErrorDialog?: boolean,
     configName?: string,
     key?: string,
-}
-
-export interface ISetSetting extends IGetAppSetting {
-    setKey: string,
-    newValue: unknown,
-}
-
-export interface ISetConfig extends IGetAppSetting {
-    newConfig: unknown,
 }
 
 export enum ColorSchemeType {
@@ -23,13 +12,6 @@ export enum ColorSchemeType {
 }
 
 export type ColorScheme = ColorSchemeType.Light | ColorSchemeType.Dark;
-
-export interface IHandleSettingChange {
-    (
-        dispatchType: DispatchType,
-        newValue: string | boolean | ISpriteConfig | number,
-    ): void;
-}
 
 export enum ESettingTab {
     MyPets = 0,
@@ -46,14 +28,6 @@ export interface ISettingTabs {
     Icon: React.ReactNode;
     label: string;
     tab: ESettingTab,
-}
-
-export interface ISettingsContent {
-    title: string,
-    description: string,
-    checked: boolean,
-    dispatchType: DispatchType,
-    component?: React.ReactNode,
 }
 
 export enum DefaultConfigName {

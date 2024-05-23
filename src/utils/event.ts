@@ -1,5 +1,11 @@
 import { WebviewWindow } from '@tauri-apps/api/window'
-import { EventType, IEmitReRenderPetsEvent } from '../types/IEvents';
+import { DispatchType, EventType } from '../types/IEvents';
+import { ISpriteConfig } from '../types/ISpriteConfig';
+
+interface IEmitReRenderPetsEvent {
+    dispatchType: DispatchType;
+    newValue?: boolean | string | ISpriteConfig | number;
+}
 
 export const emitUpdatePetsEvent = async ({dispatchType, newValue}: IEmitReRenderPetsEvent) => {
     // get the window instance by its label

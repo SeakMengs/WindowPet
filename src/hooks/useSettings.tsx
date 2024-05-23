@@ -29,5 +29,8 @@ const getSettings = async () => {
 };
 
 export function useSettings() {
-    return useQuery('settings', getSettings, { refetchOnWindowFocus: false });
+    return useQuery('settings', getSettings, { refetchOnWindowFocus: false,
+        // disable cache
+        cacheTime: 0,
+     });
 }

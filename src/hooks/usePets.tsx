@@ -31,7 +31,10 @@ const getPets = async () => {
 };
 
 export function usePets(): UseQueryResult<unknown, Error> {
-    return useQuery('pets', getPets, { refetchOnWindowFocus: false });
+    return useQuery('pets', getPets, { refetchOnWindowFocus: false, 
+        // disable cache
+        cacheTime: 0,
+     });
 };
 
 const getDefaultPets = async () => {
@@ -52,5 +55,8 @@ const getDefaultPets = async () => {
 };
 
 export function useDefaultPets(): UseQueryResult<unknown, Error> {
-    return useQuery('defaultPets', getDefaultPets, { refetchOnWindowFocus: false });
+    return useQuery('defaultPets', getDefaultPets, { refetchOnWindowFocus: false,
+        // disable cache
+        cacheTime: 0,
+     });
 }
