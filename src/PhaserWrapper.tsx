@@ -40,7 +40,7 @@ function PhaserWrapper() {
                 default: 'arcade',
                 arcade: {
                     debug: false,
-                    gravity: { y: 200 },
+                    gravity: { y: 200, x: 0},
                 },
             },
             fps: {
