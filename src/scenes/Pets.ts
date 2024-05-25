@@ -42,7 +42,6 @@ export default class Pets extends Phaser.Scene {
     private petScale: number;
     private allowPetClimbing: boolean;
 
-    // delay ms to set ignore cursor events
     private readonly FORBIDDEN_RAND_STATE: string[] = [
         "fall",
         "climb",

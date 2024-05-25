@@ -51,60 +51,47 @@
 </div>
 
 ## ✨ Features
+
 ![image](https://github.com/SeakMengs/WindowPet/assets/54373229/42ecd3ea-5999-462e-8630-7904a1a3075f)
-- Add pets (45+ pets and characters available to choose from)
-- Add your own custom pet
-- Remove pets
-- Pixel perfect drag pets on your screen
-- Click through pets
-- Auto start up
-- Auto update
-- Allow as many pet/character as you want on your screen without any performance issue
-- Pet above taskbar
-- Settings window
-  - Language support: English and Khmer
-  - Dark mode and light mode (settings window)
-  - Allow user to select state to see pet animation
+
+-   Add pets (45+ pets and characters available to choose from)
+-   Add your own custom pet
+-   Remove pets
+-   Pixel perfect drag pets on your screen
+-   Click through pets
+-   Auto start up
+-   Auto update
+-   Allow as many pet/character as you want on your screen without any performance issue
+-   Pet above taskbar
+-   Settings window
+    -   Language support: English and Khmer
+    -   Dark mode and light mode (settings window)
+    -   Allow user to select state to see pet animation
 
 ## ✨ Demo
+
 https://github.com/SeakMengs/WindowPet/assets/54373229/0b4c6ab3-539c-4b0a-8221-ca7113bf0fcf
 
 ## ✨ Download
-- Download the latest version [here](https://github.com/SeakMengs/WindowPet/releases/latest)
-  - Windows: .exe, .msi
-  - MacOS: .dmg
-  - Linux: .AppImage, .deb
 
-## ✨ Development
-- Clone the repo
-- Install rust and tauri refer to this [link](https://tauri.app/v1/guides/getting-started/prerequisites)
-- Install dependencies
-```sh
-npm install
-```
-
-## ✨ Run & Build
-- Run the project
-```
- npm run tauri dev
-```
-- Build the project
-```
- npm run tauri build --release
-``` 
-- Notice: 
-  - for build release we use github actions to build the project and upload the build to github release. You can check the build [workflow here](https://github.com/SeakMengs/WindowPet/blob/main/.github/workflows/release.yml)
-  - for local build you have to generate your own signing key and replace the signing key in `tauri.conf.json` [refer to tauri doc](https://tauri.app/v1/guides/distribution/updater/)
+-   Download the latest version [here](https://github.com/SeakMengs/WindowPet/releases/latest)
+    -   Windows: .exe, .msi
+    -   MacOS: .dmg
+    -   Linux: .AppImage, .deb
 
 ## ✨ Contribute
-- Feel free to open an issue or pull request if you have any idea or found any bug
-- If you want to support me, you can [buy me a coffee](https://www.buymeacoffee.com/seakmeng)
+
+-   Feel free to open an issue or pull request if you have any idea or found any bug
+-   If you want to contribute, you can check the [contribute.md](https://github.com/SeakMengs/WindowPet/blob/main/contribute.md)
+-   If you want to support me, you can [buy me a coffee](https://www.buymeacoffee.com/seakmeng)
 
 ## ✨ Inspiration
-- My friend [Blizzard4E](https://github.com/Blizzard4E) for suggesting me this project idea
-- [vscode-pets](https://marketplace.visualstudio.com/items?itemName=tonybaloney.vscode-pets)
-- [Shimeji-ee Desktop Pet](https://kilkakon.com/shimeji/)
-- [DPET : Desktop Pet Engine](https://store.steampowered.com/app/1980920/DPET__Desktop_Pet_Engine/)
+
+-   My friend [Blizzard4E](https://github.com/Blizzard4E) for suggesting me this project idea
+-   [vscode-pets](https://marketplace.visualstudio.com/items?itemName=tonybaloney.vscode-pets)
+-   [Shimeji-ee Desktop Pet](https://kilkakon.com/shimeji/)
+-   [DPET : Desktop Pet Engine](https://store.steampowered.com/app/1980920/DPET__Desktop_Pet_Engine/)
 
 ## ✨ License
+
 MIT License Copyright (c) 2023 Seakmeng
