@@ -1,6 +1,6 @@
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo, useState, useEffect } from "react";
 import PetCard from "../components/PetCard";
-import { Box } from "@mantine/core";
+import { Box, TextInput } from "@mantine/core";
 import AddCard from "./my_pets/AddCard";
 import { useTranslation } from "react-i18next";
 import { useSettingStore } from "../../hooks/useSettingStore";
@@ -14,11 +14,20 @@ import { PetCardType } from "../../types/components/type";
 import { DispatchType } from "../../types/IEvents";
 import { ColorSchemeType } from "../../types/ISetting";
 import { usePets } from "../../hooks/usePets";
+import { invoke } from "@tauri-apps/api";
 
 export function MyPets() {
-    const { refetch } = usePets();
+    const { refetch, data: initialPets = [] } = usePets();
     const { t } = useTranslation();
     const { theme: colorScheme, pets, setPets } = useSettingStore();
+    const [searchQuery, setSearchQuery] = useState("");
+    const [isFirstRemoval, setIsFirstRemoval] = useState(true);
+
+    useEffect(() => {
+        if (initialPets && Array.isArray(initialPets) && initialPets.length > 0 && pets.length === 0) {
+            setPets(initialPets);
+        }
+    }, [initialPets, pets, setPets]);
 
     const removePet = useCallback(async (petId: string) => {
         const userPetConfig = await getAppSettings({ configName: "pets.json" });
@@ -28,17 +37,20 @@ export function MyPets() {
             return pet.id !== petId;
         });
 
-        setConfig({ configName: "pets.json", newConfig: newConfig });
+        await setConfig({ configName: "pets.json", newConfig: newConfig });
         setPets(newConfig);
-
-        // manually remove petCard dom to fix flickering problem
-        const petCardDom = document.getElementById(`petCard-id-${petId}`);
-        if (petCardDom) petCardDom.remove();
 
         if (newConfig.length === 0) noPetDialog();
 
-        // update pet window to show new pet
         handleSettingChange(DispatchType.RemovePet, petId);
+        if (isFirstRemoval) {
+            try {
+                await invoke("reopen_main_window");
+            } catch (error) {
+                console.warn("Failed to reopen main window:", error);
+            }
+            setIsFirstRemoval(false);
+        }
 
         notifications.show({
             message: t("pet name has been removed", { name: removedPetName }),
@@ -52,21 +64,31 @@ export function MyPets() {
             })
         });
 
-        refetch();
-    }, [t]);
+        await refetch();
+    }, [t, isFirstRemoval, setIsFirstRemoval]);
 
-    // we don't put pets as dependency because it will cause flickering when we remove pet
-    // so we manually remove petCard dom in removePet function
+    const filteredPets = useMemo(() => {
+        return pets.filter(pet =>
+            pet.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    }, [searchQuery, pets]);
+
     const PetCards = useMemo(() => {
-        return pets.map((pet: ISpriteConfig, index: number) => {
+        return filteredPets.map((pet: ISpriteConfig) => {
             return (
                 <PetCard key={pet.id} pet={pet} btnLabel={t("Remove")} type={PetCardType.Remove} btnFunction={() => removePet(pet.id as string)} />
             );
         });
-    }, [t]);
+    }, [t, filteredPets, removePet]);
 
     return (
         <>
+            <TextInput
+                placeholder={t("Search for my pets")}
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.currentTarget.value)}
+                style={{ marginBottom: '1rem', marginLeft: '1rem', marginRight: '1rem' }}
+            />
             <Box style={{
                 display: "grid",
                 placeItems: "center",
