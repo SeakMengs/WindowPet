@@ -52,6 +52,7 @@ First of all, thank you for considering contributing to our project! Your help a
 
 ## Development
 - Install rust and tauri refer to this [link](https://tauri.app/v1/guides/getting-started/prerequisites)
+    - Known working version of Rust is `rustc 1.85.1 (4eb161250 2025-03-15)`.
 - Install dependencies
 ```sh
 npm install
