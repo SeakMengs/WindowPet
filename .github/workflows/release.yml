@@ -10,8 +10,8 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                platform: [macos-latest, ubuntu-latest, windows-latest]
-                # platform: [ubuntu-latest]
+                # platform: [macos-latest, ubuntu-latest, windows-latest]
+                platform: [ubuntu-latest]
                 # platform: [windows-latest]
                 include:
                     - os: ubuntu-latest
@@ -48,7 +48,7 @@ jobs:
               if: matrix.platform == 'ubuntu-latest'
               run: |
                   sudo apt-get update
-                  sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf libsoup2.4-dev
+                  sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf libsoup2.4-dev libwebkit2gtk-4.0-dev
 
             - name: Install app dependencies from lockfile and build web
               # NOTE: comment out && yarn build if frontend does not have build script
