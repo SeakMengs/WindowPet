@@ -23,12 +23,6 @@ export function MyPets() {
     const [searchQuery, setSearchQuery] = useState("");
     const [isFirstRemoval, setIsFirstRemoval] = useState(true);
 
-    useEffect(() => {
-        if (initialPets && Array.isArray(initialPets) && initialPets.length > 0 && pets.length === 0) {
-            setPets(initialPets);
-        }
-    }, [initialPets, pets, setPets]);
-
     const removePet = useCallback(async (petId: string) => {
         const userPetConfig = await getAppSettings({ configName: "pets.json" });
         let removedPetName;
