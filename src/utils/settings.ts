@@ -1,13 +1,14 @@
-import { enable, isEnabled, disable } from "tauri-plugin-autostart-api";
-import { Store } from "tauri-plugin-store-api";
+import { enable, isEnabled, disable } from "@tauri-apps/plugin-autostart";
+import { Store } from "@tauri-apps/plugin-store";
 import { DefaultConfigName, IGetAppSetting } from "../types/ISetting";
-import { invoke } from '@tauri-apps/api/tauri'
-import { readTextFile, exists, copyFile, BaseDirectory, createDir } from "@tauri-apps/api/fs"
-import { confirm } from "@tauri-apps/api/dialog";
+import { invoke } from '@tauri-apps/api/core'
+import { readTextFile, exists, copyFile, BaseDirectory, mkdir } from "@tauri-apps/plugin-fs"
+import { appLocalDataDir } from "@tauri-apps/api/path"
+import { confirm } from "@tauri-apps/plugin-dialog";
 import { IPetObject } from "../types/ISpriteConfig";
 import { showNotification } from "./notification";
 import i18next from "i18next";
-import { error, info } from "tauri-plugin-log-api";
+import { error, info } from "@tauri-apps/plugin-log";
 
 export function toggleAutoStartUp(allowAutoStartUp: boolean) {
     (async () => {
@@ -21,20 +22,40 @@ export function toggleAutoStartUp(allowAutoStartUp: boolean) {
     })()
 };
 
+// Ensure the WindowPet directory exists in app data
+async function ensureAppDataDir() {
+    const appDataDir = await appLocalDataDir();
+    const windowPetDir = `${appDataDir}/WindowPet`;
+    
+    // Create the directory if it doesn't exist
+    if (!(await exists(windowPetDir))) {
+        await mkdir(windowPetDir);
+    }
+    
+    return windowPetDir;
+}
+
 // default will return app settings, if key is provided, will return specific key
 export async function getAppSettings({ configName = "settings.json", key = "app", withErrorDialog = true }: IGetAppSetting) {
-    const configPath: string = await invoke("combine_config_path", { config_name: configName });
-    const configExists = await exists(configPath);
+    try {
+        // Ensure the app data directory exists
+        const windowPetDir = await ensureAppDataDir();
+        const configPath = `${windowPetDir}/${configName}`;
+        
+        const configExists = await exists(configPath);
 
-    if (!configExists) {
-        if (withErrorDialog) await confirm(`Could not get data from ${configPath}`, { title: "WindowPet Dialog", type: 'error' });
+        if (!configExists) {
+            if (withErrorDialog) await confirm(`Could not get data from ${configPath}`, { title: "WindowPet Dialog" });
+            return;
+        }
 
-        return;
+        const data = await readTextFile(configPath);
+        const json = JSON.parse(data);
+        return json[key];
+    } catch (error) {
+        console.error("getAppSettings: Error occurred:", error);
+        throw error;
     }
-
-    const data = await readTextFile(configPath);
-    const json = JSON.parse(data);
-    return json[key];
 }
 
 // set a specific key under object app
@@ -47,9 +68,13 @@ export function setSettings({ configName = "settings.json", key = "app", setKey,
     (async () => {
         let setting: any = await getAppSettings({ configName });
         setting[setKey] = newValue;
-        const configPath: string = await invoke("combine_config_path", { config_name: configName });
+        
+        // Ensure the app data directory exists
+        const windowPetDir = await ensureAppDataDir();
+        const configPath = `${windowPetDir}/${configName}`;
+        
         // if not exist, create new file, so we don't need to check if file exists
-        const store = new Store(configPath);
+        const store = await Store.load(configPath);
         await store.set(key, setting);
         await store.save();
     })()
@@ -61,9 +86,12 @@ export interface ISetConfig extends IGetAppSetting {
 }
 export function setConfig({ configName = "settings.json", key = "app", newConfig }: ISetConfig) {
     (async () => {
-        const configPath: string = await invoke("combine_config_path", { config_name: configName });
+        // Ensure the app data directory exists
+        const windowPetDir = await ensureAppDataDir();
+        const configPath = `${windowPetDir}/${configName}`;
+        
         // if not exist, create new file, so we don't need to check if file exists
-        const store = new Store(configPath);
+        const store = await Store.load(configPath);
         await store.set(key, newConfig);
         await store.save();
     })()
@@ -72,7 +100,10 @@ export function setConfig({ configName = "settings.json", key = "app", newConfig
 export async function getNoneExistingConfigFileName({ configName, extension, folderName }: { configName: string, extension: string, folderName?: string }) {
     // if file name doesn't exist, return the same name
     // else generate a new name with -1, -2, -3, etc
-    const configPath: string = await invoke("combine_config_path", { config_name: `${folderName}${configName}${extension}` });
+    
+    // Ensure the app data directory exists
+    const windowPetDir = await ensureAppDataDir();
+    const configPath = `${windowPetDir}/${folderName}${configName}${extension}`;
     const configExists = await exists(configPath);
     if (!configExists) return configName;
 
@@ -80,7 +111,7 @@ export async function getNoneExistingConfigFileName({ configName, extension, fol
 
     while (configExists) {
         const newConfigName = `${configName}-${i}`;
-        const newConfigPath: string = await invoke("combine_config_path", { config_name: `${folderName}${newConfigName}${extension}` });
+        const newConfigPath = `${windowPetDir}/${folderName}${newConfigName}${extension}`;
         const newConfigExists = await exists(newConfigPath);
         if (!newConfigExists) return newConfigName;
         i++;
@@ -88,7 +119,9 @@ export async function getNoneExistingConfigFileName({ configName, extension, fol
 }
 
 async function updateCustomPetConfig(newCustomPetPath: string) {
-    const customPetConfigPath: string = await invoke("combine_config_path", { config_name: DefaultConfigName.PET_LINKER });
+    // Ensure the app data directory exists
+    const windowPetDir = await ensureAppDataDir();
+    const customPetConfigPath = `${windowPetDir}/${DefaultConfigName.PET_LINKER}`;
     if (await exists(customPetConfigPath)) {
 
         const customPetConfig = await getAppSettings({ configName: DefaultConfigName.PET_LINKER });
@@ -116,7 +149,7 @@ export async function saveCustomPet(petObject: IPetObject) {
         petObject.imageSrc = await invoke("combine_config_path", { config_name: `assets/${uniquePetFileName}.png` }) as string;
 
         // create dir if not exist and copy file to assets folder
-        await createDir('assets', { dir: BaseDirectory.AppConfig, recursive: true });
+        await mkdir('assets', { baseDir: BaseDirectory.AppConfig, recursive: true });
         await copyFile(userImageSrc, petObject.imageSrc);
 
         setConfig({ configName: `custom-pets/${uniquePetFileName}.json`, newConfig: petObject });

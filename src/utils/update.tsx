@@ -1,12 +1,18 @@
-import {
-  checkUpdate,
-  installUpdate,
-  onUpdaterEvent,
-} from '@tauri-apps/api/updater'
-import { relaunch } from '@tauri-apps/api/process'
+// TODO: Fix updater imports for Tauri 2.0
+// import {
+//   checkUpdate,
+//   installUpdate,
+//   onUpdaterEvent,
+// } from '@tauri-apps/plugin-updater'
+
+// Temporary stubs
+const checkUpdate = async () => ({ shouldUpdate: false, manifest: null });
+const installUpdate = async () => {};
+const onUpdaterEvent = async (callback: any) => () => {};
+import { relaunch } from '@tauri-apps/plugin-process'
 import { modals } from '@mantine/modals';
 import Updater from '../ui/pop_up/Updater';
-import { info, error } from "tauri-plugin-log-api";
+import { info, error } from "@tauri-apps/plugin-log";
 import { ButtonVariant } from '.';
 import i18next from 'i18next';
 
@@ -36,7 +42,8 @@ export const checkForUpdate = async () => {
 }
 
 export const update = async () => {
-  const unlisten = await onUpdaterEvent(({ error, status }) => {
+  const unlisten = await onUpdaterEvent((event: {error: any, status: any}) => {
+    const { error, status } = event;
     info(`Updater event Error:${error}, Status${status}`)
     console.log('Updater event', error, status)
   })

@@ -54,7 +54,19 @@ pub fn convert_path(path_str: &str) -> Option<String> {
 }
 
 pub fn app_root() -> PathBuf {
-    tauri::api::path::config_dir().unwrap().join("WindowPet")
+    // For Tauri 2.0, we should use the app data directory
+    // This will typically be ~/.local/share/WindowPet on Linux
+    use tauri::Manager;
+    
+    // Try to get a standard app data directory
+    let data_dir = std::env::var("XDG_DATA_HOME")
+        .map(|dir| PathBuf::from(dir))
+        .unwrap_or_else(|_| {
+            std::env::var("HOME")
+                .map(|home| PathBuf::from(home).join(".local/share"))
+                .unwrap_or_else(|_| PathBuf::from("./data"))
+        });
+    data_dir.join("WindowPet")
 }
 
 #[tauri::command(rename_all = "snake_case")]
@@ -71,15 +83,21 @@ pub fn if_app_config_does_not_exist_create_default(app: &mut App, config_name: &
             _ => return,
         };
         let json_data: serde_json::Value = serde_json::from_str(default_config).unwrap();
-        let mut store = StoreBuilder::new(app.handle(), PathBuf::from(setting_path)).build();
+        let store = StoreBuilder::new(app.handle(), PathBuf::from(setting_path)).build();
 
-        // note that values must be serd_json::Value to be compatible with JS
-        store
-            .insert("app".to_string(), json!(json_data))
-            .unwrap_or_else(|err| {
-                println!("Error inserting into store: {}", err);
-            });
-        store.save().unwrap();
+        match store {
+            Ok(store) => {
+                // note that values must be serd_json::Value to be compatible with JS
+                store.set("app".to_string(), json!(json_data));
+
+                if let Err(e) = store.save() {
+                    eprintln!("Failed to save store: {}", e);
+                }
+            }
+            Err(e) => {
+                eprintln!("Failed to create store: {}", e);
+            }
+        }
         info!("Create default config file: {}", config_name);
     }
 }

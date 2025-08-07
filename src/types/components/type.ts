@@ -1,4 +1,6 @@
-import { UpdateManifest } from "@tauri-apps/api/updater";
+// TODO: Fix UpdateManifest import for Tauri 2.0
+// import { UpdateManifest } from "@tauri-apps/plugin-updater";
+type UpdateManifest = any; // Temporary fix
 import { ISpriteConfig } from "../ISpriteConfig";
 import { ISettingTabs } from "../ISetting";
 import { DispatchType } from "../IEvents";

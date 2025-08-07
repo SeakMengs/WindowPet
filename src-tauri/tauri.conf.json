@@ -1,67 +1,54 @@
 {
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "WindowPet",
+  "version": "0.0.9",
+  "identifier": "com.seakmengs.windowpet",
   "build": {
     "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "npm run build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../dist",
-    "withGlobalTauri": false
+    "frontendDist": "../dist"
   },
-  "package": {
-    "productName": "WindowPet",
-    "version": "0.0.9"
-  },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "window": {
-        "all": true
-      },
-      "shell": {
-        "all": false,
-        "open": true
-      },
-      "fs": {
-        "all": true,
-        "scope": {
-          "allow": [
-            "**"
-          ],
-          "requireLiteralLeadingDot": false
-        }
-      },
-      "protocol": {
-        "asset": true,
-        "assetScope": [
-          "**"
-        ]
-      },
-      "path": {
-        "all": true
-      },
-      "dialog": {
-        "all": true
-      },
-      "process": {
-        "all": false,
-        "exit": false,
-        "relaunch": true,
-        "relaunchDangerousAllowSymlinkMacos": false
+  "app": {
+    "withGlobalTauri": false,
+    "windows": [
+      {
+        "title": "WindowPet",
+        "width": 1920,
+        "height": 1080,
+        "resizable": false,
+        "transparent": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "focus": false,
+        "decorations": false,
+        "shadow": false,
+        "visible": true
       }
+    ],
+    "security": {
+      "csp": "asset: https://asset.localhost"
     },
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "WindowPet",
-      "category": "Productivity",
-      "copyright": "Copyright (c) 2023 Seakmeng",
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ]
+    "trayIcon": {
+      "iconPath": "icons/32x32.png",
+      "iconAsTemplate": true
     },
+    "macOSPrivateApi": true
+  },
+  "bundle": {
+    "active": true,
+    "category": "Productivity",
+    "targets": "all",
+    "copyright": "Copyright (c) 2023 Seakmeng",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  },
+  "plugins": {
     "updater": {
       "active": true,
       "dialog": false,
@@ -72,27 +59,6 @@
       "windows": {
         "installMode": "passive"
       }
-    },
-    "security": {
-      "csp": "asset: https://asset.localhost"
-    },
-    "windows": [
-      {
-        "fullscreen": true,
-        "resizable": false,
-        "title": "WindowPet",
-        "width": 64,
-        "height": 64,
-        "transparent": true,
-        "alwaysOnTop": true,
-        "skipTaskbar": true,
-        "focus": false
-      }
-    ],
-    "systemTray": {
-      "iconPath": "icons/32x32.png",
-      "iconAsTemplate": true
-    },
-    "macOSPrivateApi": true
+    }
   }
 }
