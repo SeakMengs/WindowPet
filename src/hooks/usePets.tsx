@@ -9,25 +9,38 @@ import defaultPetConfig from "../config/pet_config";
 const { setPets, setDefaultPet } = useSettingStore.getState();
 
 const getPets = async () => {
-    let saveConfigAgain = false;
-    const pets: ISpriteConfig[] = await getAppSettings({ configName: "pets.json" });
-
-    if (pets.length === 0) {
-        noPetDialog();
-        return [];
-    }
-
-    // check if all pets has unique id if no add id and after all check, save config again
-    pets.forEach((pet: ISpriteConfig) => {
-        if (!pet.id) {
-            pet.id = crypto.randomUUID();
-            saveConfigAgain = true;
+    try {
+        let saveConfigAgain = false;
+        const pets: ISpriteConfig[] = await getAppSettings({ configName: "pets.json" });
+        
+        console.log("getPets: Retrieved pets from getAppSettings:", pets);
+        console.log("getPets: Number of pets:", pets ? pets.length : 0);
+        if (pets && pets.length > 0) {
+            console.log("getPets: Pet names:", pets.map(p => p.name));
+            console.log("getPets: Pet image sources:", pets.map(p => p.imageSrc));
         }
-    });
 
-    if (saveConfigAgain) setConfig({ configName: "pets.json", newConfig: pets });
+        if (!pets || pets.length === 0) {
+            noPetDialog();
+            return [];
+        }
 
-    setPets(pets);
+        // check if all pets has unique id if no add id and after all check, save config again
+        pets.forEach((pet: ISpriteConfig) => {
+            if (!pet.id) {
+                pet.id = crypto.randomUUID();
+                saveConfigAgain = true;
+            }
+        });
+
+        if (saveConfigAgain) setConfig({ configName: "pets.json", newConfig: pets });
+
+        setPets(pets);
+        return pets;
+    } catch (error) {
+        console.error("getPets: Error occurred:", error);
+        throw new Error(`Failed to load pets: ${error instanceof Error ? error.message : String(error)}`);
+    }
 };
 
 export function usePets(): UseQueryResult<unknown, Error> {

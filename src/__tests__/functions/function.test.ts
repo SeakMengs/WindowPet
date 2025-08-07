@@ -4,7 +4,7 @@ import { expect, it } from "vitest";
 
 it("Should have main window", async () => {
     mockWindows("main");
-    const { getCurrent } = await import('@tauri-apps/api/window');
+    const { getCurrentWebviewWindow } = await import('@tauri-apps/api/webviewWindow');
 
-    expect(getCurrent()).toHaveProperty('label', 'main');
+    expect(getCurrentWebviewWindow()).toHaveProperty('label', 'main');
 })

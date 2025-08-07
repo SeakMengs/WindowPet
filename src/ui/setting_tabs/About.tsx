@@ -1,6 +1,6 @@
 import { memo, useEffect, useMemo, useState } from "react";
 import { Anchor, Avatar, Button, Flex, Loader, Text } from "@mantine/core";
-import { open } from "@tauri-apps/api/shell";
+import { open } from "@tauri-apps/plugin-shell";
 import { ButtonVariant } from "../../utils";
 import { getVersion } from '@tauri-apps/api/app';
 import { useTranslation } from "react-i18next";

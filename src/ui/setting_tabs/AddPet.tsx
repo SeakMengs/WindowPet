@@ -21,10 +21,10 @@ import {
     IconPlus,
     IconTrash
 } from "@tabler/icons-react";
-import { open } from "@tauri-apps/api/dialog";
+import { open } from "@tauri-apps/plugin-dialog";
 import classes from './AddPet.module.css';
 import clsx from "clsx";
-import { exists } from "@tauri-apps/api/fs";
+import { exists } from "@tauri-apps/plugin-fs";
 import { notifications } from "@mantine/notifications";
 import { saveCustomPet } from "../../utils/settings";
 import { useDefaultPets } from "../../hooks/usePets";

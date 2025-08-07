@@ -12,7 +12,7 @@ import {
     ISwitchStateOptions,
     Ease,
 } from "../types/IPet";
-import { info, error } from "tauri-plugin-log-api";
+import { info, error } from "@tauri-apps/plugin-log";
 import defaultSettings from "../../src-tauri/src/app/default/settings.json";
 import { ConfigManager, InputManager } from "./manager";
 
@@ -107,10 +107,14 @@ export default class Pets extends Phaser.Scene {
 
         let i = 0;
         // create pets
-        for (const sprite of this.configManager.getSpriteConfig()) {
+        const spriteConfigs = this.configManager.getSpriteConfig();
+        console.log("Pets.ts: Got sprite configs:", spriteConfigs.length);
+        for (const sprite of spriteConfigs) {
+            console.log("Pets.ts: Creating pet:", sprite.name, "at index:", i);
             this.addPet(sprite, i);
             i++;
         }
+        console.log("Pets.ts: Total pets created:", i);
 
         // register event
         this.input.on(
@@ -250,7 +254,7 @@ export default class Pets extends Phaser.Scene {
         // listen to setting change from setting window and update settings
         listen<any>(
             EventType.SettingWindowToPetOverlay,
-            (event: TRenderEventListener) => {
+            (event: any) => {
                 switch (event.payload.dispatchType) {
                     case DispatchType.SwitchAllowPetInteraction:
                         this.allowPetInteraction = event.payload
@@ -322,6 +326,7 @@ export default class Pets extends Phaser.Scene {
     }
 
     addPet(sprite: ISpriteConfig, index: number): void {
+        console.log("addPet: Starting to add pet:", sprite.name, "at index:", index);
         this.configManager.registerSpriteStateAnimation(sprite);
 
         const randomX = Phaser.Math.Between(
@@ -330,12 +335,17 @@ export default class Pets extends Phaser.Scene {
         );
         // make the pet jump from the top of the screen
         const petY = 0 + this.configManager.getFrameSize(sprite).frameHeight;
+        console.log("addPet: Pet position will be:", randomX, petY);
+        console.log("addPet: World bounds:", this.physics.world.bounds);
+        
         this.pets[index] = this.physics.add
             .sprite(randomX, petY, sprite.name)
             .setInteractive({
                 draggable: true,
                 pixelPerfect: true,
             }) as Pet;
+            
+        console.log("addPet: Pet sprite created for:", sprite.name, "visible:", this.pets[index].visible);
 
         this.allowOverridePetScale
             ? this.scalePet(this.pets[index], this.petScale)

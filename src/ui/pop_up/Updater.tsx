@@ -1,7 +1,7 @@
 import { UpdaterPopupProps } from "../../types/components/type"
 import { Anchor, Box, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { open } from "@tauri-apps/api/shell";
+import { open } from "@tauri-apps/plugin-shell";
 import Markdown from "react-markdown";
 import { useEffect, useState } from "react";
 import remarkGfm from "remark-gfm";

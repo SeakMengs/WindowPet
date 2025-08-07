@@ -1,10 +1,10 @@
 import { useQuery } from "react-query";
 import { useSettingStore } from "./useSettingStore";
 import { getAppSettings } from "../utils/settings";
-import { isEnabled } from "tauri-plugin-autostart-api";
+import { isEnabled } from "@tauri-apps/plugin-autostart";
 import i18next from "i18next";
 import defaultSettings from "../../src-tauri/src/app/default/settings.json";
-import { error } from "tauri-plugin-log-api";
+import { error } from "@tauri-apps/plugin-log";
 import { ISettingStoreVariables } from "../types/hooks/type";
 
 const { setLanguage, setTheme, setAllowAutoStartUp, setAllowPetAboveTaskbar, setAllowPetInteraction, setAllowOverridePetScale, setPetScale, setAllowPetClimbing } = useSettingStore.getState();

@@ -12,8 +12,8 @@ import { PetCardType } from "../../types/components/type";
 import { useSettingStore } from "../../hooks/useSettingStore";
 import { DispatchType } from "../../types/IEvents";
 import { ColorSchemeType, DefaultConfigName } from "../../types/ISetting";
-import { invoke } from "@tauri-apps/api";
-import { WebviewWindow } from "@tauri-apps/api/window";
+import { invoke } from "@tauri-apps/api/core";
+import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { useDefaultPets } from "../../hooks/usePets";
 
 function PetShop() {

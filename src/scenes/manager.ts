@@ -1,7 +1,8 @@
-import { convertFileSrc, invoke } from "@tauri-apps/api/tauri";
+import { convertFileSrc } from "@tauri-apps/api/core";
+import { invoke } from "@tauri-apps/api/core";
 import { ISpriteConfig, SpriteType } from "../types/ISpriteConfig";
-import { appWindow } from "@tauri-apps/api/window";
-import { error } from "tauri-plugin-log-api";
+import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
+import { error } from "@tauri-apps/plugin-log";
 
 export class ConfigManager {
     // Config for sprite sheet that's going to be loaded
@@ -290,7 +291,7 @@ export class InputManager {
     public turnOffIgnoreCursorEvents(): void {
         try {
             if (this.isIgnoreCursorEvents) {
-                appWindow.setIgnoreCursorEvents(false).then(() => {
+                getCurrentWebviewWindow().setIgnoreCursorEvents(false).then(() => {
                     this.isIgnoreCursorEvents = false;
                 });
             }
@@ -307,7 +308,7 @@ export class InputManager {
             if (!this.isIgnoreCursorEvents) {
                 // slight delay to avoid crash when call setIgnoreCursorEvents too fast
                 setTimeout(() => {
-                    appWindow.setIgnoreCursorEvents(true).then(() => {
+                    getCurrentWebviewWindow().setIgnoreCursorEvents(true).then(() => {
                         this.isIgnoreCursorEvents = true;
                     });
                 }, this.IGNORE_CURSOR_EVENTS_DELAY);
