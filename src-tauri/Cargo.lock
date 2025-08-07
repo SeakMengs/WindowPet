@@ -4713,6 +4713,7 @@ version = "0.0.9"
 dependencies = [
  "log",
  "mouse_position",
+ "objc",
  "open 5.1.3",
  "serde",
  "serde_json",
@@ -4723,6 +4724,7 @@ dependencies = [
  "tauri-plugin-single-instance",
  "tauri-plugin-store",
  "tokio",
+ "windows-sys 0.48.0",
 ]
 
 [[package]]

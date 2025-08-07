@@ -23,13 +23,17 @@
       "fs": {
         "all": true,
         "scope": {
-          "allow": ["**"],
+          "allow": [
+            "**"
+          ],
           "requireLiteralLeadingDot": false
         }
       },
       "protocol": {
         "asset": true,
-        "assetScope": ["**"]
+        "assetScope": [
+          "**"
+        ]
       },
       "path": {
         "all": true
@@ -62,7 +66,9 @@
       "active": true,
       "dialog": false,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDZERTQ3OTFEMzhDNTJEOUEKUldTYUxjVTRIWG5rYmFYak50OVBjTnBORHQ5TE5WeHJDMGNHbEJZdWxoa0RvbFEyUDVPSno1NTEK",
-      "endpoints": ["https://github.com/SeakMengs/WindowPet/releases/latest/download/latest.json"],
+      "endpoints": [
+        "https://github.com/SeakMengs/WindowPet/releases/latest/download/latest.json"
+      ],
       "windows": {
         "installMode": "passive"
       }
@@ -79,7 +85,8 @@
         "height": 64,
         "transparent": true,
         "alwaysOnTop": true,
-        "skipTaskbar": true
+        "skipTaskbar": true,
+        "focus": false
       }
     ],
     "systemTray": {
