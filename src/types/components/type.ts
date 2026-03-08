@@ -1,4 +1,4 @@
-import { UpdateManifest } from "@tauri-apps/api/updater";
+import { Update } from "@tauri-apps/plugin-updater";
 import { ISpriteConfig } from "../ISpriteConfig";
 import { ISettingTabs } from "../ISetting";
 import { DispatchType } from "../IEvents";
@@ -54,6 +54,5 @@ export interface PhaserCanvasProps {
 }
 
 export interface UpdaterPopupProps {
-    shouldUpdate: boolean,
-    manifest: UpdateManifest | undefined,
+    update: Update,
 }

@@ -1,12 +1,12 @@
 import { UpdaterPopupProps } from "../../types/components/type"
 import { Anchor, Box, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { open } from "@tauri-apps/api/shell";
+import { open } from "@tauri-apps/plugin-shell";
 import Markdown from "react-markdown";
 import { useEffect, useState } from "react";
 import remarkGfm from "remark-gfm";
 
-function Updater({ shouldUpdate, manifest }: UpdaterPopupProps) {
+function Updater({ update }: UpdaterPopupProps) {
     const { t } = useTranslation();
     const [markdown, setMarkDown] = useState<string>();
 
@@ -25,7 +25,7 @@ function Updater({ shouldUpdate, manifest }: UpdaterPopupProps) {
     return (
         <>
             <Box>
-                <Text display={"inline"}>{t("WindowPet v available, do you want to install the update?", { version: manifest?.version })}
+                <Text display={"inline"}>{t("WindowPet v available, do you want to install the update?", { version: update.version })}
                     <Anchor mx={"xs"} onClick={() => open(`https://github.com/SeakMengs/WindowPet/releases/latest`)}>{t("(release note)")}</Anchor>
                 </Text>
                 <Box mx={"lg"}>

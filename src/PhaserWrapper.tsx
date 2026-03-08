@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Phaser from "phaser";
 import Pets from "./scenes/Pets";
 import { useSettingStore } from "./hooks/useSettingStore";
-import { appWindow } from "@tauri-apps/api/window";
+import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 
 function PhaserWrapper() {
     const phaserDom = useRef<HTMLDivElement>(null);
@@ -22,7 +22,7 @@ function PhaserWrapper() {
         window.addEventListener("resize", handleResize);
 
         // ensure that if component remount user will still be able to touch their screen
-        appWindow.setIgnoreCursorEvents(true);
+        getCurrentWebviewWindow().setIgnoreCursorEvents(true);
 
         const phaserConfig: Phaser.Types.Core.GameConfig = {
             type: Phaser.AUTO,

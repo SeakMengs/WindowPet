@@ -1,4 +1,4 @@
-import { UseQueryResult, useQuery } from "react-query";
+import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { getAppSettings, setConfig } from "../utils/settings";
 import { useSettingStore } from "./useSettingStore";
 import { ISpriteConfig, SpriteType } from "../types/ISpriteConfig";
@@ -12,7 +12,7 @@ const getPets = async () => {
     let saveConfigAgain = false;
     const pets: ISpriteConfig[] = await getAppSettings({ configName: "pets.json" });
 
-    if (pets.length === 0) {
+    if (!pets || pets.length === 0) {
         noPetDialog();
         return [];
     }
@@ -28,13 +28,17 @@ const getPets = async () => {
     if (saveConfigAgain) setConfig({ configName: "pets.json", newConfig: pets });
 
     setPets(pets);
+    return pets;
 };
 
 export function usePets(): UseQueryResult<unknown, Error> {
-    return useQuery('pets', getPets, { refetchOnWindowFocus: false, 
+    return useQuery({
+        queryKey: ['pets'],
+        queryFn: getPets,
+        refetchOnWindowFocus: false,
         // disable cache
-        cacheTime: 0,
-     });
+        gcTime: 0,
+    });
 };
 
 const getDefaultPets = async () => {
@@ -45,18 +49,22 @@ const getDefaultPets = async () => {
         for (const petPath of customPets) {
             const pet: ISpriteConfig = await getAppSettings({ configName: petPath, withErrorDialog: false });
             if (!pet) continue;
-            
+
             pet.type = SpriteType.CUSTOM;
             defaultPets.push(pet);
         }
     }
 
     setDefaultPet(defaultPets);
+    return defaultPets;
 };
 
 export function useDefaultPets(): UseQueryResult<unknown, Error> {
-    return useQuery('defaultPets', getDefaultPets, { refetchOnWindowFocus: false,
+    return useQuery({
+        queryKey: ['defaultPets'],
+        queryFn: getDefaultPets,
+        refetchOnWindowFocus: false,
         // disable cache
-        cacheTime: 0,
-     });
+        gcTime: 0,
+    });
 }

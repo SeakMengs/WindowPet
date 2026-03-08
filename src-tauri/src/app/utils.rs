@@ -1,11 +1,11 @@
 use super::conf::AppConfig;
 use log::info;
-use tauri::{Manager, WindowBuilder, WindowUrl};
+use tauri::{Manager, WebviewUrl, WebviewWindowBuilder};
 
 #[tauri::command]
 pub async fn reopen_main_window(app: tauri::AppHandle) -> Result<(), String> {
     // Check if a window with label "main" already exists
-    if let Some(window) = app.get_window("main") {
+    if let Some(window) = app.get_webview_window("main") {
         // Bring the existing window to focus
         window.set_focus().map_err(|e| e.to_string())?;
         info!("Main window already exists, brought to focus");
@@ -13,7 +13,7 @@ pub async fn reopen_main_window(app: tauri::AppHandle) -> Result<(), String> {
     }
 
     // If no window exists, create a new one
-    let window = WindowBuilder::new(&app, "main", WindowUrl::App("/".into()))
+    let window = WebviewWindowBuilder::new(&app, "main", WebviewUrl::App("/".into()))
         .fullscreen(true)
         .resizable(false)
         .transparent(true)
@@ -24,15 +24,17 @@ pub async fn reopen_main_window(app: tauri::AppHandle) -> Result<(), String> {
         .map_err(|e| e.to_string())?;
 
     // Allow click-through window
-    window.set_ignore_cursor_events(true).map_err(|e| e.to_string())?;
+    window
+        .set_ignore_cursor_events(true)
+        .map_err(|e| e.to_string())?;
     info!("Reopened main window");
 
     Ok(())
 }
 
 pub fn open_setting_window(app: tauri::AppHandle) {
-    let settings = AppConfig::new();
-    let _window = tauri::WindowBuilder::new(&app, "setting", WindowUrl::App("/setting".into()))
+    let settings = AppConfig::new(&app);
+    let _window = WebviewWindowBuilder::new(&app, "setting", WebviewUrl::App("/setting".into()))
         .title("WindowPet Setting")
         .inner_size(1000.0, 650.0)
         .theme(if settings.get_theme() == "dark" {
