@@ -14,7 +14,7 @@ import { PetCardType } from "../../types/components/type";
 import { DispatchType } from "../../types/IEvents";
 import { ColorSchemeType } from "../../types/ISetting";
 import { usePets } from "../../hooks/usePets";
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 
 export function MyPets() {
     const { refetch, data: initialPets = [] } = usePets();

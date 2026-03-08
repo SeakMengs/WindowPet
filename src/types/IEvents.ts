@@ -4,7 +4,6 @@ export type EventValue = boolean | string | ISpriteConfig | number;
 
 export type TRenderEventListener = {
     event: string,
-    windowLabel: string,
     payload: {
         dispatchType: DispatchType,
         message: string,

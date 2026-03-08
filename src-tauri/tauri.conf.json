@@ -1,77 +1,22 @@
 {
+  "productName": "WindowPet",
+  "version": "0.0.9",
+  "identifier": "WindowPet",
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../dist",
-    "withGlobalTauri": false
+    "devUrl": "http://localhost:1420",
+    "frontendDist": "../dist"
   },
-  "package": {
-    "productName": "WindowPet",
-    "version": "0.0.9"
-  },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "window": {
-        "all": true
-      },
-      "shell": {
-        "all": false,
-        "open": true
-      },
-      "fs": {
-        "all": true,
-        "scope": {
-          "allow": ["**"],
-          "requireLiteralLeadingDot": false
-        }
-      },
-      "protocol": {
-        "asset": true,
-        "assetScope": ["**"]
-      },
-      "path": {
-        "all": true
-      },
-      "dialog": {
-        "all": true
-      },
-      "process": {
-        "all": false,
-        "exit": false,
-        "relaunch": true,
-        "relaunchDangerousAllowSymlinkMacos": false
-      }
-    },
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "WindowPet",
-      "category": "Productivity",
-      "copyright": "Copyright (c) 2023 Seakmeng",
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ]
-    },
-    "updater": {
-      "active": true,
-      "dialog": false,
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDZERTQ3OTFEMzhDNTJEOUEKUldTYUxjVTRIWG5rYmFYak50OVBjTnBORHQ5TE5WeHJDMGNHbEJZdWxoa0RvbFEyUDVPSno1NTEK",
-      "endpoints": ["https://github.com/SeakMengs/WindowPet/releases/latest/download/latest.json"],
-      "windows": {
-        "installMode": "passive"
-      }
-    },
+  "app": {
+    "withGlobalTauri": false,
+    "macOSPrivateApi": true,
     "security": {
-      "csp": "asset: https://asset.localhost"
+      "csp": "default-src 'self' tauri: asset: https://asset.localhost; img-src 'self' asset: data: https://asset.localhost; connect-src 'self' https://api.github.com"
     },
     "windows": [
       {
+        "label": "main",
         "fullscreen": true,
         "resizable": false,
         "title": "WindowPet",
@@ -81,11 +26,26 @@
         "alwaysOnTop": true,
         "skipTaskbar": true
       }
-    ],
-    "systemTray": {
-      "iconPath": "icons/32x32.png",
-      "iconAsTemplate": true
-    },
-    "macOSPrivateApi": true
+    ]
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "category": "Productivity",
+    "copyright": "Copyright (c) 2023 Seakmeng",
+    "createUpdaterArtifacts": true,
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDZERTQ3OTFEMzhDNTJEOUEKUldTYUxjVTRIWG5rYmFYak50OVBjTnBORHQ5TE5WeHJDMGNHbEJZdWxoa0RvbFEyUDVPSno1NTEK",
+      "endpoints": ["https://github.com/SeakMengs/WindowPet/releases/latest/download/latest.json"]
+    }
   }
 }

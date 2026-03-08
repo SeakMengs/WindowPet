@@ -1,54 +1,43 @@
-import {
-  checkUpdate,
-  installUpdate,
-  onUpdaterEvent,
-} from '@tauri-apps/api/updater'
-import { relaunch } from '@tauri-apps/api/process'
+import { check, Update } from '@tauri-apps/plugin-updater'
+import { relaunch } from '@tauri-apps/plugin-process'
 import { modals } from '@mantine/modals';
 import Updater from '../ui/pop_up/Updater';
-import { info, error } from "tauri-plugin-log-api";
+import { info, error } from "@tauri-apps/plugin-log";
 import { ButtonVariant } from '.';
 import i18next from 'i18next';
 
 export const checkForUpdate = async () => {
   info('Checking for update');
   try {
-    const { shouldUpdate, manifest } = await checkUpdate()
+    const update = await check();
 
-    if (shouldUpdate) {
+    if (update) {
       modals.openConfirmModal({
         modalId: 'check-for-update',
         centered: true,
         title: i18next.t('Update available'),
-        children: <Updater shouldUpdate={shouldUpdate} manifest={manifest} />,
+        children: <Updater update={update} />,
         confirmProps: { variant: ButtonVariant },
         cancelProps: { variant: ButtonVariant, color: 'red' },
         labels: { confirm: i18next.t('Yes'), cancel: i18next.t('No') },
-        onConfirm: () => update(),
+        onConfirm: () => installUpdate(update),
       });
     }
 
     info('Update check complete');
-    return shouldUpdate;
+    return update !== null;
   } catch (err) {
     error(err as string);
   }
 }
 
-export const update = async () => {
-  const unlisten = await onUpdaterEvent(({ error, status }) => {
-    info(`Updater event Error:${error}, Status${status}`)
-    console.log('Updater event', error, status)
-  })
-
+export const installUpdate = async (update: Update) => {
   try {
     info('Installing update');
-    await installUpdate()
+    await update.downloadAndInstall();
     info('Update installed, relaunching app');
-    await relaunch()
+    await relaunch();
   } catch (err) {
     error(err as string);
-  } finally {
-    unlisten()
   }
 }

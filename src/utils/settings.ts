@@ -1,13 +1,13 @@
-import { enable, isEnabled, disable } from "tauri-plugin-autostart-api";
-import { Store } from "tauri-plugin-store-api";
+import { enable, isEnabled, disable } from "@tauri-apps/plugin-autostart";
+import { load } from "@tauri-apps/plugin-store";
 import { DefaultConfigName, IGetAppSetting } from "../types/ISetting";
-import { invoke } from '@tauri-apps/api/tauri'
-import { readTextFile, exists, copyFile, BaseDirectory, createDir } from "@tauri-apps/api/fs"
-import { confirm } from "@tauri-apps/api/dialog";
+import { invoke } from '@tauri-apps/api/core'
+import { readTextFile, exists, copyFile, BaseDirectory, mkdir } from "@tauri-apps/plugin-fs"
+import { confirm } from "@tauri-apps/plugin-dialog";
 import { IPetObject } from "../types/ISpriteConfig";
 import { showNotification } from "./notification";
 import i18next from "i18next";
-import { error, info } from "tauri-plugin-log-api";
+import { error, info } from "@tauri-apps/plugin-log";
 
 export function toggleAutoStartUp(allowAutoStartUp: boolean) {
     (async () => {
@@ -27,7 +27,7 @@ export async function getAppSettings({ configName = "settings.json", key = "app"
     const configExists = await exists(configPath);
 
     if (!configExists) {
-        if (withErrorDialog) await confirm(`Could not get data from ${configPath}`, { title: "WindowPet Dialog", type: 'error' });
+        if (withErrorDialog) await confirm(`Could not get data from ${configPath}`, { title: "WindowPet Dialog", kind: 'error' });
 
         return;
     }
@@ -49,7 +49,7 @@ export function setSettings({ configName = "settings.json", key = "app", setKey,
         setting[setKey] = newValue;
         const configPath: string = await invoke("combine_config_path", { config_name: configName });
         // if not exist, create new file, so we don't need to check if file exists
-        const store = new Store(configPath);
+        const store = await load(configPath);
         await store.set(key, setting);
         await store.save();
     })()
@@ -63,7 +63,7 @@ export function setConfig({ configName = "settings.json", key = "app", newConfig
     (async () => {
         const configPath: string = await invoke("combine_config_path", { config_name: configName });
         // if not exist, create new file, so we don't need to check if file exists
-        const store = new Store(configPath);
+        const store = await load(configPath);
         await store.set(key, newConfig);
         await store.save();
     })()
@@ -116,7 +116,7 @@ export async function saveCustomPet(petObject: IPetObject) {
         petObject.imageSrc = await invoke("combine_config_path", { config_name: `assets/${uniquePetFileName}.png` }) as string;
 
         // create dir if not exist and copy file to assets folder
-        await createDir('assets', { dir: BaseDirectory.AppConfig, recursive: true });
+        await mkdir('assets', { baseDir: BaseDirectory.AppConfig, recursive: true });
         await copyFile(userImageSrc, petObject.imageSrc);
 
         setConfig({ configName: `custom-pets/${uniquePetFileName}.json`, newConfig: petObject });

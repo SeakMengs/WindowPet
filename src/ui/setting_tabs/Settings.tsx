@@ -7,7 +7,7 @@ import { handleSettingChange } from "../../utils/handleSettingChange";
 import { useSettingStore } from "../../hooks/useSettingStore";
 import { memo, useCallback } from "react";
 import { IconLanguage } from "@tabler/icons-react";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@tauri-apps/api/core";
 import SettingButton from "./settings/SettingButton";
 import { DispatchType } from "../../types/IEvents";
 

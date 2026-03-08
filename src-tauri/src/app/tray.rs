@@ -1,48 +1,50 @@
 use super::utils::{open_setting_window, reopen_main_window};
 use log::info;
 use tauri::{
-    AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu,
-    SystemTrayMenuItem,
+    image::Image,
+    menu::{MenuBuilder, MenuItemBuilder, PredefinedMenuItem},
+    tray::{MouseButton, TrayIconBuilder, TrayIconEvent},
+    Manager,
 };
+use tauri_plugin_dialog::DialogExt;
 
-pub fn init_system_tray() -> SystemTray {
-    let menu = SystemTrayMenu::new()
-        .add_item(CustomMenuItem::new("show".to_string(), "Show"))
-        .add_item(CustomMenuItem::new(
-            "pause".to_string(),
-            "Pause (Free Memory)",
-        ))
-        .add_item(CustomMenuItem::new("setting".to_string(), "Setting"))
-        .add_native_item(SystemTrayMenuItem::Separator)
-        .add_item(CustomMenuItem::new("restart".to_string(), "Restart"))
-        .add_item(CustomMenuItem::new("quit".to_string(), "Quit"));
+pub fn create_tray(app: &tauri::App<tauri::Wry>) -> tauri::Result<()> {
+    let show = MenuItemBuilder::new("Show").id("show").build(app)?;
+    let pause = MenuItemBuilder::new("Pause (Free Memory)").id("pause").build(app)?;
+    let setting = MenuItemBuilder::new("Setting").id("setting").build(app)?;
+    let separator = PredefinedMenuItem::separator(app)?;
+    let restart = MenuItemBuilder::new("Restart").id("restart").build(app)?;
+    let quit = MenuItemBuilder::new("Quit").id("quit").build(app)?;
 
-    SystemTray::new().with_menu(menu)
-}
+    let menu = MenuBuilder::new(app)
+        .items(&[&show, &pause, &setting, &separator, &restart, &quit])
+        .build()?;
 
-pub fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
-    if let SystemTrayEvent::MenuItemClick { id, .. } = event {
-        match id.as_str() {
+    let _tray = TrayIconBuilder::new()
+        .icon(Image::from_bytes(include_bytes!("../../icons/32x32.png"))?)
+        .menu(&menu)
+        .on_menu_event(|app, event| match event.id.as_ref() {
             "show" => {
-                match app.get_window("main") {
-                    Some(window) => {
+                match app.get_webview_window("main") {
+                    Some(_window) => {
                         println!("Window already exists");
-                        tauri::api::dialog::message(
-                            Some(&window),
-                            "WindowPet Dialog",
-                            "Pet already exist",
-                        );
+                        app.dialog()
+                            .message("Pet already exist")
+                            .title("WindowPet Dialog")
+                            .show(|_| {});
                     }
                     None => {
-                        // use tokio to run the future to avoid blocking the thread
-                        let future = async { reopen_main_window(app.clone()).await };
-                        // run the future using an executor and handle the result
-                        let _result_ = tokio::runtime::Runtime::new().unwrap().block_on(future);
+                        let app_clone = app.clone();
+                        tauri::async_runtime::spawn(async move {
+                            reopen_main_window(app_clone).await.unwrap_or_else(|e| {
+                                println!("Error reopening main window: {}", e);
+                            });
+                        });
                     }
                 };
             }
             "pause" => {
-                match app.get_window("main") {
+                match app.get_webview_window("main") {
                     Some(window) => {
                         window.close().expect("failed to close frontend window");
                     }
@@ -51,13 +53,12 @@ pub fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                     }
                 };
             }
-            "setting" => match app.get_window("setting") {
-                Some(window) => {
-                    tauri::api::dialog::message(
-                        Some(&window),
-                        "WindowPet Dialog",
-                        "WindowPet setting already exist",
-                    );
+            "setting" => match app.get_webview_window("setting") {
+                Some(_window) => {
+                    app.dialog()
+                        .message("WindowPet setting already exist")
+                        .title("WindowPet Dialog")
+                        .show(|_| {});
                     println!("Window setting already exist");
                 }
                 None => {
@@ -73,25 +74,29 @@ pub fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                 app.exit(0);
             }
             _ => {}
-        }
-    } else if let SystemTrayEvent::DoubleClick {
-        position: _,
-        size: _,
-        ..
-    } = event
-    {
-        match app.get_window("setting") {
-            Some(window) => {
-                tauri::api::dialog::message(
-                    Some(&window),
-                    "WindowPet Dialog",
-                    "WindowPet setting already exist",
-                );
-                println!("Window setting already exists");
+        })
+        .on_tray_icon_event(|tray, event| {
+            if let TrayIconEvent::DoubleClick {
+                button: MouseButton::Left,
+                ..
+            } = event
+            {
+                let app = tray.app_handle();
+                match app.get_webview_window("setting") {
+                    Some(_window) => {
+                        app.dialog()
+                            .message("WindowPet setting already exist")
+                            .title("WindowPet Dialog")
+                            .show(|_| {});
+                        println!("Window setting already exists");
+                    }
+                    None => {
+                        open_setting_window(app.clone());
+                    }
+                }
             }
-            None => {
-                open_setting_window(app.clone());
-            }
-        }
-    }
+        })
+        .build(app)?;
+
+    Ok(())
 }
