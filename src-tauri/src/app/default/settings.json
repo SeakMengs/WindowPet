@@ -6,5 +6,6 @@
     "allowPetClimbing": true,
     "allowAutoStartUp": false,
     "allowOverridePetScale": true,
-    "petScale": 0.7
+    "petScale": 0.7,
+    "allowChristmasTheme": false
 }

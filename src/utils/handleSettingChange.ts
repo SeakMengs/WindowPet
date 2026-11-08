@@ -26,6 +26,7 @@ export const handleSettingChange: IHandleSettingChange = (
         setAllowOverridePetScale,
         setPetScale,
         setAllowPetClimbing,
+        setAllowChristmasTheme,
     } = useSettingStore.getState();
 
     info(`Change setting, type: ${dispatchType}, value: ${newValue}`);
@@ -79,6 +80,11 @@ export const handleSettingChange: IHandleSettingChange = (
         case DispatchType.ChangePetScale:
             setSettings({ setKey: "petScale", newValue: newValue });
             setPetScale(newValue as number);
+            emitUpdatePetsEvent({ dispatchType, newValue });
+            return;
+        case DispatchType.SwitchChristmasTheme:
+            setSettings({ setKey: "allowChristmasTheme", newValue: newValue });
+            setAllowChristmasTheme(newValue as boolean);
             emitUpdatePetsEvent({ dispatchType, newValue });
             return;
         default:

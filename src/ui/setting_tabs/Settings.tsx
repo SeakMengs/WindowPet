@@ -21,7 +21,7 @@ interface ISettingsContent {
 
 function Settings() {
     const { t, i18n } = useTranslation();
-    const { allowAutoStartUp, allowPetAboveTaskbar, allowPetInteraction, allowOverridePetScale, petScale, allowPetClimbing } = useSettingStore();
+    const { allowAutoStartUp, allowPetAboveTaskbar, allowPetInteraction, allowOverridePetScale, petScale, allowPetClimbing, allowChristmasTheme } = useSettingStore();
 
     const settingSwitches: ISettingsContent[] = [
         {
@@ -55,6 +55,12 @@ function Settings() {
             dispatchType: DispatchType.OverridePetScale,
             component: allowOverridePetScale &&
                 <Slider min={0.1} max={1} defaultValue={petScale} my={"sm"} step={0.1} onChangeEnd={(value) => handleSettingChange(DispatchType.ChangePetScale, value)} />,
+        },
+        {
+            title: t("Christmas theme"),
+            description: t("Add falling snow to your desktop for a festive holiday vibe"),
+            checked: allowChristmasTheme,
+            dispatchType: DispatchType.SwitchChristmasTheme,
         }
     ];
 

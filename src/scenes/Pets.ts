@@ -15,6 +15,7 @@ import {
 import { info, error } from "tauri-plugin-log-api";
 import defaultSettings from "../../src-tauri/src/app/default/settings.json";
 import { ConfigManager, InputManager } from "./manager";
+import { ChristmasManager } from "./christmas";
 
 interface Pet extends Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
     direction?: Direction;
@@ -41,6 +42,9 @@ export default class Pets extends Phaser.Scene {
     private allowOverridePetScale: boolean;
     private petScale: number;
     private allowPetClimbing: boolean;
+    private allowChristmasTheme: boolean;
+
+    private christmasManager: ChristmasManager;
 
     private readonly FORBIDDEN_RAND_STATE: string[] = [
         "fall",
@@ -77,11 +81,15 @@ export default class Pets extends Phaser.Scene {
         this.allowPetClimbing =
             useSettingStore.getState().allowPetClimbing ??
             defaultSettings.allowPetClimbing;
+        this.allowChristmasTheme =
+            useSettingStore.getState().allowChristmasTheme ??
+            defaultSettings.allowChristmasTheme;
 
         this.configManager = new ConfigManager({
             FRAME_RATE: this.FRAME_RATE,
         });
         this.inputManager = new InputManager();
+        this.christmasManager = new ChristmasManager(this);
     }
 
     preload(): void {
@@ -247,6 +255,11 @@ export default class Pets extends Phaser.Scene {
             }
         );
 
+        // enable christmas theme if setting is on
+        if (this.allowChristmasTheme) {
+            this.christmasManager.enable();
+        }
+
         // listen to setting change from setting window and update settings
         listen<any>(
             EventType.SettingWindowToPetOverlay,
@@ -298,6 +311,13 @@ export default class Pets extends Phaser.Scene {
                     case DispatchType.ChangePetScale:
                         this.petScale = event.payload.value as number;
                         this.scaleAllPets(this.petScale);
+                        break;
+                    case DispatchType.SwitchChristmasTheme:
+                        this.allowChristmasTheme = event.payload
+                            .value as boolean;
+                        this.allowChristmasTheme
+                            ? this.christmasManager.enable()
+                            : this.christmasManager.disable();
                         break;
                     default:
                         break;
