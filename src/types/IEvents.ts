@@ -28,4 +28,5 @@ export enum DispatchType {
     RemovePet = 'RemovePet',
     OverridePetScale = 'Override pet scale',
     ChangePetScale = 'Change pet scale',
+    SwitchChristmasTheme = 'Switch christmas theme',
 }

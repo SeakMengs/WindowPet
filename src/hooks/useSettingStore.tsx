@@ -38,6 +38,10 @@ export const useSettingStore = create<ISettingStoreState>()((set) => ({
     setPetScale: (petScale) => {
         set({petScale: petScale})
     },
+    allowChristmasTheme: defaultSettings.allowChristmasTheme ?? false,
+    setAllowChristmasTheme: (newBoolean) => {
+        set({ allowChristmasTheme: newBoolean })
+    },
     // not actual settings that was saved in the config file
     // this pets will be used to track the pets in user's computer and live update the pet if user add/remove pet
     pets: [],

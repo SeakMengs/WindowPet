@@ -10,6 +10,7 @@ export interface ISettingStoreVariables {
     allowPetClimbing: boolean;
     allowOverridePetScale: boolean;
     petScale: number;
+    allowChristmasTheme: boolean;
     pets: ISpriteConfig[];
     defaultPet: ISpriteConfig[];
 }
@@ -23,6 +24,7 @@ export interface ISettingStoreState extends ISettingStoreVariables{
     setAllowPetClimbing: (newBoolean: boolean) => void;
     setAllowOverridePetScale: (newBoolean: boolean) => void;
     setPetScale: (petScale: number) => void;
+    setAllowChristmasTheme: (newBoolean: boolean) => void;
     setPets: (newPets: ISpriteConfig[]) => void;
     setDefaultPet: (newDefaultPet: ISpriteConfig[]) => void;
 }
